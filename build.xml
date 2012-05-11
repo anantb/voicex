@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+
+
+<!-- 
+     gv-sms
+     AUTHOR: ANANT BHARDWAJ
+     Email:  anantb@cs.stanford.edu
+
+-->
+
+
+<project name="gv-sms" default="war-gv-sms" basedir=".">
+  <property name="javac.source" value="1.5"/>
+  <property name="javac.target" value="1.5"/>
+	
+  <property name="build.dir" location="build"/>
+	<property name="dist.dir" location="dist"/>
+	
+  <property name="gv-sms.name" value="gvsms"/>
+
+  <property name="manifest.file" location="${build.dir}/MANIFEST.MF"/>
+
+
+  <path id="classpath">
+    <pathelement location="./src"/>
+    <pathelement location="lib/google-voice-java-1.14-java6.jar"/>
+	<pathelement location="lib/json.jar"/>
+  </path>
+  
+  
+
+
+
+  <target name="jar-gv-sms" depends="compile-gv-sms"
+	description="Build gv-sms jar file">
+	<sequential>
+  	  <build-manifest/>
+	  <jar
+        destfile="${dist.dir}/${gv-sms.name}.jar"
+        basedir="${build.dir}/classes"
+        excludes="**/*.java"
+        manifest="${manifest.file}">       
+      </jar>
+    </sequential>
+  </target>
+
+  <target name="war-gv-sms" depends="jar-gv-sms"	
+	description="Build gv-sms war file">
+	<sequential>
+  	  <build-manifest/>
+      <war destfile="${dist.dir}/${gv-sms.name}.war"
+           webxml="WebContent/WEB-INF/web.xml"
+           manifest="${manifest.file}">
+        <fileset dir="WebContent" excludes="WEB-INF/web.xml"/>
+        <lib dir="${dist.dir}" includes="${gv-sms.name}.jar"/>
+        <lib dir="./lib" includes="google-voice-java-1.14-java6.jar"/>
+      	<lib dir="./lib" includes="json.jar"/>
+      </war>
+    </sequential>
+  </target>
+
+
+  <target name="compile-gv-sms"
+	description="Compile gv-sms classes">
+    <mkdir dir="${build.dir}/classes/"/>
+    <mkdir dir="${dist.dir}"/>
+    <compile
+      srcdir="src/"
+      destdir="${build.dir}/classes">
+      <classpath refid="classpath"/>
+    </compile>
+  </target>
+	
+  <target name="clean"
+    description="Removes contents of build directory">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  
+
+
+      
+  <macrodef name="build-manifest" description="Builds a manifest file">
+  	<sequential>
+      <manifest file="${manifest.file}">
+        <attribute name="Specification-Title" value="gv-sms"/>
+		<!-- spec version must match "digit+{.digit+}*" -->
+		<attribute name="Specification-Vendor"
+		           value="Stanford University"/>
+		<!-- impl version can be any string -->
+		<attribute name="X-Compile-Source-JDK" 
+		           value="${javac.source}"/>
+		<attribute name="X-Compile-Target-JDK" 
+		           value="${javac.target}"/>
+	  </manifest>
+  	</sequential>
+  </macrodef>
+      
+  <macrodef name="compile">
+    <attribute name="srcdir"/>
+    <attribute name="destdir"/>
+    <element name="nested" implicit="yes" optional="yes"/>
+
+    <sequential>
+      <mkdir dir="@{destdir}"/>
+      <javac
+        srcdir="@{srcdir}"
+        destdir="@{destdir}"
+        deprecation="off"
+        debug="on"
+        source="${javac.source}"
+        target="${javac.target}">
+        <nested/>
+      </javac>
+    </sequential>
+  </macrodef>
+
+
+</project>

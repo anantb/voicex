@@ -1,0 +1,28 @@
+package edu.stanford.mpanic;
+
+import com.techventus.server.voice.Voice;
+import com.techventus.server.voice.datatypes.AllSettings;
+import com.techventus.server.voice.datatypes.DisabledForwardingId;
+import com.techventus.server.voice.datatypes.Group;
+import com.techventus.server.voice.datatypes.Phone;
+import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.exception.CaptchaRequiredException;
+import com.techventus.server.voice.util.ParsingUtil;
+
+public class MPanic {﻿  
+﻿  static String user = "helloanant007@gmail.com";
+﻿  static String pass = "JCat250486";
+﻿  private static Voice voice;﻿  
+﻿  public static void main(String[] args){
+	voice = new Voice(user, pass,"GoogleVoiceJava",true,Voice.GOOGLE);
+﻿  ﻿  String number = "6503088677";
+﻿  ﻿  ﻿  ﻿  ﻿  ﻿  ﻿  
+﻿  ﻿  ﻿String txt = "Texting";
+﻿  ﻿  ﻿voice.sendSMS(number, txt);
+﻿  }
+
+﻿  
+﻿ 
+﻿  
+}
+
