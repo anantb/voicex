@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>SMS Library based on Google Voice</title>
+<title>Google Voice X</title>
 </head>
 <body>
 <h1>
-	gv-sms: an open-source SMS library based on Google Voice (DLT class - Sanford).
+	Google Voice X (GV-X)
 </h1>
 <hr />

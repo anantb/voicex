@@ -2,21 +2,21 @@
 
 
 <!-- 
-     gv-sms
+     Google Voice Extended (gvx)
      AUTHOR: ANANT BHARDWAJ
      Email:  anantb@cs.stanford.edu
 
 -->
 
 
-<project name="gv-sms" default="war-gv-sms" basedir=".">
+<project name="gvx" default="war-gvx" basedir=".">
   <property name="javac.source" value="1.5"/>
   <property name="javac.target" value="1.5"/>
 	
   <property name="build.dir" location="build"/>
 	<property name="dist.dir" location="dist"/>
 	
-  <property name="gv-sms.name" value="gvsms"/>
+  <property name="gvx.name" value="gvx"/>
 
   <property name="manifest.file" location="${build.dir}/MANIFEST.MF"/>
 
@@ -31,12 +31,12 @@
 
 
 
-  <target name="jar-gv-sms" depends="compile-gv-sms"
-	description="Build gv-sms jar file">
+  <target name="jar-gvx" depends="compile-gvx"
+	description="Build gvx jar file">
 	<sequential>
   	  <build-manifest/>
 	  <jar
-        destfile="${dist.dir}/${gv-sms.name}.jar"
+        destfile="${dist.dir}/${gvx.name}.jar"
         basedir="${build.dir}/classes"
         excludes="**/*.java"
         manifest="${manifest.file}">       
@@ -44,15 +44,15 @@
     </sequential>
   </target>
 
-  <target name="war-gv-sms" depends="jar-gv-sms"	
-	description="Build gv-sms war file">
+  <target name="war-gvx" depends="jar-gvx"	
+	description="Build gvx war file">
 	<sequential>
   	  <build-manifest/>
-      <war destfile="${dist.dir}/${gv-sms.name}.war"
+      <war destfile="${dist.dir}/${gvx.name}.war"
            webxml="WebContent/WEB-INF/web.xml"
            manifest="${manifest.file}">
         <fileset dir="WebContent" excludes="WEB-INF/web.xml"/>
-        <lib dir="${dist.dir}" includes="${gv-sms.name}.jar"/>
+        <lib dir="${dist.dir}" includes="${gvx.name}.jar"/>
         <lib dir="./lib" includes="google-voice-java-1.14-java6.jar"/>
       	<lib dir="./lib" includes="json.jar"/>
       </war>
@@ -60,8 +60,8 @@
   </target>
 
 
-  <target name="compile-gv-sms"
-	description="Compile gv-sms classes">
+  <target name="compile-gvx"
+	description="Compile gvx classes">
     <mkdir dir="${build.dir}/classes/"/>
     <mkdir dir="${dist.dir}"/>
     <compile
@@ -84,7 +84,7 @@
   <macrodef name="build-manifest" description="Builds a manifest file">
   	<sequential>
       <manifest file="${manifest.file}">
-        <attribute name="Specification-Title" value="gv-sms"/>
+        <attribute name="Specification-Title" value="Google Voice Extended"/>
 		<!-- spec version must match "digit+{.digit+}*" -->
 		<attribute name="Specification-Vendor"
 		           value="Stanford University"/>
