@@ -82,9 +82,9 @@ public class VoiceX{
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
 	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
 	        conn.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-            out.write(Util.encodeURLPat(params));
-            out.flush();            
+	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+	        out.write(Util.encodeURLPat(params));
+	        out.flush();            
             
 	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        String line;  
@@ -115,9 +115,10 @@ public class VoiceX{
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
 	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
 	        conn.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-            out.write(Util.encodeURLPat(params));
-            out.flush();            
+	        
+	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+	        out.write(Util.encodeURLPat(params));
+	        out.flush();            
             
 	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        String line;  
