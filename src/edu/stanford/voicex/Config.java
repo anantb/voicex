@@ -15,6 +15,7 @@ public class Config{
 		try{
 			props.setProperty("user", new String(decoder.decodeBuffer(Config.DEFAULT_USER)));
 			props.setProperty("password", new String(decoder.decodeBuffer(Config.DEFAULT_PASSWORD)));
+			props.setProperty("loglevel", Integer.toString(Debug.VERBOSE));
 		}catch(IOException ioe){
 		}
 	}
