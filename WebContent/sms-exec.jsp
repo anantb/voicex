@@ -2,15 +2,15 @@
 <%@ include file="inc/header.jsp" %>
 <%
     
-    Config gv_config = new Config();
+    Config v_config = new Config();
 	Login login = null;
 	try{
-		login = new Login(gv_config);
+		login = new Login(v_config);
 	}catch(IOException ioe){	
 		out.println("Login Failed");
 	}
 	if(login != null){		
-		VoiceX voicex = new VoiceX(login.getVoice());
+		VoiceX voicex = new VoiceX(login);
 		String number = request.getParameter("number");
 		String text = request.getParameter("text");	
 		long delay = 0;

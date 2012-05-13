@@ -29,13 +29,13 @@ package edu.stanford.voicex;
  *
  */
 public class SMSRequestCollectorThread extends Thread {
-	String auth;
+	VoiceX v;
 	String number;
 	String text;
 	long delay = 0;		
 	
-	public SMSRequestCollectorThread(String auth, String number, String text, long delay){
-		this.auth = auth;
+	public SMSRequestCollectorThread(VoiceX v, String number, String text, long delay){
+		this.v = v;
 		this.number = number;
 		this.text = text;
 		this.delay  = delay;
@@ -46,7 +46,6 @@ public class SMSRequestCollectorThread extends Thread {
 			Thread.sleep(delay);
 		}catch(InterruptedException ie){
 		}			
-		//voice.sendSMS(number, text);		
-		this.notify();
+		v.sendSMS(number, text);
 	}
 }

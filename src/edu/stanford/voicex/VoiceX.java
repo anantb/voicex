@@ -31,6 +31,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -62,11 +63,12 @@ public class VoiceX{
 	String auth;
 	String rnr_se;
 	Config config;
+	InboxListenerThread inboxListener;
 	public VoiceX(Login login){
 		this.auth = login.getAuth();
 		this.rnr_se = login.getRNRSE();
 		this.config = login.getConfig();
-		InboxListenerThread inboxListener = new InboxListenerThread();
+		inboxListener = new InboxListenerThread();
 		inboxListener.start();
 	}
 	
@@ -137,13 +139,12 @@ public class VoiceX{
 	}
 	
 	public void sendSMSDelayed(String number, String text, long delay){		
-		SMSRequestCollectorThread smsSenderThread = new SMSRequestCollectorThread(auth, number, text, delay);
-		smsSenderThread.start();
-		try{
-			smsSenderThread.wait();
-		}catch(InterruptedException ie){
-			
-		}		
+		SMSRequestCollectorThread smsSenderThread = new SMSRequestCollectorThread(VoiceX.this, number, text, delay);
+		smsSenderThread.start();			
+	}
+	
+	public void registerInboxCallback(ICallBack icb){
+		this.inboxListener.addCallBack(icb);		
 	}
 	
 	public Inbox fetchInbox(){
@@ -189,7 +190,21 @@ public class VoiceX{
 	
 	
 	class InboxListenerThread extends Thread {
-		public InboxListenerThread(){			
+		HashMap<String, ICallBack> callbacks;
+		public InboxListenerThread(){
+			callbacks = new HashMap<String, ICallBack>();
+		}
+		
+		public void addCallBack(ICallBack callback){
+			callbacks.put(callback.toString(), callback);
+		}
+		
+		public void runCallBack(MessageData msg){
+			Iterator<Entry<String, ICallBack>> itr = callbacks.entrySet().iterator();
+		    while (itr.hasNext()) {
+		        Map.Entry<String, ICallBack> cb = (Map.Entry<String, ICallBack>)itr.next();
+		        cb.getValue().newMsg(msg);
+		    }
 		}
 		
 		public void run() {
@@ -201,8 +216,9 @@ public class VoiceX{
 					if(inbox.getUnreadCounts().getSms() > 0){
 						messsages = inbox.getMessages();
 						for(int i=0; i<messsages.getMessages().size(); i++){
-							if(messsages.getMessages().get(i).isRead() == false){
-								Debug.print(messsages.getMessages().get(i).getMessageText(), Debug.VERBOSE);
+							MessageData msg = messsages.getMessages().get(i);
+							if(msg.isRead() == false){
+								runCallBack(msg);
 							}
 						}
 					}

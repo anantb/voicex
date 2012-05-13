@@ -16,7 +16,7 @@
 		<servlet-name>omniscent</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
-	
+	<display-name>Voice X</display-name>
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
