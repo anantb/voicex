@@ -17,8 +17,8 @@ public class TestVoiceX {
 			System.err.println("Authentication Failed");
 			System.exit(-1);
 		}				
-		VoiceX voicex = new VoiceX(login.getAuth(), login.getRNRSE());
-		//Inbox inbox = voicex.fetchInbox();
+		VoiceX voicex = new VoiceX(login);
+		Inbox inbox = voicex.fetchInbox();
 		//voicex.sendSMS(DEFAULT_NUMBER, DEFAULT_TEXT);
 		//voicex.call("2134530488", "6505756434");
 	}		

@@ -14,8 +14,10 @@ public class Login{
 	
 	String auth = null;
 	String rnr_se = null;
+	Config config = null;
 	
 	public Login(Config config) throws Exception{	
+		this.config = config;
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("accountType", accountType);		
 		params.put("Email", config.getProperty("user"));
@@ -49,6 +51,10 @@ public class Login{
 	
 	public String getAuth() {	
 		return auth;		
+	}
+	
+	public Config getConfig() {	
+		return config;		
 	}
 	
 	public String getRNRSE(){

@@ -23,6 +23,7 @@
 
   <path id="classpath">
     <pathelement location="./src"/>
+    <pathelement location="lib/gson-2.2.1.jar"/>
   </path>
   
   
@@ -51,6 +52,7 @@
            manifest="${manifest.file}">
         <fileset dir="WebContent" excludes="WEB-INF/web.xml"/>
         <lib dir="${dist.dir}" includes="${voicex.name}.jar"/>
+        <lib dir="./lib" includes="gson-2.2.1.jar"/>
       </war>
     </sequential>
   </target>

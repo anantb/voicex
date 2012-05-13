@@ -33,11 +33,13 @@ import edu.stanford.voicex.inbox.Status;
 public class VoiceX{	
 	String auth;
 	String rnr_se;
-	public VoiceX(String auth, String rnr_se){
-		this.auth = auth;
-		this.rnr_se = rnr_se;
-		//InboxListenerThread inboxListener = new InboxListenerThread();
-		//inboxListener.start();
+	Config config;
+	public VoiceX(Login login){
+		this.auth = login.getAuth();
+		this.rnr_se = login.getRNRSE();
+		this.config = login.getConfig();
+		InboxListenerThread inboxListener = new InboxListenerThread();
+		inboxListener.start();
 	}
 	
 	
@@ -171,7 +173,7 @@ public class VoiceX{
 						messsages = inbox.getMessages();
 						for(int i=0; i<messsages.getMessages().size(); i++){
 							if(messsages.getMessages().get(i).isRead() == false){
-								System.out.println(messsages.getMessages().get(i).getMessageText());
+								Debug.print(messsages.getMessages().get(i).getMessageText(), Debug.VERBOSE);
 							}
 						}
 					}
