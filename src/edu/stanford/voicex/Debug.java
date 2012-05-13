@@ -23,12 +23,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package edu.stanford.voicex;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
 public class Debug {
 	public static final int TERSE = 1;
 	public static final int NORMAL = 2;
 	public static final int VERBOSE = 3;
 	
-	static int debugLevel = 1;
+	static int debugLevel = 3;
 	
 	
 	public static int getDebugLevel() {
@@ -42,7 +47,7 @@ public class Debug {
 
 
 	public static void print(String msg, int loglevel){
-		if(loglevel < debugLevel){
+		if(loglevel <= debugLevel){
 			System.out.println(msg);
 		}
 	}

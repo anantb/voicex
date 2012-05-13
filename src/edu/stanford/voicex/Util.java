@@ -30,6 +30,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
 public class Util {
 	public static String encodeURLPat(HashMap<String, String> params) throws Exception{
 		StringBuffer buf = new StringBuffer();

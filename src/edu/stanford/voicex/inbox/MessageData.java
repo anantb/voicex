@@ -24,6 +24,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package edu.stanford.voicex.inbox;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
+
 @XmlRootElement
 public class MessageData {
 	String id;

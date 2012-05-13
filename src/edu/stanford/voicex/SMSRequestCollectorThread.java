@@ -23,6 +23,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package edu.stanford.voicex;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
 public class SMSRequestCollectorThread extends Thread {
 	String auth;
 	String number;

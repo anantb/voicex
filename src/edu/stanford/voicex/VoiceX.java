@@ -52,6 +52,12 @@ import edu.stanford.voicex.inbox.MessageData;
 import edu.stanford.voicex.inbox.Messages;
 import edu.stanford.voicex.inbox.Status;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
+
 public class VoiceX{	
 	String auth;
 	String rnr_se;

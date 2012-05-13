@@ -26,9 +26,14 @@ import java.util.*;
 import sun.misc.BASE64Decoder;
 import java.io.IOException;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
 public class Config{
-	public static String DEFAULT_USER = "aGVsbG9hbmFudDAwN0BnbWFpbC5jb20=";
-	public static String DEFAULT_PASSWORD = "SkNhdDI1MDQ4Ng==";	
+	public static String DEFAULT_USER = "dm9pY2V4LmdpdEBnbWFpbC5jb20=";
+	public static String DEFAULT_PASSWORD = "Vm9pY2VYQEdpdA==";	
 	
 	Properties props = null;
 	public Config(){

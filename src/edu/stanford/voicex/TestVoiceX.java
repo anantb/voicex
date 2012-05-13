@@ -27,6 +27,11 @@ import java.util.Date;
 
 import edu.stanford.voicex.inbox.Inbox;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
 public class TestVoiceX {
 	static String DEFAULT_NUMBER = "6503088677";
 	static String DEFAULT_TEXT = "Test SMS Generated at: " +  new Date();
@@ -42,8 +47,8 @@ public class TestVoiceX {
 		}				
 		VoiceX voicex = new VoiceX(login);
 		Inbox inbox = voicex.fetchInbox();
-		//voicex.sendSMS(DEFAULT_NUMBER, DEFAULT_TEXT);
-		//voicex.call("2134530488", "6505756434");
+		voicex.sendSMS(DEFAULT_NUMBER, DEFAULT_TEXT);
+		voicex.call("2134530488", DEFAULT_NUMBER);
 	}		
 
 }

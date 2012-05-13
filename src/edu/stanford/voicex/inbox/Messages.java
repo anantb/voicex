@@ -28,6 +28,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author Anant Bhardwaj
+ * @date May 13, 2012
+ *
+ */
+
 @XmlRootElement
 public class Messages {
 	
