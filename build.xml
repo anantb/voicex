@@ -23,8 +23,6 @@
 
   <path id="classpath">
     <pathelement location="./src"/>
-    <pathelement location="lib/google-voice-java-1.14-java6.jar"/>
-	<pathelement location="lib/json.jar"/>
   </path>
   
   
@@ -53,8 +51,6 @@
            manifest="${manifest.file}">
         <fileset dir="WebContent" excludes="WEB-INF/web.xml"/>
         <lib dir="${dist.dir}" includes="${voicex.name}.jar"/>
-        <lib dir="./lib" includes="google-voice-java-1.14-java6.jar"/>
-      	<lib dir="./lib" includes="json.jar"/>
       </war>
     </sequential>
   </target>

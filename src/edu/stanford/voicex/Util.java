@@ -1,9 +1,6 @@
 package edu.stanford.voicex;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,21 +23,5 @@ public class Util {
 		return url;		
 	}
 	
-	public static String fetch_get(URL url, String auth){		
-		try{
-			URLConnection conn = url.openConnection();
-			conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);          
-			BufferedReader br= new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			StringBuffer buf = new StringBuffer("");
-			String line;
-			while ((line = br.readLine()) != null) {
-			        buf.append(line + "\n\r");
-			}
-			br.close();
-			return buf.toString();
-		}catch(Exception e){
-			return null;
-		}
-		
-	}
+	
 }

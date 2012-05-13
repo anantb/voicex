@@ -1,12 +1,12 @@
 package edu.stanford.voicex;
 
-public class SMSSenderThread extends Thread {
+public class SMSRequestCollectorThread extends Thread {
 	String auth;
 	String number;
 	String text;
 	long delay = 0;		
 	
-	public SMSSenderThread(String auth, String number, String text, long delay){
+	public SMSRequestCollectorThread(String auth, String number, String text, long delay){
 		this.auth = auth;
 		this.number = number;
 		this.text = text;
