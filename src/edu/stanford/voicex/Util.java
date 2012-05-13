@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Util {
-	public static URL formURL(String base_url, HashMap<String, String> params) throws Exception{
-		StringBuffer buf = new StringBuffer(base_url+"?");
+	public static String encodeURLPat(HashMap<String, String> params) throws Exception{
+		StringBuffer buf = new StringBuffer();
 		if(params != null){
 			Iterator<Entry<String, String>> it = params.entrySet().iterator();
 		    while (it.hasNext()) {
@@ -18,9 +18,19 @@ public class Util {
 		        buf.append("&");
 		    }
 		}
-	    buf.deleteCharAt(buf.length()-1);
-	    URL url = new URL(buf.toString());
-		return url;		
+		if(buf.toString().endsWith("&")){
+			buf.deleteCharAt(buf.length()-1);
+		}
+	    return  buf.toString();
+	}
+	
+	public static URL formURL(String baseURL, HashMap<String, String> params) throws Exception{
+		String url = baseURL;
+		if(params != null){
+			String path = encodeURLPat(params);
+			url = baseURL+"?"+path;
+		}
+		return new URL(url);
 	}
 	
 	
