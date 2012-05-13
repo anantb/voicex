@@ -1,4 +1,4 @@
-<%@ page import="edu.stanford.gvx.*, java.io.IOException;"%>
+<%@ page import="edu.stanford.voicex.*, java.io.IOException;"%>
 <%@ include file="inc/header.jsp" %>
 <%
     
@@ -10,7 +10,7 @@
 		out.println("Login Failed");
 	}
 	if(login != null){		
-		GVX gvx = new GVX(login.getVoice());
+		VoiceX voicex = new VoiceX(login.getVoice());
 		String number = request.getParameter("number");
 		String text = request.getParameter("text");	
 		long delay = 0;
@@ -20,10 +20,10 @@
 		}
 
 		if(delay > 0){
-			gvx.sendSMSDelayed(number, text, delay * 60 *1000);
+			voicex.sendSMSDelayed(number, text, delay * 60 *1000);
 			out.print("Message added to the server queue.");
 		}else{
-			if(gvx.sendSMS(number, text)){
+			if(voicex.sendSMS(number, text)){
 				out.print("Message successfully sent.");	
 			}else{
 				out.print("Message sending failed.");	
