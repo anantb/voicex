@@ -38,7 +38,7 @@ public class Alert implements Notifiee{
 	VoiceX v;
 	public Alert(VoiceX v){
 		this.v = v;
-		v.registerNotification(this);
+		v.registerNotification(this);		
 	}
 	public void notificationNew(MessageData msg){
 		Debug.print("Got a notification", Debug.VERBOSE);

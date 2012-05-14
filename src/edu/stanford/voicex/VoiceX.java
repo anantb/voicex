@@ -217,7 +217,13 @@ public class VoiceX{
 			Iterator<Entry<String, Notifiee>> itr = notifiees.entrySet().iterator();
 		    while (itr.hasNext()) {
 		        Map.Entry<String, Notifiee> cb = (Map.Entry<String, Notifiee>)itr.next();
-		        cb.getValue().notificationNew(msg);		        
+		        try{
+		        	cb.getValue().notificationNew(msg);
+		        }catch(NullPointerException npe){
+		        	this.deleteNotifiee(cb.getValue());
+		        }catch(Exception e){
+		        	
+		        }
 		    }		    
 		}
 		

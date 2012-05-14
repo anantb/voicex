@@ -46,8 +46,7 @@ public class Main {
 		if(voicex == null){
 			init();
 		}
-		//voicex.sendSMSDelayed("6503088677", "1 minute delay", 1*60*1000);
-		
+		//voicex.sendSMSDelayed("6503088677", "1 minute delay", 1*60*1000);		
 		new Alert(voicex);		
 	}
 
