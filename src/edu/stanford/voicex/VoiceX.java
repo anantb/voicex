@@ -22,13 +22,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package edu.stanford.voicex;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
+
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +47,6 @@ import com.google.gson.JsonParser;
 import edu.stanford.voicex.inbox.Inbox;
 import edu.stanford.voicex.inbox.MessageData;
 import edu.stanford.voicex.inbox.Messages;
-import edu.stanford.voicex.inbox.Status;
 
 /**
  * @author Anant Bhardwaj

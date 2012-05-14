@@ -20,26 +20,30 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package edu.stanford.voicex.applications;
 
-import edu.stanford.voicex.NewMessageCallback;
+import edu.stanford.voicex.Config;
+import edu.stanford.voicex.Login;
 import edu.stanford.voicex.VoiceX;
-import edu.stanford.voicex.inbox.MessageData;
 
-/**
- * @author Anant Bhardwaj
- * @date May 13, 2012
- *
- */
-public class Alert implements NewMessageCallback{
-	static String ALERT_NUMBER = "6503088677";
-	static String DEFAULT_TEXT = "Alert from: ";
-	VoiceX v;
-	public Alert(VoiceX v){
-		this.v = v;
+
+public class Main {
+	static VoiceX voicex;
+	public Main(){
+		Config config = new Config();
+		Login login = null;
+		try{
+			login = new Login(config);
+		}catch(Exception ioe){			
+			System.err.println("Authentication Failed");
+			System.exit(-1);
+		}		
+		voicex = new VoiceX(login);
 	}
-	public void newMsg(MessageData msg){
-		v.sendSMS(ALERT_NUMBER, DEFAULT_TEXT+msg.getPhoneNumber());
-		v.markAsRead(msg);
+	
+	public static void main(String[] args) {	
+		new Alert(voicex);		
 	}
+
 }

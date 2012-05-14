@@ -36,7 +36,6 @@ import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 
-import edu.stanford.voicex.inbox.MessageData;
 import edu.stanford.voicex.inbox.Status;
 
 /**
