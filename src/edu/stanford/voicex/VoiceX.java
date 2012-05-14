@@ -68,8 +68,8 @@ public class VoiceX{
 		this.auth = login.getAuth();
 		this.rnr_se = login.getRNRSE();
 		this.config = login.getConfig();
-		inboxListener = new InboxListenerThread();
-		inboxListener.start();
+		//inboxListener = new InboxListenerThread();
+		//inboxListener.start();
 	}
 	
 	
@@ -80,32 +80,11 @@ public class VoiceX{
 		params.put("phoneNumber", number);		
 		params.put("text", text);
 		params.put("_rnr_se", rnr_se);		
-		try{
-	        URL url = Util.formURL(URLConstants.SMS_SEND_URL, null);	
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
-	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
-	        conn.setDoOutput(true);
-	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-	        out.write(Util.encodeURLPat(params));
-	        out.flush();            
-            
-	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        String line;  
-	        String res="";	    		                
-	        while ((line = reader.readLine()) != null) {
-	        	res += line;		          
-	        } 
-	        Debug.print(res, Debug.VERBOSE);
-	        Gson gson = new Gson() ;
-			Status status =  gson.fromJson(res.toString(), Status.class);
-			return status.isOk();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return false;       
+		return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
 	}
 	
 	public boolean call(String forwardingNumber, String outgoingNumber){
+		Debug.print("Initiating call to: "+outgoingNumber + ", through: " + forwardingNumber, Debug.VERBOSE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("forwardingNumber", forwardingNumber);
 		params.put("outgoingNumber", outgoingNumber);
@@ -113,62 +92,37 @@ public class VoiceX{
 		params.put("subscriberNumber", "undefined");
 		params.put("remember", "0");
 		params.put("_rnr_se", rnr_se);		
-		try{
-	        URL url = Util.formURL(URLConstants.CALL_INITIATE_URL, null);	
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
-	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
-	        conn.setDoOutput(true);
-	        
-	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-	        out.write(Util.encodeURLPat(params));
-	        out.flush();            
-            
-	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        String line;  
-	        String res="";	    		                
-	        while ((line = reader.readLine()) != null) {
-	        	res += line;		          
-	        } 
-	        Debug.print(res, Debug.VERBOSE);
-	        Gson gson = new Gson() ;
-			Status status =  gson.fromJson(res.toString(), Status.class);
-			return status.isOk();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return false;
+		return Util.doPost(URLConstants.CALL_INITIATE_URL, params, auth);
+		
 	}
 	
 	
 	public boolean markAsRead(MessageData msg){
+		Debug.print("Marking Msg as Read: "+msg.getMessageText(), Debug.VERBOSE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("messages", msg.getId());
 		params.put("read", "1");
 		params.put("_rnr_se", rnr_se);		
-		try{
-	        URL url = Util.formURL(URLConstants.MSG_MARK_READ_URL, null);	
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
-	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
-	        conn.setDoOutput(true);
-	        
-	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-	        out.write(Util.encodeURLPat(params));
-	        out.flush();            
-            
-	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        String line;  
-	        String res="";	    		                
-	        while ((line = reader.readLine()) != null) {
-	        	res += line;		          
-	        } 
-	        Debug.print(res, Debug.VERBOSE);
-	        Gson gson = new Gson() ;
-			Status status =  gson.fromJson(res.toString(), Status.class);
-			return status.isOk();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return false;
+		return Util.doPost(URLConstants.MSG_MARK_READ_URL, params, auth);
+	}
+	
+	
+	public boolean markAsUnRead(MessageData msg){
+		Debug.print("Marking Msg as UnRead: "+msg.getMessageText(), Debug.VERBOSE);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("messages", msg.getId());
+		params.put("read", "0");
+		params.put("_rnr_se", rnr_se);		
+		return Util.doPost(URLConstants.MSG_MARK_READ_URL, params, auth);
+	}
+	
+	public boolean delete(MessageData msg){
+		Debug.print("Deleting Msg:: "+msg.getMessageText(), Debug.VERBOSE);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("messages", msg.getId());
+		params.put("trash", "1");
+		params.put("_rnr_se", rnr_se);		
+		return Util.doPost(URLConstants.MSG_DELETE_URL, params, auth);
 	}
 	
 	public void sendSMSDelayed(String number, String text, long delay){		
@@ -176,13 +130,33 @@ public class VoiceX{
 		smsSenderThread.start();			
 	}
 	
-	public void registerInboxCallback(ICallBack icb){
+	public void registerNewMessageCallback(NewMessageCallback icb){
 		this.inboxListener.addCallBack(icb);		
 	}
 	
 	public Inbox fetchInbox(){
 		try{
+			URL url = Util.formURL(URLConstants.INBOX_URL, null);
+			return fetchInbox(url, auth);
+		}catch(Exception e){
+			return null;
+		}		
+		
+	}
+	
+	public Inbox fetchAllSMS(){
+		try{
 			URL url = Util.formURL(URLConstants.SMS_URL, null);
+			return fetchInbox(url, auth);
+		}catch(Exception e){
+			return null;
+		}		
+		
+	}
+	
+	public Inbox fetchUnreadSMS(){
+		try{
+			URL url = Util.formURL(URLConstants.SMS_UNREAD_URL, null);
 			return fetchInbox(url, auth);
 		}catch(Exception e){
 			return null;
@@ -197,8 +171,8 @@ public class VoiceX{
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(conn.getInputStream());
 		NodeList nodes = doc.getElementsByTagName("json");		
-		
 		StringBuffer json = new StringBuffer(nodes.item(0).getTextContent());
+		Debug.print(json.toString(), Debug.VERBOSE);
 		Gson gson = new Gson() ;
 		Inbox inbox =  gson.fromJson(json.toString(), Inbox.class);
 		if(inbox.getUnreadCounts().getSms() > 0){
@@ -220,54 +194,39 @@ public class VoiceX{
 	}
 	
 	
+	
+	
+	
 	class InboxListenerThread extends Thread {
-		HashMap<String, ICallBack> callbacks;
+		HashMap<String, NewMessageCallback> callbacks;
 		public InboxListenerThread(){
-			callbacks = new HashMap<String, ICallBack>();
+			callbacks = new HashMap<String, NewMessageCallback>();
 		}
 		
-		public void addCallBack(ICallBack callback){
+		public void addCallBack(NewMessageCallback callback){
 			callbacks.put(callback.toString(), callback);
 		}
 		
 		public void runCallBack(MessageData msg){
-			Iterator<Entry<String, ICallBack>> itr = callbacks.entrySet().iterator();
+			Iterator<Entry<String, NewMessageCallback>> itr = callbacks.entrySet().iterator();
 		    while (itr.hasNext()) {
-		        Map.Entry<String, ICallBack> cb = (Map.Entry<String, ICallBack>)itr.next();
+		        Map.Entry<String, NewMessageCallback> cb = (Map.Entry<String, NewMessageCallback>)itr.next();
 		        cb.getValue().newMsg(msg);		        
-		    }
-		    String number = msg.getPhoneNumber();		    
-		    //sendSMS(number, "Okay, I got it, I will process it later. Your msg was "+ msg.getMessageText());
-		    
-		    String numbers[] = {"9739455801", "9163177600", "6505216665", "6503088677"};
-		    //String numbers[] = {"2134530488", "6503089145", "6503088677"};
-		    int i = 1000;
-		    for(String num:numbers){
-		    	Debug.print("Will send msg to: "+num, Debug.VERBOSE);
-		    	sendSMSDelayed(num, "Alert from "+ number +": "+ msg.getMessageText(), (1 * 60 * 1000) + 10*i);
-		    }
-		    
-		    
+		    }		    
 		}
 		
 		public void run() {			
 			while(true){
-				Inbox inbox = VoiceX.this.fetchInbox();									
+				Inbox inbox = VoiceX.this.fetchUnreadSMS();									
 				if(inbox!=null && inbox.getUnreadCounts().getSms() > 0){
 					List<MessageData> msgList = inbox.getMessages().getList();
 					for(int i=0; i<msgList.size(); i++){
-						MessageData msg = msgList.get(i);
-						if(msg.isRead() == false){
-							markAsRead(msg);
-							runCallBack(msg);
-							
-						}
+						MessageData msg = msgList.get(i);						
+						markAsRead(msg);
+						runCallBack(msg);						
 					}
 				}else{
-					try{
-						Thread.sleep(5000);
-					}catch(InterruptedException ie){}
-				
+					try{Thread.sleep(5000);}catch(InterruptedException ie){}				
 				}
 			
 			}	

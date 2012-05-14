@@ -35,6 +35,7 @@ public class URLConstants {
 	
 	final static String INBOX_URL = "https://www.google.com/voice/inbox/recent/inbox/";
 	final static String SMS_URL = "https://www.google.com/voice/inbox/recent/sms/";	
+	final static String SMS_UNREAD_URL = "https://www.google.com/voice/inbox/recent/unread/";
 	final static String VOICEMAIL_URL = "https://www.google.com/voice/inbox/recent/voicemail";
 	
 	final static String SMS_SEND_URL = "https://www.google.com/voice/sms/send/";
@@ -42,6 +43,7 @@ public class URLConstants {
 	final static String CALL_CANCEL_URL = "https://www.google.com/voice/call/cancel/";
 	
 	final static String MSG_MARK_READ_URL = "https://www.google.com/voice/inbox/mark/";
+	final static String MSG_DELETE_URL = "https://www.google.com/voice/inbox/deleteMessages/";
 	
 
 }

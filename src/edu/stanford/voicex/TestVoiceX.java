@@ -46,7 +46,9 @@ public class TestVoiceX {
 			System.exit(-1);
 		}				
 		VoiceX voicex = new VoiceX(login);
-		//Inbox inbox = voicex.fetchInbox();
+		voicex.fetchInbox();
+		voicex.fetchAllSMS();
+		voicex.fetchUnreadSMS();
 		//voicex.sendSMSDelayed(DEFAULT_NUMBER, DEFAULT_TEXT, 1*60*1000);
 		//voicex.call("2134530488", "9163177600");
 	}		

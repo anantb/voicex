@@ -23,6 +23,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package edu.stanford.voicex;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -30,13 +34,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gson.Gson;
+
+import edu.stanford.voicex.inbox.MessageData;
+import edu.stanford.voicex.inbox.Status;
+
 /**
  * @author Anant Bhardwaj
  * @date May 13, 2012
  *
  */
 public class Util {
-	public static String encodeURLPat(HashMap<String, String> params) throws Exception{
+	public static String encodeURLPath(HashMap<String, String> params) throws Exception{
 		StringBuffer buf = new StringBuffer();
 		if(params != null){
 			Iterator<Entry<String, String>> it = params.entrySet().iterator();
@@ -55,10 +64,38 @@ public class Util {
 	public static URL formURL(String baseURL, HashMap<String, String> params) throws Exception{
 		String url = baseURL;
 		if(params != null){
-			String path = encodeURLPat(params);
+			String path = encodeURLPath(params);
 			url = baseURL+"?"+path;
 		}
 		return new URL(url);
+	}
+	
+	
+	public static boolean doPost(String urlStr, HashMap<String, String> params, String auth){			
+		try{
+	        URL url = Util.formURL(urlStr, null);	
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
+	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
+	        conn.setDoOutput(true);
+	        
+	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+	        out.write(Util.encodeURLPath(params));
+	        out.flush();            
+            
+	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        String line;  
+	        String res="";	    		                
+	        while ((line = reader.readLine()) != null) {
+	        	res += line;		          
+	        } 
+	        Debug.print(res, Debug.VERBOSE);
+	        Gson gson = new Gson() ;
+			Status status =  gson.fromJson(res.toString(), Status.class);
+			return status.isOk();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	
