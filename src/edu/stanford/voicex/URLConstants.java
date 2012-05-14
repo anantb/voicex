@@ -41,5 +41,7 @@ public class URLConstants {
 	final static String CALL_INITIATE_URL = "https://www.google.com/voice/call/connect/";
 	final static String CALL_CANCEL_URL = "https://www.google.com/voice/call/cancel/";
 	
+	final static String MSG_MARK_READ_URL = "https://www.google.com/voice/inbox/mark/";
+	
 
 }

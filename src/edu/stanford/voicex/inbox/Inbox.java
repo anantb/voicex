@@ -61,12 +61,5 @@ public class Inbox {
 	}
 	public void setResultsPerPage(int resultsPerPage) {
 		this.resultsPerPage = resultsPerPage;
-	}
-	
-	
-	
-	
-
-	
-	
+	}	
 }

@@ -37,22 +37,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Messages {
 	
-	List<MessageData> messages;
+	List<MessageData> list;
 	
 	public Messages() {
-		messages = new ArrayList<MessageData>(); 
+		list = new ArrayList<MessageData>(); 
 	}
 	
 	public void appendMessage(MessageData msg) {
-		messages.add(msg);
+		list.add(msg);
 	}
 
-	public List<MessageData> getMessages() {
-		return messages;
+	public List<MessageData> getList() {
+		return list;
 	}
 
-	public void setMessages(List<MessageData> messages) {
-		this.messages = messages;
+	public void setList(List<MessageData> list) {
+		this.list = list;
 	}
 
 	

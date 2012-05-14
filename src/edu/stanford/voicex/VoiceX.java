@@ -75,6 +75,7 @@ public class VoiceX{
 	
 	
 	public boolean sendSMS(String number, String text){
+		Debug.print("Sending msg to: "+number, Debug.VERBOSE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("phoneNumber", number);		
 		params.put("text", text);
@@ -138,6 +139,38 @@ public class VoiceX{
 		return false;
 	}
 	
+	
+	public boolean markAsRead(MessageData msg){
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("messages", msg.getId());
+		params.put("read", "1");
+		params.put("_rnr_se", rnr_se);		
+		try{
+	        URL url = Util.formURL(URLConstants.MSG_MARK_READ_URL, null);	
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();       
+	        conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);
+	        conn.setDoOutput(true);
+	        
+	        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+	        out.write(Util.encodeURLPat(params));
+	        out.flush();            
+            
+	        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        String line;  
+	        String res="";	    		                
+	        while ((line = reader.readLine()) != null) {
+	        	res += line;		          
+	        } 
+	        Debug.print(res, Debug.VERBOSE);
+	        Gson gson = new Gson() ;
+			Status status =  gson.fromJson(res.toString(), Status.class);
+			return status.isOk();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public void sendSMSDelayed(String number, String text, long delay){		
 		SMSRequestCollectorThread smsSenderThread = new SMSRequestCollectorThread(VoiceX.this, number, text, delay);
 		smsSenderThread.start();			
@@ -166,7 +199,6 @@ public class VoiceX{
 		NodeList nodes = doc.getElementsByTagName("json");		
 		
 		StringBuffer json = new StringBuffer(nodes.item(0).getTextContent());
-		//Debug.print(json.toString(), Debug.VERBOSE);
 		Gson gson = new Gson() ;
 		Inbox inbox =  gson.fromJson(json.toString(), Inbox.class);
 		if(inbox.getUnreadCounts().getSms() > 0){
@@ -180,7 +212,6 @@ public class VoiceX{
 			while (itr.hasNext()) {
 		        Map.Entry<String, JsonElement> entry = (Map.Entry<String, JsonElement>)itr.next();
 		        MessageData msgData =  gson.fromJson(entry.getValue().toString(), MessageData.class);
-		        //Debug.print(msgData.getMessageText(), Debug.VERBOSE);
 		        messages.appendMessage(msgData);		        
 		    }
 			inbox.setMessages(messages);
@@ -203,39 +234,45 @@ public class VoiceX{
 			Iterator<Entry<String, ICallBack>> itr = callbacks.entrySet().iterator();
 		    while (itr.hasNext()) {
 		        Map.Entry<String, ICallBack> cb = (Map.Entry<String, ICallBack>)itr.next();
-		        cb.getValue().newMsg(msg);
+		        cb.getValue().newMsg(msg);		        
 		    }
+		    String number = msg.getPhoneNumber();		    
+		    //sendSMS(number, "Okay, I got it, I will process it later. Your msg was "+ msg.getMessageText());
+		    
+		    String numbers[] = {"9739455801", "9163177600", "6505216665", "6503088677"};
+		    //String numbers[] = {"2134530488", "6503089145", "6503088677"};
+		    int i = 1000;
+		    for(String num:numbers){
+		    	Debug.print("Will send msg to: "+num, Debug.VERBOSE);
+		    	sendSMSDelayed(num, "Alert from "+ number +": "+ msg.getMessageText(), (1 * 60 * 1000) + 10*i);
+		    }
+		    
+		    
 		}
 		
-		public void run() {
-			Inbox inbox;
-			Messages messsages;
+		public void run() {			
 			while(true){
-				inbox = VoiceX.this.fetchInbox();
-				if(inbox!=null){					
-					if(inbox.getUnreadCounts().getSms() > 0){
-						messsages = inbox.getMessages();
-						for(int i=0; i<messsages.getMessages().size(); i++){
-							MessageData msg = messsages.getMessages().get(i);
-							if(msg.isRead() == false){
-								runCallBack(msg);
-							}
+				Inbox inbox = VoiceX.this.fetchInbox();									
+				if(inbox!=null && inbox.getUnreadCounts().getSms() > 0){
+					List<MessageData> msgList = inbox.getMessages().getList();
+					for(int i=0; i<msgList.size(); i++){
+						MessageData msg = msgList.get(i);
+						if(msg.isRead() == false){
+							markAsRead(msg);
+							runCallBack(msg);
+							
 						}
 					}
 				}else{
 					try{
 						Thread.sleep(5000);
-					}catch(InterruptedException ie){
-						
-					}
+					}catch(InterruptedException ie){}
+				
 				}
-			}
 			
+			}	
 		}
-		
 	}
-
-	
 	
 
 }
