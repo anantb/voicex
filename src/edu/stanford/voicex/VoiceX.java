@@ -128,8 +128,12 @@ public class VoiceX{
 		this.timer.schedule(scheduledSMS, delay);	
 	}
 	
-	public void registerNewMessageCallback(Notification icb){
-		this.inboxListener.addCallBack(icb);		
+	public void registerNotification(Notifiee notification){
+		this.inboxListener.addNotifiee(notification);		
+	}
+	
+	public void removeNotification(Notifiee notification){
+		this.inboxListener.deleteNotifiee(notification);		
 	}
 	
 	public Inbox fetchInbox(){
@@ -196,20 +200,24 @@ public class VoiceX{
 	
 	
 	class InboxListenerThread extends Thread {
-		HashMap<String, Notification> callbacks;
+		HashMap<String, Notifiee> notifiees;
 		public InboxListenerThread(){
-			callbacks = new HashMap<String, Notification>();
+			notifiees = new HashMap<String, Notifiee>();
 		}
 		
-		public void addCallBack(Notification callback){
-			callbacks.put(callback.toString(), callback);
+		public void addNotifiee(Notifiee notifiee){
+			notifiees.put(notifiee.toString(), notifiee);
 		}
 		
-		public void runCallBack(MessageData msg){
-			Iterator<Entry<String, Notification>> itr = callbacks.entrySet().iterator();
+		public void deleteNotifiee(Notifiee notifiee){
+			notifiees.remove(notifiee.toString());
+		}
+		
+		public void notify(MessageData msg){
+			Iterator<Entry<String, Notifiee>> itr = notifiees.entrySet().iterator();
 		    while (itr.hasNext()) {
-		        Map.Entry<String, Notification> cb = (Map.Entry<String, Notification>)itr.next();
-		        cb.getValue().newNotification(msg);		        
+		        Map.Entry<String, Notifiee> cb = (Map.Entry<String, Notifiee>)itr.next();
+		        cb.getValue().notificationNew(msg);		        
 		    }		    
 		}
 		
@@ -220,7 +228,7 @@ public class VoiceX{
 					List<MessageData> msgList = inbox.getMessages().getList();
 					for(int i=0; i<msgList.size(); i++){
 						MessageData msg = msgList.get(i);					
-						runCallBack(msg);						
+						notify(msg);						
 					}
 				}
 				try{
