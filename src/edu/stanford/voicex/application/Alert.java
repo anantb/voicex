@@ -20,23 +20,29 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-package edu.stanford.voicex;
+package edu.stanford.voicex.application;
 
 import java.util.Date;
 
+import edu.stanford.voicex.Config;
+import edu.stanford.voicex.Login;
+import edu.stanford.voicex.NewMessageCallback;
+import edu.stanford.voicex.VoiceX;
 import edu.stanford.voicex.inbox.Inbox;
+import edu.stanford.voicex.inbox.MessageData;
 
 /**
  * @author Anant Bhardwaj
  * @date May 13, 2012
  *
  */
-public class TestVoiceX {
-	static String DEFAULT_NUMBER = "6503088677";
-	static String DEFAULT_TEXT = "Test SMS Generated at: " +  new Date();
-	
+public class Alert {
+	static String ALERT_NUMBER = "6503088677";
+	static String DEFAULT_TEXT = "Alert from: ";
+	public Alert(){		
+	}
 	public static void main(String[] args) {		
+		Alert alert = new Alert();
 		Config config = new Config();
 		Login login = null;
 		try{
@@ -46,11 +52,19 @@ public class TestVoiceX {
 			System.exit(-1);
 		}				
 		VoiceX voicex = new VoiceX(login);
-		voicex.fetchInbox();
-		voicex.fetchAllSMS();
-		voicex.fetchUnreadSMS();
-		//voicex.sendSMSDelayed(DEFAULT_NUMBER, DEFAULT_TEXT, 1*60*1000);
-		//voicex.call("2134530488", "9163177600");
-	}		
+		NewMessageCallback msgHandler = alert.new NewMessageHandler(voicex);
+		voicex.registerNewMessageCallback(msgHandler);
+	}
+	
+	class NewMessageHandler implements NewMessageCallback{
+		VoiceX v;
+		public NewMessageHandler(VoiceX v){
+			this.v = v;
+		}
+		public void newMsg(MessageData msg){
+			v.sendSMS(ALERT_NUMBER, DEFAULT_TEXT+msg.getPhoneNumber());
+			v.markAsRead(msg);
+		}
+	}
 
 }

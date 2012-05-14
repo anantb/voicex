@@ -68,8 +68,8 @@ public class VoiceX{
 		this.auth = login.getAuth();
 		this.rnr_se = login.getRNRSE();
 		this.config = login.getConfig();
-		//inboxListener = new InboxListenerThread();
-		//inboxListener.start();
+		inboxListener = new InboxListenerThread();
+		inboxListener.start();
 	}
 	
 	
@@ -171,25 +171,25 @@ public class VoiceX{
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(conn.getInputStream());
 		NodeList nodes = doc.getElementsByTagName("json");		
-		StringBuffer json = new StringBuffer(nodes.item(0).getTextContent());
+		StringBuffer json = new StringBuffer(nodes.item(0).getTextContent());		
 		Debug.print(json.toString(), Debug.VERBOSE);
 		Gson gson = new Gson() ;
 		Inbox inbox =  gson.fromJson(json.toString(), Inbox.class);
-		if(inbox.getUnreadCounts().getSms() > 0){
-			Messages messages = new Messages();
-			
-			JsonParser j = new JsonParser();
-			JsonObject inboxObj = j.parse(json.toString()).getAsJsonObject();
-			JsonObject messagesObj = inboxObj.get("messages").getAsJsonObject();
-			Set<Entry<String, JsonElement>> entries = messagesObj.entrySet();
-			Iterator<Entry<String, JsonElement>> itr = entries.iterator();
-			while (itr.hasNext()) {
-		        Map.Entry<String, JsonElement> entry = (Map.Entry<String, JsonElement>)itr.next();
-		        MessageData msgData =  gson.fromJson(entry.getValue().toString(), MessageData.class);
-		        messages.appendMessage(msgData);		        
-		    }
-			inbox.setMessages(messages);
-		}
+		
+		Messages messages = new Messages();
+		
+		JsonParser j = new JsonParser();
+		JsonObject inboxObj = j.parse(json.toString()).getAsJsonObject();
+		JsonObject messagesObj = inboxObj.get("messages").getAsJsonObject();
+		Set<Entry<String, JsonElement>> entries = messagesObj.entrySet();
+		Iterator<Entry<String, JsonElement>> itr = entries.iterator();
+		while (itr.hasNext()) {
+	        Map.Entry<String, JsonElement> entry = (Map.Entry<String, JsonElement>)itr.next();
+	        MessageData msgData =  gson.fromJson(entry.getValue().toString(), MessageData.class);
+	        messages.appendMessage(msgData);		        
+	    }
+		inbox.setMessages(messages);
+		
 		return inbox;		
 	}
 	
@@ -221,8 +221,7 @@ public class VoiceX{
 				if(inbox!=null && inbox.getUnreadCounts().getSms() > 0){
 					List<MessageData> msgList = inbox.getMessages().getList();
 					for(int i=0; i<msgList.size(); i++){
-						MessageData msg = msgList.get(i);						
-						markAsRead(msg);
+						MessageData msg = msgList.get(i);					
 						runCallBack(msg);						
 					}
 				}else{
