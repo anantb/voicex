@@ -22,7 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package edu.stanford.voicex.applications;
 
-import edu.stanford.voicex.NewMessageCallback;
+import edu.stanford.voicex.Notification;
 import edu.stanford.voicex.VoiceX;
 import edu.stanford.voicex.inbox.MessageData;
 
@@ -31,14 +31,14 @@ import edu.stanford.voicex.inbox.MessageData;
  * @date May 13, 2012
  *
  */
-public class Alert implements NewMessageCallback{
+public class Alert implements Notification{
 	static String ALERT_NUMBER = "6503088677";
 	static String DEFAULT_TEXT = "Alert from: ";
 	VoiceX v;
 	public Alert(VoiceX v){
 		this.v = v;
 	}
-	public void newMsg(MessageData msg){
+	public void newNotification(MessageData msg){
 		v.sendSMS(ALERT_NUMBER, DEFAULT_TEXT+msg.getPhoneNumber());
 		v.markAsRead(msg);
 	}

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -59,12 +60,14 @@ public class VoiceX{
 	String rnr_se;
 	Config config;
 	InboxListenerThread inboxListener;
+	Timer timer;
 	public VoiceX(Login login){
 		this.auth = login.getAuth();
 		this.rnr_se = login.getRNRSE();
 		this.config = login.getConfig();
 		inboxListener = new InboxListenerThread();
 		inboxListener.start();
+		timer = new Timer();
 	}
 	
 	
@@ -121,11 +124,11 @@ public class VoiceX{
 	}
 	
 	public void sendSMSDelayed(String number, String text, long delay){		
-		SMSRequestCollectorThread smsSenderThread = new SMSRequestCollectorThread(VoiceX.this, number, text, delay);
-		smsSenderThread.start();			
+		ScheduledSMS scheduledSMS = new ScheduledSMS(VoiceX.this, number, text);
+		this.timer.schedule(scheduledSMS, delay);	
 	}
 	
-	public void registerNewMessageCallback(NewMessageCallback icb){
+	public void registerNewMessageCallback(Notification icb){
 		this.inboxListener.addCallBack(icb);		
 	}
 	
@@ -193,20 +196,20 @@ public class VoiceX{
 	
 	
 	class InboxListenerThread extends Thread {
-		HashMap<String, NewMessageCallback> callbacks;
+		HashMap<String, Notification> callbacks;
 		public InboxListenerThread(){
-			callbacks = new HashMap<String, NewMessageCallback>();
+			callbacks = new HashMap<String, Notification>();
 		}
 		
-		public void addCallBack(NewMessageCallback callback){
+		public void addCallBack(Notification callback){
 			callbacks.put(callback.toString(), callback);
 		}
 		
 		public void runCallBack(MessageData msg){
-			Iterator<Entry<String, NewMessageCallback>> itr = callbacks.entrySet().iterator();
+			Iterator<Entry<String, Notification>> itr = callbacks.entrySet().iterator();
 		    while (itr.hasNext()) {
-		        Map.Entry<String, NewMessageCallback> cb = (Map.Entry<String, NewMessageCallback>)itr.next();
-		        cb.getValue().newMsg(msg);		        
+		        Map.Entry<String, Notification> cb = (Map.Entry<String, Notification>)itr.next();
+		        cb.getValue().newNotification(msg);		        
 		    }		    
 		}
 		
@@ -219,12 +222,18 @@ public class VoiceX{
 						MessageData msg = msgList.get(i);					
 						runCallBack(msg);						
 					}
-				}else{
-					try{Thread.sleep(5000);}catch(InterruptedException ie){}				
 				}
+				try{
+					Thread.sleep(5000);
+				}catch(InterruptedException ie){}				
+				
 			
 			}	
 		}
+		
+		
+		
+		
 	}
 	
 

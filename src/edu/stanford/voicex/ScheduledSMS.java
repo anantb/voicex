@@ -23,29 +23,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package edu.stanford.voicex;
 
+import java.util.TimerTask;
+
 /**
  * @author Anant Bhardwaj
  * @date May 13, 2012
  *
  */
-public class SMSRequestCollectorThread extends Thread {
+public class ScheduledSMS extends TimerTask {
 	VoiceX v;
 	String number;
-	String text;
-	long delay = 0;		
+	String text;		
 	
-	public SMSRequestCollectorThread(VoiceX v, String number, String text, long delay){
+	public ScheduledSMS(VoiceX v, String number, String text){
 		this.v = v;
 		this.number = number;
 		this.text = text;
-		this.delay  = delay;
 	}
 	
-	public void run() {		
-		try{
-			Thread.sleep(delay);
-		}catch(InterruptedException ie){
-		}			
+	public void run() {				
 		v.sendSMS(number, text);
 	}
 }

@@ -43,8 +43,11 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		Main.init();
-		new Alert(voicex);		
+		if(voicex == null){
+			init();
+		}
+		voicex.sendSMSDelayed("6503088677", "1 minute delay", 1*60*1000);
+		//new Alert(voicex);		
 	}
 
 }
