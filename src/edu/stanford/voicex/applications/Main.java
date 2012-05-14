@@ -30,7 +30,7 @@ import edu.stanford.voicex.VoiceX;
 
 public class Main {
 	static VoiceX voicex;
-	public Main(){
+	public static void init(){
 		Config config = new Config();
 		Login login = null;
 		try{
@@ -42,7 +42,8 @@ public class Main {
 		voicex = new VoiceX(login);
 	}
 	
-	public static void main(String[] args) {	
+	public static void main(String[] args) {
+		Main.init();
 		new Alert(voicex);		
 	}
 
