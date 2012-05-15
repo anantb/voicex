@@ -23,31 +23,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package edu.stanford.voicex.applications;
 
-import edu.stanford.voicex.Config;
-import edu.stanford.voicex.Login;
-import edu.stanford.voicex.VoiceX;
-
-
 public class Main {
-	static VoiceX voicex;
-	public static void init(){
-		Config config = new Config();
-		Login login = null;
-		try{
-			login = new Login(config);
-		}catch(Exception ioe){			
-			System.err.println("Authentication Failed");
-			System.exit(-1);
-		}		
-		voicex = new VoiceX(login);
-	}
-	
-	public static void main(String[] args) {
-		if(voicex == null){
-			init();
-		}
-		//voicex.sendSMSDelayed("6503088677", "1 minute delay", 1*60*1000);		
-		new Alert(voicex);		
+	public static void main(String[] args){
+		new Alert();
 	}
 
 }

@@ -31,20 +31,11 @@ import java.io.IOException;
  * @date May 13, 2012
  *
  */
-public class Config{
-	public static String DEFAULT_USER = "dm9pY2V4LmdpdEBnbWFpbC5jb20=";
-	public static String DEFAULT_PASSWORD = "Vm9pY2VYQEdpdA==";	
+public class Config{	
 	
 	Properties props = null;
 	public Config(){
-		props = new Properties();
-		BASE64Decoder decoder = new BASE64Decoder();
-		try{
-			props.setProperty("user", new String(decoder.decodeBuffer(Config.DEFAULT_USER)));
-			props.setProperty("password", new String(decoder.decodeBuffer(Config.DEFAULT_PASSWORD)));
-			props.setProperty("loglevel", Integer.toString(Debug.VERBOSE));
-		}catch(IOException ioe){
-		}
+		props = new Properties();	
 	}
 	
 	public void setProperty(String k, String v){

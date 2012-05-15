@@ -22,7 +22,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package edu.stanford.voicex.applications;
 
+import sun.misc.BASE64Decoder;
+import edu.stanford.voicex.Config;
 import edu.stanford.voicex.Debug;
+import edu.stanford.voicex.Login;
 import edu.stanford.voicex.Notifiee;
 import edu.stanford.voicex.VoiceX;
 import edu.stanford.voicex.inbox.MessageData;
@@ -33,16 +36,41 @@ import edu.stanford.voicex.inbox.MessageData;
  *
  */
 public class Alert implements Notifiee{
+	// Replace it with you google account username and password.
+	public static String DEFAULT_USER = "dm9pY2V4LmdpdEBnbWFpbC5jb20=";
+	public static String DEFAULT_PASSWORD = "Vm9pY2VYQEdpdA==";	
 	static String ALERT_NUMBER = "6503088677";
-	static String DEFAULT_TEXT = "Alert from: ";
-	VoiceX v;
-	public Alert(VoiceX v){
-		this.v = v;
-		v.registerNotification(this);		
-	}
+	static String DEFAULT_TEXT = "New Message: ";
+	
+	VoiceX voicex;
+	
+	public Alert(){	
+		init();
+		voicex.registerNotification(this);		
+	}	
+	
 	public void notificationNew(MessageData msg){
 		Debug.print("Got a notification", Debug.VERBOSE);
-		v.sendSMS(ALERT_NUMBER, DEFAULT_TEXT+msg.getPhoneNumber());
-		v.markAsRead(msg);
+		voicex.sendSMS(ALERT_NUMBER, 
+				DEFAULT_TEXT + msg.getMessageText() + ". " + 
+				"From: " + msg.getPhoneNumber());
+		voicex.markAsRead(msg);
+	}
+	
+	
+	void init(){		
+		try{
+			BASE64Decoder decoder = new BASE64Decoder();
+			Config config = new Config();
+			config.setProperty("user", new String(decoder.decodeBuffer(DEFAULT_USER)));
+			config.setProperty("password", new String(decoder.decodeBuffer(DEFAULT_PASSWORD)));
+			config.setProperty("loglevel", Integer.toString(Debug.VERBOSE));			 		
+			Login login = new Login(config);
+			voicex = new VoiceX(login);
+		}catch(Exception e){			
+			System.err.println("Authentication Failed");
+			System.exit(-1);
+		}		
+				
 	}
 }
