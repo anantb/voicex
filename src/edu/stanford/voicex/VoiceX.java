@@ -78,8 +78,8 @@ public class VoiceX{
 		params.put("phoneNumber", number);		
 		params.put("text", text);
 		params.put("_rnr_se", rnr_se);		
-		//return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
-		return true;
+		return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
+		//return true;
 	}
 	
 	public boolean call(String forwardingNumber, String outgoingNumber){

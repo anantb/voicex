@@ -63,12 +63,12 @@ public class Alert implements Notifiee{
 				try{					
 					int time = Integer.parseInt(t.trim());
 					Debug.print("Delay: " + time, Debug.VERBOSE);
-					voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), "ALERT FROM: " + msg.getDisplayNumber(), time*60*1000);
+					voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber(), time*60*1000);
 				}catch(NumberFormatException nfe){
-					voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "ALERT FROM: " + msg.getDisplayNumber());
+					voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
 				}
 			}else{
-				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "ALERT FROM: " + msg.getDisplayNumber());
+				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
 			}
 			
 		}	
