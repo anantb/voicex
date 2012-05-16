@@ -71,7 +71,8 @@ public class Alert implements Notifiee{
 				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "ALERT FROM: " + msg.getDisplayNumber());
 			}
 			
-		}		
+		}	
+		voicex.markAsRead(msg);
 		voicex.delete(msg);
 	}
 	
