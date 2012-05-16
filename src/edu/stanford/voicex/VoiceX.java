@@ -78,7 +78,8 @@ public class VoiceX{
 		params.put("phoneNumber", number);		
 		params.put("text", text);
 		params.put("_rnr_se", rnr_se);		
-		return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
+		//return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
+		return true;
 	}
 	
 	public boolean call(String forwardingNumber, String outgoingNumber){
@@ -123,7 +124,8 @@ public class VoiceX{
 		return Util.doPost(URLConstants.MSG_DELETE_URL, params, auth);
 	}
 	
-	public void sendSMSDelayed(String number, String text, long delay){		
+	public void sendSMSDelayed(String number, String text, long delay){	
+		Debug.print("Scheduling delayed SMS: "+number, Debug.VERBOSE);
 		ScheduledSMS scheduledSMS = new ScheduledSMS(VoiceX.this, number, text);
 		this.timer.schedule(scheduledSMS, delay);	
 	}
@@ -233,8 +235,10 @@ public class VoiceX{
 				if(inbox!=null && inbox.getUnreadCounts().getSms() > 0){
 					List<MessageData> msgList = inbox.getMessages().getList();
 					for(int i=0; i<msgList.size(); i++){
-						MessageData msg = msgList.get(i);					
-						notify(msg);						
+						if(msgList.get(i).isRead() == false){
+							MessageData msg = msgList.get(i);					
+							notify(msg);	
+						}
 					}
 				}
 				try{

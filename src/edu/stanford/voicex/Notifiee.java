@@ -21,14 +21,11 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package edu.stanford.voicex.applications;
+package edu.stanford.voicex;
 
-import edu.stanford.voicex.db.Subscription;
 
-public class Main {
-	public static void main(String[] args){
-		//Subscription.load();
-		new Alert();
-	}
+import edu.stanford.voicex.inbox.MessageData;
 
+public interface Notifiee {
+	public void notificationNew(MessageData msg);
 }
