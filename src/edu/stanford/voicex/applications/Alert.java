@@ -52,23 +52,29 @@ public class Alert implements Notifiee{
 		Debug.print("Got a notification", Debug.VERBOSE);
 		String text = msg.getMessageText().toLowerCase();
 		Debug.print(text, Debug.TERSE);
-		if(text.contains("alert subscribe")){
-			String subscription = text.substring(text.indexOf("alert subscribe")+"alert subscribe".length());
-			Debug.print(subscription.trim(), Debug.VERBOSE);
-			Subscription.add(msg.getDisplayNumber(), subscription);
-			Subscription.save();
-		}else if(text.contains("alert")){
-			String t = text.substring(text.indexOf("alert")+"alert".length());	
-			if(t!=null){
-				try{					
-					int time = Integer.parseInt(t.trim());
-					Debug.print("Delay: " + time, Debug.VERBOSE);
-					voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber(), time*60*1000);
-				}catch(NumberFormatException nfe){
+		if(msg.getType() == 0){
+			Debug.print("call", Debug.VERBOSE);
+			voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
+		}else if(msg.getType() == 10){
+			if(text.contains("alert subscribe")){
+				String subscription = text.substring(text.indexOf("alert subscribe")+"alert subscribe".length());
+				Debug.print(subscription.trim(), Debug.VERBOSE);
+				Subscription.add(msg.getDisplayNumber(), subscription);
+				Subscription.save();
+				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "Subscription Successfull. Details: " + subscription);
+			}else if(text.contains("alert")){
+				String t = text.substring(text.indexOf("alert")+"alert".length());	
+				if(t!=null){
+					try{					
+						int time = Integer.parseInt(t.trim());
+						Debug.print("Delay: " + time, Debug.VERBOSE);
+						voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber(), time*60*1000);
+					}catch(NumberFormatException nfe){
+						voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
+					}
+				}else{
 					voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
 				}
-			}else{
-				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
 			}
 			
 		}	

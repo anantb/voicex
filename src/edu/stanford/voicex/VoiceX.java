@@ -168,6 +168,9 @@ public class VoiceX{
 		
 	}
 	
+	
+	
+	
 	private Inbox fetchInbox(URL url, String auth) throws Exception{		
 		URLConnection conn = url.openConnection();
 		conn.setRequestProperty( "Authorization", "GoogleLogin auth="+auth);          
@@ -232,7 +235,7 @@ public class VoiceX{
 		public void run() {			
 			while(true){
 				Inbox inbox = VoiceX.this.fetchUnreadSMS();									
-				if(inbox!=null && inbox.getUnreadCounts().getSms() > 0){
+				if(inbox!=null && (inbox.getUnreadCounts().getUnread() > 0)){
 					List<MessageData> msgList = inbox.getMessages().getList();
 					for(int i=0; i<msgList.size(); i++){
 						if(msgList.get(i).isRead() == false){
@@ -241,6 +244,7 @@ public class VoiceX{
 						}
 					}
 				}
+			
 				try{
 					Thread.sleep(5000);
 				}catch(InterruptedException ie){}				

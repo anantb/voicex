@@ -46,7 +46,7 @@ public class MessageData {
 	boolean star;
 	String messageText;
 	String[] labels;
-	String type;
+	int type;
 	String children;
 	
 	public String getId() {
@@ -163,11 +163,11 @@ public class MessageData {
 		this.labels = labels;
 	}
 	
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 	
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 	
