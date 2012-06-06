@@ -40,7 +40,8 @@ public class Alert implements Notifiee{
 	// Replace it with you google account username and password.
 	public static String DEFAULT_USER = "dm9pY2V4LmdpdEBnbWFpbC5jb20=";
 	public static String DEFAULT_PASSWORD = "Vm9pY2VYQEdpdA==";	
-	
+	public static String TEXT_PRE = "Urgent! ";
+	public static String TEXT_MORE = " is in trouble. Please be calm, help is on the way! Also sent to: ";
 	VoiceX voicex;
 	
 	public Alert(){	
@@ -52,29 +53,34 @@ public class Alert implements Notifiee{
 		Debug.print("Got a notification", Debug.VERBOSE);
 		String text = msg.getMessageText().toLowerCase();
 		Debug.print(text, Debug.TERSE);
-		if(msg.getType() == 0){
+		if(msg.getType() == 0 || msg.getType() == 2){
 			Debug.print("call", Debug.VERBOSE);
-			voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
-		}else if(msg.getType() == 10){
+			voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), TEXT_PRE + msg.getDisplayNumber() + TEXT_MORE + Subscription.find(msg.getDisplayNumber()));
+		}else if(msg.getType() == 10 || msg.getType() == 11){
 			if(text.contains("alert subscribe")){
 				String subscription = text.substring(text.indexOf("alert subscribe")+"alert subscribe".length());
 				Debug.print(subscription.trim(), Debug.VERBOSE);
 				Subscription.add(msg.getDisplayNumber(), subscription);
 				Subscription.save();
-				voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "Subscription Successfull. Details: " + subscription);
+				voicex.sendSMS(msg.getDisplayNumber(), "Subscription Successfull. Details: " + subscription);
+			}else if(text.contains("alert get subscription")){
+				voicex.sendSMS(msg.getDisplayNumber(), "Your Subscription: " + Subscription.find(msg.getDisplayNumber()));
 			}else if(text.contains("alert")){
 				String t = text.substring(text.indexOf("alert")+"alert".length());	
 				if(t!=null){
 					try{					
 						int time = Integer.parseInt(t.trim());
 						Debug.print("Delay: " + time, Debug.VERBOSE);
-						voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber(), time*60*1000);
+						voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), TEXT_PRE + msg.getDisplayNumber() + TEXT_MORE + Subscription.find(msg.getDisplayNumber()), time*60*1000);
 					}catch(NumberFormatException nfe){
-						voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
+						voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), TEXT_PRE + msg.getDisplayNumber() + TEXT_MORE + Subscription.find(msg.getDisplayNumber()));
 					}
 				}else{
-					voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), "MUUNGANGO ALERT FROM: " + msg.getDisplayNumber());
+					voicex.sendSMS(Subscription.find(msg.getDisplayNumber()), TEXT_PRE + msg.getDisplayNumber() + TEXT_MORE + Subscription.find(msg.getDisplayNumber()));
 				}
+			}else{
+				//Hack for the demo
+				voicex.sendSMSDelayed(Subscription.find(msg.getDisplayNumber()), TEXT_PRE + msg.getDisplayNumber() + TEXT_MORE + Subscription.find(msg.getDisplayNumber()), 5*60*1000);
 			}
 			
 		}	

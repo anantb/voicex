@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @XmlRootElement
-public class MessageData {
+public class MessageData implements Comparable<MessageData> {
 	String id;
 	String phoneNumber;
 	String displayNumber;
@@ -42,7 +42,7 @@ public class MessageData {
 	String note;
 	boolean isRead;
 	boolean isSpam;
-	boolean isThrash;
+	boolean isTrash;
 	boolean star;
 	String messageText;
 	String[] labels;
@@ -131,12 +131,12 @@ public class MessageData {
 		this.isSpam = isSpam;
 	}
 
-	public boolean isThrash() {
-		return isThrash;
+	public boolean isTrash() {
+		return isTrash;
 	}
 
-	public void setThrash(boolean isThrash) {
-		this.isThrash = isThrash;
+	public void setThrash(boolean isTrash) {
+		this.isTrash = isTrash;
 	}
 
 	public boolean isStar() {
@@ -179,5 +179,9 @@ public class MessageData {
 		this.children = children;
 	}
 	
+	
+	public int compareTo(MessageData d) {
+		return (int)(Long.parseLong(d.startTime) - Long.parseLong(this.startTime)) ;
+	}
 	
 }

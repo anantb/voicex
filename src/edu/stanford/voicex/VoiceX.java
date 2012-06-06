@@ -25,6 +25,8 @@ package edu.stanford.voicex;
 
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,14 +74,36 @@ public class VoiceX{
 	
 	
 	
-	public boolean sendSMS(String number, String text){
-		Debug.print("Sending msg to: "+number, Debug.VERBOSE);
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("phoneNumber", number);		
-		params.put("text", text);
-		params.put("_rnr_se", rnr_se);		
-		return Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
-		//return true;
+	public boolean sendSMS(String subs, String text){
+		Debug.print("The send list is: "+ subs, Debug.VERBOSE);
+		String[] numbers = subs.split(",");
+		
+		int i = 0;
+		while(i< numbers.length){			
+			String number = "";
+			int j = 0;
+			while( j< 4 && i < numbers.length-1){
+				number = number + numbers[i]+",";
+				i++;
+				j++;
+			}
+			if(i == numbers.length-1){
+				number = number + numbers[i];
+				i++;
+			}
+			Debug.print("Sending message to: "+ number, Debug.VERBOSE);
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("phoneNumber", number);		
+			params.put("text", text);
+			params.put("_rnr_se", rnr_se);		
+			Util.doPost(URLConstants.SMS_SEND_URL, params, auth);
+			try{
+				Thread.sleep(5*1000L);
+			}catch(InterruptedException ie){
+				
+			}
+		}
+		return true;
 	}
 	
 	public boolean call(String forwardingNumber, String outgoingNumber){
@@ -237,8 +261,9 @@ public class VoiceX{
 				Inbox inbox = VoiceX.this.fetchUnreadSMS();									
 				if(inbox!=null && (inbox.getUnreadCounts().getUnread() > 0)){
 					List<MessageData> msgList = inbox.getMessages().getList();
+					//Collections.sort(msgList);
 					for(int i=0; i<msgList.size(); i++){
-						if(msgList.get(i).isRead() == false){
+						if(msgList.get(i).isRead() == false && msgList.get(i).isTrash() == false){
 							MessageData msg = msgList.get(i);					
 							notify(msg);	
 						}
