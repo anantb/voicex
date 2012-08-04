@@ -26,10 +26,22 @@ class JMS:
 		if(zipcode==None):
 			zip_code = '00000'
 		else:
-			zip_code = str(zipcode.group())
-		
+			zip_code = str(zipcode.group())		
+				
 		job_id = self.jdb.insert(phone_num, message, zip_code);		
 		sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id), self.token)
+		tokens = re.split(' ', message)
+		print 'tokens: ' + str(tokens)
+		if(tokens != None):
+			for token in tokens:
+				print 'token: ' + token
+				res = self.jdb.search(token)
+				if(res!='No matching result'):
+					to_send = self.jdb.get_subscription(token)
+					print to_send
+					if(to_send!= None):
+						sms(to_send, "New Job Post: " + message +", Job ID: " + str(job_id), self.token)		
+				
 		return
 		
 	def edit(self, msg_data):

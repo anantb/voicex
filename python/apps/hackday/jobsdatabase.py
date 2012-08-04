@@ -21,6 +21,16 @@ class JobsDatabase:
 			self.conn.rollback()
 			print "exception encountered", sys.exc_info()[0]
 		return None
+	
+	def get_subscription(self, keyword):
+		print 'keyword = ' + keyword
+		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
+		row = self.cursor.fetchone()
+		if(row == None):
+			return None
+		else:			
+			return(row[0])
+		
 		
 	def follow(self, keyword, phone_number):
 		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
