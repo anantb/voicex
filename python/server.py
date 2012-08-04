@@ -1,5 +1,6 @@
 from transport.voicex import *
 from transport.login import *
+from apps.hackday.main import *
 import jsonpickle
 
 '''
