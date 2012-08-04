@@ -25,15 +25,18 @@ def start_server():
 	token = login('voicex.git@gmail.com', 'VoiceX@Git')
 	jms = JMS(token)
 	while(True):
-		inbox_raw = fetch_unread_sms(token)
-		print inbox_raw
-		inbox = jsonpickle.decode(inbox_raw)
-		if(inbox['unreadCounts']['unread'] > 0):
-			for msg in inbox['messages']:
-				msg_data = inbox['messages'][msg]	
-				if(not (msg_data['isRead'] or msg_data['isTrash'])):		
-					for n in notifiee:
-						n(msg_data)
+		try:
+			inbox_raw = fetch_unread_sms(token)
+			print inbox_raw
+			inbox = jsonpickle.decode(inbox_raw)
+			if(inbox['unreadCounts']['unread'] > 0):
+				for msg in inbox['messages']:
+					msg_data = inbox['messages'][msg]	
+					if(not (msg_data['isRead'] or msg_data['isTrash'])):		
+						for n in notifiee:
+							n(msg_data)
+		except:
+			pass						
 		time.sleep(1)
 		
 	
