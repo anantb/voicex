@@ -3,6 +3,14 @@ import re
 from jobsdatabase import *
 from transport.voicex import *
 
+
+'''
+@author: Trisha Kothari
+@date: Aug 3, 2012
+
+main entry for the application  -- my first opensource project
+'''
+
 class JMS:
 
 	def __init__(self, token):

@@ -4,6 +4,13 @@ import re
 from xml.etree import ElementTree
 import sys
 
+'''
+@author: Trisha Kothari
+@date: Aug 3, 2012
+
+hackday server database -- my first opensource project
+'''
+
 class JobsDatabase:
 #	conn = MySQLdb.connect(host="mysql.abhardwaj.org", user="_mysql_admin", passwd="JCAT0486", db="in_hackday")
 
