@@ -80,8 +80,8 @@ class JobsDatabase:
 			print "got exception :(", sys.exc_info()[0]
 		self.conn.close()
 		
-jdb = JobsDatabase()
-jdb.insert("2154294019", "nurse needed", '94305')
+#jdb = JobsDatabase()
+#jdb.insert("2154294019", "nurse needed", '94305')
 #jdb.getAll()
 #jdb.getPostFromZipcode( "19104")
 			
