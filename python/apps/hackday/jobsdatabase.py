@@ -29,12 +29,13 @@ class JobsDatabase:
 		try:		
 			if(row == None):
 				print "inserting"
-				self.cursor.execute("INSERT INTO follow_in (keyword, number) VALUES (%s, %s)", (keyword.strip(), phone_number))				
+				self.cursor.execute("INSERT INTO follow_in (keyword, subscription) VALUES (%s, %s)", (keyword.strip(), phone_number))				
 			else:
 				print "updating"
-				subscriptions = row[0]
-				subscriptions.append(','+str(phone_number))
-				self.cursor.execute("UPDATE follow_in SET subscription='%s' WHRE keyword='%s'", (subscription, keyword.strip()))
+				subscription = row[0]
+				new_subscription = subscription + ','+ phone_number
+				print new_subscription
+				self.cursor.execute("UPDATE follow_in SET subscription=%s WHERE keyword=%s", (new_subscription, keyword.strip()))
 			self.conn.commit()
 		except:
 			self.conn.rollback()
