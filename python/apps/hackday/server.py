@@ -14,14 +14,16 @@ hackday server
 
 notifiee = []
 token = None
-jms = JMS()
+jms = None
 def register_notifiee(n):
 	notifiee.append(n)
 
 
 def start_server():
 	global token
+	global jms
 	token = login('voicex.git@gmail.com', 'VoiceX@Git')
+	jms = JMS(token)
 	while(True):
 		inbox_raw = fetch_unread_sms(token)
 		print inbox_raw

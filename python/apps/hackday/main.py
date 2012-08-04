@@ -5,10 +5,10 @@ from transport.voicex import *
 
 class JMS:
     
-    def __init__(self):
+    def __init__(self, token):
         self.jdb = JobsDatabase();
         print "initialized"
-        self.token = login('voicex.git@gmail.com', 'VoiceX@Git')
+        self.token = token
     
     def getHelp(self):
         print "Help ..."
