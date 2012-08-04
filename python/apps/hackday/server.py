@@ -14,6 +14,7 @@ hackday server
 
 notifiee = []
 token = None
+jms = JMS()
 def register_notifiee(n):
 	notifiee.append(n)
 
@@ -39,8 +40,8 @@ def main():
 	
 def msg_new(msg):
 	global token
-	jms = JMS()
-	jms.getType(msg['messageText'])
+	global jms
+	jms.handle(msg)
 	mark_read(msg, token)	
 	delete(msg, token)
 

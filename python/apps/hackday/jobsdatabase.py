@@ -12,9 +12,9 @@ class JobsDatabase:
 		self.cursor = self.conn.cursor()
 		print (self.conn)
 
-	def insert(self, from_number, zipcode, description, job_id):
+	def insert(self, phone_num, blurb, zip_code):
 		try:
-			self.cursor.execute("INSERT INTO job_in VALUES (%s,%s, %s, %s)", (from_number, zipcode, description, job_id))
+			self.cursor.execute("INSERT INTO job_in VALUES (%s,%s, %s)", (phone_num, blurb, zip_code))
 			self.conn.commit()
 			print "inserting values!"
 		except:
@@ -43,7 +43,7 @@ class JobsDatabase:
 	def getPostFromZipcode(self, zipcode_obtained):
 		jobs = list()
 		try:
-			var = self.cursor.execute("""SELECT description, job_id FROM job_in WHERE zipcode=%s LIMIT 3""", (zipcode_obtained))
+			var = self.cursor.execute("""SELECT post, job_id FROM job_in WHERE zip_code=%s LIMIT 3""", (zipcode_obtained))
 			for row in self.cursor:
 				jobs.append("Job Id:" + str(row[1]) +  " looking for: " + row[0])
 				print row[1]
