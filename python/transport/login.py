@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import httplib, urllib, re, os
 from constants import *
 '''
@@ -14,7 +13,6 @@ source = "voicex";
 def login(email, password):
 	tokens = load_tokens()
 	if(tokens !=None):
-		print tokens
 		t = tokens.split('|')
 		print "loaded tokens"
 		return t[0], t[1]
@@ -77,9 +75,3 @@ def login_reset(email, password):
 			print rnr_se
 	write_tokens(auth, rnr_se)
 	return auth, rnr_se
-
-def main():
-	login('voicex.git@gmail.com', 'VoiceX@Git')
-
-if __name__ == "__main__":
-    main()
