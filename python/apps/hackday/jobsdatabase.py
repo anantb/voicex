@@ -40,16 +40,11 @@ class JobsDatabase:
 			print "excpeiton encountered in deletion", sys.exc_info()[0]
 
 	def getPostFromId(self, job_id):
-		stmt = "SELECT zip_code, blurb FROM job_in WHERE job_id='"+str(job_id)+"'"
-		print stmt
+		stmt = "SELECT blurb FROM job_in WHERE job_id='"+str(job_id)+"'"
 		try:
-			var = self.cursor.execute(stmt)
-			
-			print var
-			print "got post from id"
-			for row in self.cursor:
-							print row
-			
+			var = self.cursor.execute(stmt)			
+			row = self.cursor.fetchone()
+			return row[0]			
 		except:
 			print "got exception from getPostFromId", sys.exc_info()[0]
 

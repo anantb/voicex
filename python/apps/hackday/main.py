@@ -18,8 +18,7 @@ class JMS:
 		phone_num = msg_data['phoneNumber']
 		message = msg[msg.find("#post") + len("#post") : ].strip()
 		zipcode = re.search("\d{5}", message)
-		job_description = msg[msg.find(str(zipcode.group())) + 5 : ].strip()
-		job_id = self.jdb.insert(phone_num, job_description, str(zipcode.group()));		
+		job_id = self.jdb.insert(phone_num, message, str(zipcode.group()));		
 		sms(phone_num, 'success! job post_id is: ' + str(job_id), self.token)
 
     def edit(self, msg_data):
@@ -53,10 +52,8 @@ class JMS:
         msg = msg_data['messageText']
         phone_num = msg_data['phoneNumber']
         job_id = msg[msg.find("#view") + len("#view") : ].strip()
-        print job_id
-        x = self.jdb.getPostFromId(int(job_id))				
-        print x
-        sms(phone_num, "success", self.token)
+        blurb = self.jdb.getPostFromId(int(job_id))
+        sms(phone_num, blurb, self.token)
 
     def search(self, msg_data):
         msg = msg_data['messageText']
