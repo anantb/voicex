@@ -14,13 +14,13 @@ class JobsDatabase:
 
 	def insert(self, phone_num, blurb, zip_code):
 		try:
-			self.cursor.execute("INSERT INTO job_in (phone_num, blurb, zip_code) VALUES (%s,%s,%s)", (phone_num, blurb, zip_code))
+			self.cursor.execute("INSERT INTO job_in (phone_num, blurb, zip_code) VALUES (%s, %s, %s)", (phone_num, blurb, zip_code))			
 			self.conn.commit()
-			print "inserting values!"
+			return self.cursor.lastrowid
 		except:
 			self.conn.rollback()
 			print "exception encountered", sys.exc_info()[0]
-#		self.conn.close()
+		return None
 		
 	def getAll(self):
 		self.cursor.execute("""SELECT * FROM job_in""")
@@ -78,8 +78,8 @@ class JobsDatabase:
 			print "got exception :(", sys.exc_info()[0]
 		self.conn.close()
 		
-#jdb = JobsDatabase()
-#jdb.insert("2154294019", "19104", "nurse needed", "999989100")
+jdb = JobsDatabase()
+jdb.insert("2154294019", "nurse needed", '94305')
 #jdb.getAll()
 #jdb.getPostFromZipcode( "19104")
 			
