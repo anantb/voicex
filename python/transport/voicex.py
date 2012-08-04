@@ -2,6 +2,7 @@
 import httplib, urllib, re, os
 from constants import *
 from login import *
+from bs4 import BeautifulSoup
 
 '''
 @author: anant bhardwaj
@@ -20,24 +21,35 @@ def http_post(url, params, auth):
 	res = conn.getresponse().read()
 	return res
 	
-def sms(to_number, text, auth, rnr_se):
+def sms(to_number, text, token):
 	print "Sending message to: "+ to_number;
-	params = {'phoneNumber': to_number, 'text':text, '_rnr_se':rnr_se}
-	print http_post(SMS_SEND_URL, params, auth)
+	params = {'phoneNumber': to_number, 'text':text, '_rnr_se':token['rnr_se']}
+	print http_post(SMS_SEND_URL, params, token['auth'])
 
-def fetch_inbox(url, auth):
+def fetch_unread_sms(token, url = SMS_UNREAD_URL):
+	return fetch_inbox(token, url = url)
+
+
+def fetch_all_sms(token, url = SMS_URL):
+	return fetch_inbox(token, url = url)
+
+def fetch_inbox(token, url = INBOX_URL):
 	conn = httplib.HTTPSConnection("www.google.com")
 	conn.putrequest("GET", url)
-	conn.putheader( "Authorization", "GoogleLogin auth="+auth)
+	conn.putheader( "Authorization", "GoogleLogin auth="+token['auth'])
 	conn.endheaders()
 	res = conn.getresponse().read()
-	print res
+	soup = BeautifulSoup(res)
+	msg_data = soup.find('json').find(text = True)
+	print msg_data
 	
 
 def main():	
-	auth, rnr_se = login('voicex.git@gmail.com', 'VoiceX@Git')	
-	fetch_inbox(INBOX_URL, auth)
-	#sms('2134530488', 'hello world')
+	token = login('voicex.git@gmail.com', 'VoiceX@Git')	
+	fetch_inbox(token)
+	fetch_all_sms(token)
+	fetch_unread_sms(token)
+	sms('2134530488', 'hello world', token)
 
 if __name__ == "__main__":
     main()

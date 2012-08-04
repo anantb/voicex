@@ -15,7 +15,7 @@ def login(email, password):
 	if(tokens !=None):
 		t = tokens.split('|')
 		print "loaded tokens"
-		return t[0], t[1]
+		return {'auth':t[0], 'rnr_se':t[1]}
 		
 	else:
 		print "login reset"
