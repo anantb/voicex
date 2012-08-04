@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import httplib, urllib, re, os
+import httplib, urllib, re, os, time
 from constants import *
 from login import *
 from bs4 import BeautifulSoup
@@ -41,15 +41,12 @@ def fetch_inbox(token, url = INBOX_URL):
 	res = conn.getresponse().read()
 	soup = BeautifulSoup(res)
 	msg_data = soup.find('json').find(text = True)
-	print msg_data
+	return str(msg_data)
 	
 
 def main():	
 	token = login('voicex.git@gmail.com', 'VoiceX@Git')	
-	fetch_inbox(token)
-	fetch_all_sms(token)
-	fetch_unread_sms(token)
-	sms('2134530488', 'hello world', token)
+	#sms('2134530488', 'hello world', token)
 
 if __name__ == "__main__":
     main()
