@@ -37,7 +37,9 @@ def main():
 	
 def msg_new(msg):
 	global token
-	mark_read(msg, token)
+	jms = JMS()
+	jms.getType(msg['messageText'])
+	mark_read(msg, token)	
 	delete(msg, token)
 
 
