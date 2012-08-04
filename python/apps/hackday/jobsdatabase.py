@@ -25,11 +25,15 @@ class JobsDatabase:
 	def follow(self, keyword, phone_number):
 		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
 		row = self.cursor.fetchone()
+		print "here..."
 		try:		
 			if(row == None):
+				print "inserting"
 				self.cursor.execute("INSERT INTO follow_in (keyword, number) VALUES (%s, %s)", (keyword.strip(), phone_number))				
 			else:
-				subscriptions.appent(','+str(phone_num))
+				print "updating"
+				subscriptions = row[0]
+				subscriptions.append(','+str(phone_number))
 				self.cursor.execute("UPDATE follow_in SET subscription='%s' WHRE keyword='%s'", (subscription, keyword.strip()))
 			self.conn.commit()
 		except:
