@@ -1,3 +1,10 @@
+'''
+@author: anant bhardwaj
+@date: Aug 3, 2012
+
+voicex URL constants
+'''
+
 LOGIN_URL = "/accounts/ClientLogin";	
 ROOT_URL = "/voice/";	
 INBOX_URL = "/voice/inbox/recent/inbox/";

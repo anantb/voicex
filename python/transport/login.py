@@ -19,8 +19,8 @@ def login(email, password):
 		
 	else:
 		print "login reset"
-		auth, rnr_se = login_reset(email, password)
-	return auth, rnr_se
+		tokens = login_reset(email, password)
+	return tokens
 	
 def load_tokens():
 	try:	
@@ -74,4 +74,4 @@ def login_reset(email, password):
 			rnr_se = rnr_se.replace("'",'').strip()
 			print rnr_se
 	write_tokens(auth, rnr_se)
-	return auth, rnr_se
+	return {'auth':auth, 'rnr_se':rnr_se}

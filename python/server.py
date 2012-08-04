@@ -1,8 +1,16 @@
-from voicex import *
-from login import *
+from transport.voicex import *
+from transport.login import *
 import jsonpickle
 
+'''
+@author: anant bhardwaj
+@date: Aug 3, 2012
+
+voicex server
+'''
+
 notifiee = []
+token = None
 def register_notifiee(n):
 	notifiee.append(n)
 
@@ -23,7 +31,6 @@ def main():
 	start_server()
 	
 def msg_new(msg_data):
-	token = login('voicex.git@gmail.com', 'VoiceX@Git')
 	for msg in msg_data:
 		text = msg_data[msg]['messageText']
 		phone_number = msg_data[msg]['phoneNumber']
