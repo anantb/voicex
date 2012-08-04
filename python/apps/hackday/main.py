@@ -54,8 +54,7 @@ class JMS:
         phone_num = msg_data['phoneNumber']
         job_id = msg[msg.find("#view") + len("#view") : ].strip()
         print job_id
-        x = self.jdb.getPostFromId(int(job_id))
-				
+        x = self.jdb.getPostFromId(int(job_id))				
         print x
         sms(phone_num, "success", self.token)
 
@@ -75,7 +74,10 @@ class JMS:
         job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
         print "job id obtained is:", job_id, "with job_description", job_description
         sms(phone_num, 'Succesfully applied for job! ', self.token)
-
+        return_no = self.jdb.apply(int(job_id))
+        print return_no
+        sms(return_no, job_description, self.token)
+        
 
     def handle(self, msg_data):
 		msg = msg_data['messageText']
