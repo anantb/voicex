@@ -14,7 +14,7 @@ class JobsDatabase:
 
 	def insert(self, phone_num, blurb, zip_code):
 		try:
-			self.cursor.execute("INSERT INTO job_in VALUES (%s,%s, %s)", (phone_num, blurb, zip_code))
+			self.cursor.execute("INSERT INTO job_in (phone_num, blurb, zip_code) VALUES (%s,%s,%s)", (phone_num, blurb, zip_code))
 			self.conn.commit()
 			print "inserting values!"
 		except:
