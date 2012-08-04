@@ -18,9 +18,9 @@ class JMS:
 		phone_num = msg_data['phoneNumber']
 		message = msg[msg.find("#post") + len("#post") : ].strip()
 		zipcode = re.search("\d{5}", message)
-		if(zipcode!=None)
+		if(zipcode!=None):
 			zip_code = '00000'
-		else
+		else:
 			zip_code = str(zipcode.group())
 		
 		job_id = self.jdb.insert(phone_num, message, zip_code);		
