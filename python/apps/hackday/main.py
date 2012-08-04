@@ -20,7 +20,7 @@ class JMS:
 		zipcode = re.search("\d{5}", message)
 		job_description = msg[msg.find(str(zipcode.group())) + 5 : ].strip()
 		job_id = self.jdb.insert(phone_num, job_description, str(zipcode.group()));		
-		sms(phone_num, 'success! job post_id is: ', self.token)
+		sms(phone_num, 'success! job post_id is: ' + job_id, self.token)
 
     def edit(self, msg_data):
 		msg = msg_data['messageText']
