@@ -22,6 +22,23 @@ class JobsDatabase:
 			print "exception encountered", sys.exc_info()[0]
 		return None
 		
+	def follow(self, keyword, phone_number):
+		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
+		row = self.cursor.fetchone()
+		try:		
+			if(row == None):
+				self.cursor.execute("INSERT INTO follow_in (keyword, number) VALUES (%s, %s)", (keyword.strip(), phone_number))				
+			else:
+				subscriptions.appent(','+str(phone_num))
+				self.cursor.execute("UPDATE follow_in SET subscription='%s' WHRE keyword='%s'", (subscription, keyword.strip()))
+			self.conn.commit()
+		except:
+			self.conn.rollback()
+			print "exception encountered", sys.exc_info()[0]
+			
+			
+		
+		
 	def getAll(self):
 		self.cursor.execute("""SELECT * FROM job_in""")
 		data = self.cursor.fetchall()

@@ -23,6 +23,14 @@ class JMS:
                     sms(phone_num, "Text #post zipcode jobdescription", self.token)
                     return
 		zipcode = re.search("\d{5}", message)
+		if(zipcode!=None):
+			zip_code = '00000'
+		else:
+			zip_code = str(zipcode.group())
+		
+		job_id = self.jdb.insert(phone_num, message, zip_code);		
+		sms(phone_num, 'success! job post_id is: ' + str(job_id), self.token)
+
 		job_id = self.jdb.insert(phone_num, message, str(zipcode.group()));		
 		sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id), self.token)
 		return
@@ -84,7 +92,15 @@ class JMS:
         x = self.jdb.search(search_params)
         print x
         sms(phone_num, x, self.token)
-        return
+	
+	def follow(self, msg_data):
+		msg = msg_data['messageText']
+		phone_num = msg_data['phoneNumber']
+		keywords = msg[msg.find("#follow") + len("#follow") : ].strip()
+		keywords = re.split(',', keywords)
+		for keyword in keywords:
+			x = self.jdb.follow(keyword, phone_num)
+		sms(phone_num, 'follow entry added successfully', self.token)
 
     def apply(self, msg_data):
         msg = msg_data['messageText']
@@ -125,6 +141,8 @@ class JMS:
 			self.search (msg_data)
 		elif "#apply" in msg:
 			self.apply(msg_data)
+		elif "#follow" in msg:
+			self.follow(msg_data)
 		else:
 			self.getHelp(msg_data)
 
