@@ -59,7 +59,10 @@ class JMS:
         msg = msg_data['messageText']
         phone_num = msg_data['phoneNumber']
         search_params = msg[msg.find("#search") + len("#search") : ].strip()
-        print search_params
+        x = self.jdb.search(search_params)
+        print x
+        sms(phone_num, x, self.token)
+
 
     def apply(self, msg_data):
         msg = msg_data['messageText']
