@@ -32,13 +32,36 @@ class JobsDatabase:
 
 	def delete(self, job_id):
 		try:
-			self.cursor.execute("""DELETE FROM job_in WHERE job_id=%s""", (job_id))
+			self.cursor.execute("DELETE FROM job_in WHERE job_id='"+str(job_id)+"'")
 			self.cursor = self.conn.cursor()
 			print "deleting from table "
 		except:
 			self.conn.rollback()
-			print "excpeiton encountered in deletion"
+			print "excpeiton encountered in deletion", sys.exc_info()[0]
 
+	def getPostFromId(self, job_id):
+		stmt = "SELECT zip_code, blurb FROM job_in WHERE job_id='"+str(job_id)+"'"
+		print stmt
+		try:
+			var = self.cursor.execute(stmt)
+			
+			print var
+			print "got post from id"
+			for row in self.cursor:
+							print row
+			
+		except:
+			print "got exception from getPostFromId", sys.exc_info()[0]
+
+	def apply(self, job_id):
+			stmt = "SELECT phone_num FROM job_in WHERE job_id='"+str(job_id)+"'"
+			try:
+				var = self.cursor.execute(stmt)
+			 	print var
+				for row in self.cursor:
+					print row
+			except:
+				print "got exception from apply", sys.exc_info()[0]
 			
 	def getPostFromZipcode(self, zipcode_obtained):
 		jobs = list()

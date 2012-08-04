@@ -41,25 +41,41 @@ class JMS:
     
     def delete(self, msg_data):
 		msg = msg_data['messageText']
+		phone_num = msg_data['phoneNumber']
 		message_array = msg.split(" ")
 		print message_array
 		job_id = message_array[1]
 		self.jdb.delete(str(job_id))
-		return "Message succesfully deleted"
+		sms(phone_num, 'Message successfully deleted! ', self.token)
+		
 				
     def view(self, msg_data):
-		msg = msg_data['messageText']
-		print msg
+        msg = msg_data['messageText']
+        phone_num = msg_data['phoneNumber']
+        job_id = msg[msg.find("#view") + len("#view") : ].strip()
+        print job_id
+        x = self.jdb.getPostFromId(int(job_id))
+				
+        print x
+        sms(phone_num, "success", self.token)
 
     def search(self, msg_data):
-		msg = msg_data['messageText']
-		search_params = msg[msg.find("#search") + len("#search") : ].strip()
-		print search_params
+        msg = msg_data['messageText']
+        phone_num = msg_data['phoneNumber']
+        search_params = msg[msg.find("#search") + len("#search") : ].strip()
+        print search_params
 
     def apply(self, msg_data):
-		msg = msg_data['messageText']
-		job_id = msg[msg.find("#apply") + len("#apply") : ].strip()
-		return job_id
+        msg = msg_data['messageText']
+        phone_num = msg_data['phoneNumber']
+        message = msg[msg.find("#apply") + len("#apply") : ].strip()
+        message_array = msg.split(" ")
+        print message_array
+        job_id = message_array[1]
+        job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
+        print "job id obtained is:", job_id, "with job_description", job_description
+        sms(phone_num, 'Succesfully applied for job! ', self.token)
+
 
     def handle(self, msg_data):
 		msg = msg_data['messageText']
@@ -84,3 +100,7 @@ class JMS:
 			self.getHelp()
 
 
+#jms = JMS()
+#jms.getType("#view 19")
+#jms.defineMsg("19104 #nurse")
+#jms.getType(
