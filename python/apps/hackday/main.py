@@ -119,7 +119,7 @@ class JMS:
         return_no = self.jdb.apply(int(job_id))
         print return_no
         sms(return_no, job_description, self.token)
-        xreturn
+        return
         
 
     def handle(self, msg_data):
