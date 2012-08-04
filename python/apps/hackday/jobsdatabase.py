@@ -55,11 +55,13 @@ class JobsDatabase:
 
 	def apply(self, job_id):
 			stmt = "SELECT phone_num FROM job_in WHERE job_id='"+str(job_id)+"'"
+			print stmt
 			try:
 				var = self.cursor.execute(stmt)
 			 	print var
 				for row in self.cursor:
-					print row
+					x= row[0]
+				return x
 			except:
 				print "got exception from apply", sys.exc_info()[0]
 			
