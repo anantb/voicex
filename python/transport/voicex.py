@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import httplib, urllib, re, os, time
 from constants import *
 from login import *
@@ -25,6 +24,36 @@ def sms(to_number, text, token):
 	print "Sending message to: "+ to_number;
 	params = {'phoneNumber': to_number, 'text':text, '_rnr_se':token['rnr_se']}
 	print http_post(SMS_SEND_URL, params, token['auth'])
+	
+
+def call(forwardingNumber, outgoingNumber, token):
+	print "Initiating call to: "+outgoingNumber + ", through: " + forwardingNumber
+	params = {'forwardingNumber': forwardingNumber, 
+			  'outgoingNumber':outgoingNumber, 
+			  'phoneType':'1',
+			  'subscriberNumber':'undefined',
+			  'remember' : '0',
+			  '_rnr_se':token['rnr_se']}
+	print http_post(CALL_INITIATE_URL, params, token['auth'])
+	
+
+def mark_read(msg, token):
+	print "Marking Msg as Read: "+ msg['messageText']
+	params = {'messages': msg['id'], 'read':'1', '_rnr_se':token['rnr_se']}
+	print http_post(MSG_MARK_READ_URL, params, token['auth'])
+
+
+def mark_unread(msg, token):
+	print "Marking Msg as UnRead: "+ msg['messageText']
+	params = {'messages': msg['id'], 'read':'0', '_rnr_se':token['rnr_se']}
+	print http_post(MSG_MARK_READ_URL, params, token['auth'])
+
+	
+def delete(msg, token):
+	print "Deleting Msg: "+ msg['messageText']
+	params = {'messages': msg['id'], 'trash':'1', '_rnr_se':token['rnr_se']}
+	print http_post(MSG_MARK_READ_URL, params, token['auth'])	
+	
 
 def fetch_unread_sms(token, url = SMS_UNREAD_URL):
 	return fetch_inbox(token, url = url)
@@ -42,11 +71,3 @@ def fetch_inbox(token, url = INBOX_URL):
 	soup = BeautifulSoup(res)
 	msg_data = soup.find('json').find(text = True)
 	return str(msg_data)
-	
-
-def main():	
-	token = login('voicex.git@gmail.com', 'VoiceX@Git')	
-	#sms('2134530488', 'hello world', token)
-
-if __name__ == "__main__":
-    main()

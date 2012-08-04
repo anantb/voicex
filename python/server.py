@@ -16,26 +16,28 @@ def register_notifiee(n):
 
 
 def start_server():
+	global token
 	token = login('voicex.git@gmail.com', 'VoiceX@Git')
 	while(True):
-		msg_data = fetch_unread_sms(token)
-		print msg_data
-		messages = jsonpickle.decode(msg_data)
-		if(messages['unreadCounts']['sms'] > 0):		
-			for n in notifiee:
-				n(messages['messages'])
+		inbox_raw = fetch_unread_sms(token)
+		print inbox_raw
+		inbox = jsonpickle.decode(inbox_raw)
+		if(inbox['unreadCounts']['unread'] > 0):
+			for msg in inbox['messages']:
+				msg_data = inbox['messages'][msg]	
+				if(not (msg_data['isRead'] or msg_data['isTrash'])):		
+					for n in notifiee:
+						n(msg_data)
 		time.sleep(1)
 		
 	
 def main():	
 	start_server()
 	
-def msg_new(msg_data):
-	for msg in msg_data:
-		text = msg_data[msg]['messageText']
-		phone_number = msg_data[msg]['phoneNumber']
-		print ('got %s from %s' % (text, phone_number))
-		sms(phone_number, "got it", token)
+def msg_new(msg):
+	global token
+	mark_read(msg, token)
+	delete(msg, token)
 
 
 register_notifiee(msg_new)
