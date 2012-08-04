@@ -27,8 +27,6 @@ class JMS:
 			zip_code = '00000'
 		else:
 			zip_code = str(zipcode.group())
-	
-		mesg = message[message.find(zipcode.group()) + 5 :].strip()
 		
 		job_id = self.jdb.insert(phone_num, message, zip_code);		
 		sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id), self.token)
@@ -97,9 +95,9 @@ class JMS:
 			help_text = "Text #search keywords; Text for more information:#apply JOBID"
 			sms(phone_num, help_text, self.token)
 			return
-		x = self.jdb.search(search_params)
-		print x
-		sms(phone_num, x, self.token)
+		res = self.jdb.search(search_params)
+		print res
+		sms(phone_num, res, self.token)
 
 	def apply(self, msg_data):
 		msg = msg_data['messageText']

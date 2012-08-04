@@ -63,16 +63,24 @@ class JobsDatabase:
 
 
 	def search(self, keyword):
-		stmt = "SELECT zip_code, blurb, job_id FROM job_in WHERE MATCH (blurb) AGAINST('"+ keyword+"') LIMIT 3"
+		stmt = "SELECT blurb, job_id FROM job_in WHERE MATCH (blurb) AGAINST('"+ keyword+"') LIMIT 3"
 		print stmt
-		#stmt = "SELECT job_id, blurb, zip_code FROM job_in WHERE MATCH (zip_code, blurb) AGAINST('"+str(key_word)"')"
 		try:
 			var = self.cursor.execute(stmt)
 			print var
 			data = self.cursor.fetchall()
-			return data
+			res = ""
+			for d in data:
+				print d
+				res = res + str(d[0]) + ', job_id ' + str(d[1])
+				res = res + '\n'
+				print res
+			if(res==""):
+				res = 'No matching result'
+			return res
 		except:
 			print "exception encountered in search", sys.exc_info()[0]
+			return 'No matching result'
 
 	def delete(self, job_id):
 		try:
