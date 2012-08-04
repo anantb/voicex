@@ -39,7 +39,16 @@ class JobsDatabase:
 		except:
 			self.conn.rollback()
 			print "exception encountered", sys.exc_info()[0]
-			
+	
+	def update(self, job_id, zip_code, msg):
+		stmt = "UPDATE job_in SET zip_code = " +zip_code+ ", blurb = " +msg+ "WHERE job_id = " + job_id
+		print stmt
+		try:
+			var = self.cursor.execute(stmt)
+			print var
+		except:
+			print "exception encountered in search", sys.exc_info()[0]
+		
 			
 		
 		

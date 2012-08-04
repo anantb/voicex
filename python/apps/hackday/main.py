@@ -23,15 +23,14 @@ class JMS:
 			sms(phone_num, "Text #post zipcode jobdescription", self.token)
 			return
 		zipcode = re.search("\d{5}", message)
-		if(zipcode!=None):
+		if(zipcode==None):
 			zip_code = '00000'
 		else:
 			zip_code = str(zipcode.group())
+	
+		mesg = message[message.find(zipcode.group()) + 5 :].strip()
 		
 		job_id = self.jdb.insert(phone_num, message, zip_code);		
-		sms(phone_num, 'success! job post_id is: ' + str(job_id), self.token)
-
-		job_id = self.jdb.insert(phone_num, message, str(zipcode.group()));		
 		sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id), self.token)
 		return
 		
@@ -46,12 +45,21 @@ class JMS:
 		print message_array
 		job_id = message_array[1]
 		job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
-		self.jdb.delete(str(job_id))
-		job_description =  "#post " + job_description
-		self.post(job_description)
+		zipcode = re.search("\d{5}", job_description)
+		print zipcode
+
+
+		if(zipcode==None):
+			zip_code = '00000'
+		else:
+			zip_code = str(zipcode.group())
+		sms(phone_num, 'success! Your job: ' + str(job_id) + "has been updated!:", self.token)
+		mesg = msg[msg.find(str(zipcode.group())) + 5 :].strip()
+		self.jdb.update(job_id, zip_code, mesg);	
+				
 		print job_id
 		print job_description
-		print message
+		print zip_code
 		sms(phone_num, 'Job ' + str(job_id) + "has been succesfully updated", self.token)
 		
 
