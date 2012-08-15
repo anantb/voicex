@@ -31,13 +31,13 @@ from bs4 import BeautifulSoup
 @author: anant bhardwaj
 @date: Aug 3, 2012
 
-voicex APIs
+voicex public APIs
 '''	
 class VoiceX:
-	def __init__(self, email, password, server = False):
+	def __init__(self, email, password, server = False, callback = None):
 		self.token = login(email, password)
-		self.notifiee = []
-		if(server == True):
+		self.callback = callback
+		if(server == True and callback):
 			t = threading.Thread(target=self.run_server())
 			t.daemon = True
 			t.start()
@@ -93,13 +93,7 @@ class VoiceX:
 		soup = BeautifulSoup(res)
 		msg_data = soup.find('json').find(text = True)
 		return str(msg_data)
-		
-	def register_notifiee(self, notifie):
-		self.notifiee.append(notifie)
-	
-	def notify(msg_data):
-		for notifie in self.notifiee:
-			notifie(msg_data)
+			
 		
 	def run_server(self):
 		while(True):		
@@ -111,7 +105,7 @@ class VoiceX:
 					for msg in inbox['messages']:
 						msg_data = inbox['messages'][msg]	
 						if(not (msg_data['isRead'] or msg_data['isTrash'])):
-							self.notify(msg_data)					
+							self.callback(msg_data)				
 			except:
 				pass
 			time.sleep(1)

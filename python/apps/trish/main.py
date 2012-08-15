@@ -31,13 +31,12 @@ from transport.voicex import *
 @author: Trisha Kothari
 @date: Aug 3, 2012
 
-main entry for the application  -- my first opensource project
+Entry point for Trish
 '''
 
 class Trish:
 	def __init__(self, email, password):		
-		self.v = VoiceX(email, password, server=True)
-		self.v.register_notifiee(self.msg_new)
+		self.v = VoiceX(email, password, server=True, callback = self.msg_new)
 		self.mc = ModelController()
 		print "initialized"
 
