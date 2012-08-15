@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import time, threading
+import time, threading, sys, json
 from constants import *
 from login import *
 from util import *
@@ -89,26 +89,43 @@ class VoiceX:
 		conn.putrequest("GET", url)
 		conn.putheader( "Authorization", "GoogleLogin auth="+self.token['auth'])
 		conn.endheaders()
-		res = conn.getresponse().read()
-		soup = BeautifulSoup(res)
-		msg_data = soup.find('json').find(text = True)
-		return str(msg_data)
-			
+		page = conn.getresponse().read()
+		soup = BeautifulSoup(page)
+		meta_data = soup.find('json').find(text = True).strip()
+		return str(meta_data), page
+	
+	def process(self, meta, page):
+		res = re.search(r'<html>(.*?)</html>', page, re.DOTALL)
+		body = res.group()
+		body = body.strip().lstrip('<html>').rstrip('</html>').strip().lstrip("<![CDATA[").rstrip("]]>").strip()
+		soup = BeautifulSoup(body)
+		msg_thread = soup.find('div', {'id': meta['id']})
+		messages = msg_thread.findAll('div', {'class' : 'gc-message-sms-row'})
+		return (messages[-1]
 		
 	def run_server(self):
 		while(True):		
-			try:
-				inbox_raw = self.fetch_unread_sms()
-				print inbox_raw
-				inbox = jsonpickle.decode(inbox_raw)
-				if(inbox['unreadCounts']['unread'] > 0):
-					for msg in inbox['messages']:
-						msg_data = inbox['messages'][msg]	
-						if(not (msg_data['isRead'] or msg_data['isTrash'])):
-							self.callback(msg_data)				
+			try:				
+				meta_data, page = self.fetch_unread_sms()				
+				inbox = json.loads(meta_data)
+				if(inbox['unreadCounts']['sms'] > 0):
+					for msg in inbox['messages']:						
+						if(not (inbox['messages'][msg]['isRead'] or inbox['messages'][msg]['isTrash'])):							
+							self.process(inbox['messages'][msg], page)
+							self.callback(msg)						
 			except:
-				pass
+				print sys.exc_info()
+			print "========================================"
 			time.sleep(1)
+			
+def main():	
+	VoiceX('voicex.git@gmail.com', 'VoiceX@Git', server=True, callback = msg_new)
+
+def msg_new(msg):
+	pass
+
+if __name__ == "__main__":
+	main()
 	
 	
 					
