@@ -21,8 +21,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os
-import re
+import os, sys, re
+sys.path.append(os.getcwd()+"/../..")
 from jobsdatabase import *
 from transport.voicex import *
 
@@ -35,10 +35,11 @@ main entry for the application  -- my first opensource project
 '''
 
 class JMS:
-	def __init__(self, v):
+	def __init__(self, email, password):		
+		self.v = VoiceX(email, password)
+		self.v.register_notifiee(self.msg_new)
 		self.jdb = JobsDatabase();
 		print "initialized"
-		self.v = v
 
 	def getHelp(self, msg_data):
 		phone_num = msg_data['phoneNumber']
@@ -193,9 +194,18 @@ class JMS:
 			self.follow(msg_data)
 		else:
 			self.getHelp(msg_data)
+	
+	
+	def msg_new(msg):
+		self.handle(msg)
+		slef.v.mark_read(msg)	
+		self.v.delete(msg)
 
+def main():	
+	jms = JMS('voicex.git@gmail.com', 'VoiceX@Git')
 
-#jms = JMS()
-#jms.getType("#view 19")
-#jms.defineMsg("19104 #nurse")
-#jms.getType(
+if __name__ == "__main__":
+    main()
+	
+	
+
