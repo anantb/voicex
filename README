@@ -1,0 +1,4 @@
+VoiceX is an open-source library to provide an infrastructure and a rich set of interactions for prototyping voice/sms based applications. It uses Google Voice for the real communication.
+
+The VoiceX SDK is available in Java and Python. Please see the respective folders for details.
+
