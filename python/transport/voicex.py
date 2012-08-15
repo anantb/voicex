@@ -21,8 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import time
-from threading import Thread
+import time, threading
 from constants import *
 from login import *
 from util import *
@@ -35,10 +34,13 @@ from bs4 import BeautifulSoup
 voicex APIs
 '''	
 class VoiceX:
-	def __init__(self, email, password):
+	def __init__(self, email, password, server = False):
 		self.token = login(email, password)
 		self.notifiee = []
-		self.start_server()
+		if(server == True):
+			t = threading.Thread(target=self.run_server())
+			t.daemon = True
+			t.start()
 	
 	def sms(self, to_number, text):
 		print "Sending message to: "+ to_number;
@@ -99,18 +101,20 @@ class VoiceX:
 		for notifie in self.notifiee:
 			notifie(msg_data)
 		
-	def start_server(self):		
-		try:
-			inbox_raw = self.fetch_unread_sms()
-			print inbox_raw
-			inbox = jsonpickle.decode(inbox_raw)
-			if(inbox['unreadCounts']['unread'] > 0):
-				for msg in inbox['messages']:
-					msg_data = inbox['messages'][msg]	
-					if(not (msg_data['isRead'] or msg_data['isTrash'])):
-						self.notify(msg_data)					
-		except:
-			pass
+	def run_server(self):
+		while(True):		
+			try:
+				inbox_raw = self.fetch_unread_sms()
+				print inbox_raw
+				inbox = jsonpickle.decode(inbox_raw)
+				if(inbox['unreadCounts']['unread'] > 0):
+					for msg in inbox['messages']:
+						msg_data = inbox['messages'][msg]	
+						if(not (msg_data['isRead'] or msg_data['isTrash'])):
+							self.notify(msg_data)					
+			except:
+				pass
+			time.sleep(1)
 	
 	
 					

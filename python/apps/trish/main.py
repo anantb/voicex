@@ -36,7 +36,7 @@ main entry for the application  -- my first opensource project
 
 class JMS:
 	def __init__(self, email, password):		
-		self.v = VoiceX(email, password)
+		self.v = VoiceX(email, password, server=True)
 		self.v.register_notifiee(self.msg_new)
 		self.jdb = JobsDatabase();
 		print "initialized"
