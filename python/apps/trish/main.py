@@ -195,10 +195,9 @@ class Trish:
 			self.getHelp(msg_data)
 	
 	
-	def msg_new(msg):
+	def msg_new(self, msg):
 		self.handle(msg)
-		self.v.mark_read(msg)	
-		self.v.delete(msg)
+		self.v.mark_read(msg)
 
 def main():	
 	Trish('voicex.git@gmail.com', 'VoiceX@Git')

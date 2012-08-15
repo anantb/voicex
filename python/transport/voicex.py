@@ -101,7 +101,9 @@ class VoiceX:
 		soup = BeautifulSoup(body)
 		msg_thread = soup.find('div', {'id': meta['id']})
 		messages = msg_thread.findAll('div', {'class' : 'gc-message-sms-row'})
-		return (messages[-1]
+		phone_num = messages[-1].find('span', {'class' : 'gc-message-sms-from'}).find(text=True).strip().rstrip(':').strip()
+		text = messages[-1].find('span', {'class' : 'gc-message-sms-text'}).find(text=True).strip()
+		return {'id':meta['id'], 'messageText': text, 'phoneNumber': phone_num}
 		
 	def run_server(self):
 		while(True):		
@@ -111,18 +113,26 @@ class VoiceX:
 				if(inbox['unreadCounts']['sms'] > 0):
 					for msg in inbox['messages']:						
 						if(not (inbox['messages'][msg]['isRead'] or inbox['messages'][msg]['isTrash'])):							
-							self.process(inbox['messages'][msg], page)
-							self.callback(msg)						
+							m = self.process(inbox['messages'][msg], page)
+							print m
+							self.callback(m)						
 			except:
 				print sys.exc_info()
-			print "========================================"
 			time.sleep(1)
-			
-def main():	
-	VoiceX('voicex.git@gmail.com', 'VoiceX@Git', server=True, callback = msg_new)
 
-def msg_new(msg):
-	pass
+class TestClient:
+	def __init__(self, email, password):		
+		self.v = VoiceX(email, password, server=True, callback = self.msg_new)
+		print "initialized"
+		
+	def msg_new(self, msg):
+		print "Got Text: " + msg['messageText']
+		print "Marking as read: " + msg['messageText']
+
+def main():	
+	TestClient('voicex.git@gmail.com', 'VoiceX@Git')
+
+
 
 if __name__ == "__main__":
 	main()
