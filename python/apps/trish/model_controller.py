@@ -31,7 +31,7 @@ import sys
 @author: Trisha Kothari
 @date: Aug 3, 2012
 
-server database 
+application database 
 '''
 
 class ModelController:
