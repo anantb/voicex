@@ -75,7 +75,7 @@ class VoiceX:
 	def delete(self, msg):
 		print "Deleting Msg: "+ msg['messageText']
 		params = {'messages': msg['id'], 'trash':'1', '_rnr_se':self.token['rnr_se']}
-		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])	
+		return http_post(MSG_DELETE_URL, params, self.token['auth'])	
 		
 
 	def fetch_unread_sms(self, url = SMS_UNREAD_URL):
@@ -104,9 +104,9 @@ class TestVoiceX():
 		
 	def msg_new(self, msg):
 		print "Got Text from %s -- %s " %(msg['phoneNumber'], msg['messageText'])
-		print "Marking as read: " + msg['messageText']
 		print self.v.mark_read(msg)
 		print self.v.sms(msg['phoneNumber'], "Ack :" + msg['messageText'])
+		print self.v.delete(msg)
 
 def main():	
 	TestVoiceX('voicex.git@gmail.com', 'VoiceX@Git')
