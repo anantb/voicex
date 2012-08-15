@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os, sys, re
 sys.path.append(os.getcwd()+"/../..")
-from jobsdatabase import *
+from model_controller import *
 from transport.voicex import *
 
 
@@ -34,11 +34,11 @@ from transport.voicex import *
 main entry for the application  -- my first opensource project
 '''
 
-class JMS:
+class Trish:
 	def __init__(self, email, password):		
 		self.v = VoiceX(email, password, server=True)
 		self.v.register_notifiee(self.msg_new)
-		self.jdb = JobsDatabase();
+		self.mc = ModelController()
 		print "initialized"
 
 	def getHelp(self, msg_data):
@@ -59,16 +59,16 @@ class JMS:
 		else:
 			zip_code = str(zipcode.group())		
 				
-		job_id = self.jdb.insert(phone_num, message, zip_code);		
+		job_id = self.mc.insert(phone_num, message, zip_code);		
 		self.v.sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id))
 		tokens = re.split(' ', message)
 		print 'tokens: ' + str(tokens)
 		if(tokens != None):
 			for token in tokens:
 				print 'token: ' + token
-				res = self.jdb.search(token)
+				res = self.mc.search(token)
 				if(res!='No matching result'):
-					to_send = self.jdb.get_subscription(token)
+					to_send = self.mc.get_subscription(token)
 					print to_send
 					if(to_send!= None):
 						self.v.sms(to_send, "New Job Post: " + message +", Job ID: " + str(job_id))		
@@ -96,7 +96,7 @@ class JMS:
 			zip_code = str(zipcode.group())
 		self.v.sms(phone_num, 'success! Your job: ' + str(job_id) + "has been updated!:")
 		mesg = msg[msg.find(str(zipcode.group())) + 5 :].strip()
-		self.jdb.update(job_id, zip_code, mesg);	
+		self.mc.update(job_id, zip_code, mesg);	
 				
 		print job_id
 		print job_description
@@ -116,7 +116,7 @@ class JMS:
 					self.v.sms(phone_num, "To delete a post text #delete JOBID")
 					return
 		job_id = message_array[1]
-		self.jdb.delete(str(job_id))
+		self.mc.delete(str(job_id))
 		self.v.sms(phone_num, "Job " + job_id+ " has been successfully deleted!")
 		
 				
@@ -127,7 +127,7 @@ class JMS:
 		if len(job_id) == 0:
 			self.v.sms(phone_num, "To view a post text #view JOBID")
 			return
-		blurb = self.jdb.getPostFromId(int(job_id))
+		blurb = self.mc.getPostFromId(int(job_id))
 		self.v.sms(phone_num, blurb)
 
 	def search(self, msg_data):
@@ -138,7 +138,7 @@ class JMS:
 			help_text = "Text #search keywords; Text for more information:#apply JOBID"
 			self.v.sms(phone_num, help_text)
 			return
-		res = self.jdb.search(search_params)
+		res = self.mc.search(search_params)
 		print res
 		self.v.sms(phone_num, res)
 
@@ -156,7 +156,7 @@ class JMS:
 		job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
 		print "job id obtained is:", job_id, "with job_description", job_description
 		self.v.sms(phone_num, 'Your application for JOBID' + job_id + "has been sucessfully sumbitted!")
-		return_no = self.jdb.apply(int(job_id))
+		return_no = self.mc.apply(int(job_id))
 		print return_no
 		self.v.sms(return_no, job_description)
 		return
@@ -167,7 +167,7 @@ class JMS:
 		keywords = msg[msg.find("#follow") + len("#follow") : ].strip()
 		keywords = re.split(',', keywords)
 		for keyword in keywords:
-			x = self.jdb.follow(keyword, phone_num)
+			x = self.mc.follow(keyword, phone_num)
 		self.v.sms(phone_num, 'follow entry added successfully')
 
 
@@ -198,11 +198,11 @@ class JMS:
 	
 	def msg_new(msg):
 		self.handle(msg)
-		slef.v.mark_read(msg)	
+		self.v.mark_read(msg)	
 		self.v.delete(msg)
 
 def main():	
-	jms = JMS('voicex.git@gmail.com', 'VoiceX@Git')
+	Trish('voicex.git@gmail.com', 'VoiceX@Git')
 
 if __name__ == "__main__":
     main()
