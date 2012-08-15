@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os, sys
+import os, sys, time
 sys.path.append(os.getcwd()+"/../..")
 from transport.voicex import VoiceX
 from main import *
