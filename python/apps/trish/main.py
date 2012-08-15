@@ -28,8 +28,10 @@ from transport.voicex import *
 
 
 '''
-@author: Trisha Kothari
+@author: Trisha Kothari -- original author
 @date: Aug 3, 2012
+
+@author: Anant Bhardwaj -- some minor bug fixes
 
 Entry point for Trish
 '''
@@ -53,7 +55,7 @@ class Trish:
 			self.v.sms(phone_num, "Text #post zipcode jobdescription")
 			return
 		zipcode = re.search("\d{5}", message)
-		if(zipcode==None):
+		if(zipcode == None):
 			zip_code = '00000'
 		else:
 			zip_code = str(zipcode.group())		
@@ -153,11 +155,11 @@ class Trish:
 		print message_array
 		job_id = message_array[1]
 		job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
-		print "job id obtained is:", job_id, "with job_description", job_description
+		print "job id obtained is:", job_id, "with job_description", str(job_description)
 		self.v.sms(phone_num, 'Your application for JOBID' + job_id + "has been sucessfully sumbitted!")
 		return_no = self.mc.apply(int(job_id))
 		print return_no
-		self.v.sms(return_no, job_description)
+		self.v.sms(return_no, "application from: " + phone_num + ", msg: " + str(job_description))
 		return
 		
 	def follow(self, msg_data):
