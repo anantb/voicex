@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import httplib, urllib
+import httplib, urllib, json
 
 
 def http_post(url, params, auth):
@@ -31,4 +31,4 @@ def http_post(url, params, auth):
 	params = urllib.urlencode(params)
 	conn.request("POST", url, params, headers)	
 	res = conn.getresponse().read()
-	return res
+	return json.loads(res)
