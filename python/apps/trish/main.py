@@ -35,23 +35,22 @@ main entry for the application  -- my first opensource project
 '''
 
 class JMS:
-
-	def __init__(self, token):
+	def __init__(self, v):
 		self.jdb = JobsDatabase();
 		print "initialized"
-		self.token = token
+		self.v = v
 
 	def getHelp(self, msg_data):
 		phone_num = msg_data['phoneNumber']
 		help_text = "Welcome to LinkUnlinked! Search for jobs: #search; Post a job: #post"
-		sms(phone_num, help_text, self.token)
+		self.v.sms(phone_num, help_text)
 
 	def post(self, msg_data):
 		msg = msg_data['messageText']
 		phone_num = msg_data['phoneNumber']
 		message = msg[msg.find("#post") + len("#post") : ].strip()
 		if len(message) == 0:
-			sms(phone_num, "Text #post zipcode jobdescription", self.token)
+			self.v.sms(phone_num, "Text #post zipcode jobdescription")
 			return
 		zipcode = re.search("\d{5}", message)
 		if(zipcode==None):
@@ -60,7 +59,7 @@ class JMS:
 			zip_code = str(zipcode.group())		
 				
 		job_id = self.jdb.insert(phone_num, message, zip_code);		
-		sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id), self.token)
+		self.v.sms(phone_num, 'Job successfully posted. To view the post, text #view ' + str(job_id))
 		tokens = re.split(' ', message)
 		print 'tokens: ' + str(tokens)
 		if(tokens != None):
@@ -71,7 +70,7 @@ class JMS:
 					to_send = self.jdb.get_subscription(token)
 					print to_send
 					if(to_send!= None):
-						sms(to_send, "New Job Post: " + message +", Job ID: " + str(job_id), self.token)		
+						self.v.sms(to_send, "New Job Post: " + message +", Job ID: " + str(job_id))		
 				
 		return
 		
@@ -80,7 +79,7 @@ class JMS:
 		phone_num = msg_data['phoneNumber']
 		message = msg[msg.find("#edit") + len("#edit") : ].strip()
 		if len(message) == 0:
-					sms(phone_num, "To edit a post, text #edit JOBID new job description (include zip code)", self.token)
+					self.v.sms(phone_num, "To edit a post, text #edit JOBID new job description (include zip code)")
 					return
 		message_array = msg.split(" ")
 		print message_array
@@ -94,14 +93,14 @@ class JMS:
 			zip_code = '00000'
 		else:
 			zip_code = str(zipcode.group())
-		sms(phone_num, 'success! Your job: ' + str(job_id) + "has been updated!:", self.token)
+		self.v.sms(phone_num, 'success! Your job: ' + str(job_id) + "has been updated!:")
 		mesg = msg[msg.find(str(zipcode.group())) + 5 :].strip()
 		self.jdb.update(job_id, zip_code, mesg);	
 				
 		print job_id
 		print job_description
 		print zip_code
-		sms(phone_num, 'Job ' + str(job_id) + "has been succesfully updated", self.token)
+		self.v.sms(phone_num, 'Job ' + str(job_id) + "has been succesfully updated")
 		
 
 	def getAllPosts(self):
@@ -113,11 +112,11 @@ class JMS:
 		message_array = msg.split(" ")
 		print message_array
 		if len(message_array) == 1:
-					sms(phone_num, "To delete a post text #delete JOBID", self.token)
+					self.v.sms(phone_num, "To delete a post text #delete JOBID")
 					return
 		job_id = message_array[1]
 		self.jdb.delete(str(job_id))
-		sms(phone_num, "Job " + job_id+ " has been successfully deleted!", self.token)
+		self.v.sms(phone_num, "Job " + job_id+ " has been successfully deleted!")
 		
 				
 	def view(self, msg_data):
@@ -125,10 +124,10 @@ class JMS:
 		phone_num = msg_data['phoneNumber']
 		job_id = msg[msg.find("#view") + len("#view") : ].strip()
 		if len(job_id) == 0:
-			sms(phone_num, "To view a post text #view JOBID", self.token)
+			self.v.sms(phone_num, "To view a post text #view JOBID")
 			return
 		blurb = self.jdb.getPostFromId(int(job_id))
-		sms(phone_num, blurb, self.token)
+		self.v.sms(phone_num, blurb)
 
 	def search(self, msg_data):
 		msg = msg_data['messageText']
@@ -136,11 +135,11 @@ class JMS:
 		search_params = msg[msg.find("#search") + len("#search") : ].strip()
 		if len(search_params) == 0:
 			help_text = "Text #search keywords; Text for more information:#apply JOBID"
-			sms(phone_num, help_text, self.token)
+			self.v.sms(phone_num, help_text)
 			return
 		res = self.jdb.search(search_params)
 		print res
-		sms(phone_num, res, self.token)
+		self.v.sms(phone_num, res)
 
 	def apply(self, msg_data):
 		msg = msg_data['messageText']
@@ -148,17 +147,17 @@ class JMS:
 		message = msg[msg.find("#apply") + len("#apply") : ].strip()
 		if (len(message) == 0):
 			help_text = "Text #apply JOBID introduce yourself!"
-			sms(phone_num, help_text, self.token)
+			self.v.sms(phone_num, help_text)
 			return
 		message_array = msg.split(" ")
 		print message_array
 		job_id = message_array[1]
 		job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
 		print "job id obtained is:", job_id, "with job_description", job_description
-		sms(phone_num, 'Your application for JOBID' + job_id + "has been sucessfully sumbitted!", self.token)
+		self.v.sms(phone_num, 'Your application for JOBID' + job_id + "has been sucessfully sumbitted!")
 		return_no = self.jdb.apply(int(job_id))
 		print return_no
-		sms(return_no, job_description, self.token)
+		self.v.sms(return_no, job_description)
 		return
 		
 	def follow(self, msg_data):
@@ -168,7 +167,7 @@ class JMS:
 		keywords = re.split(',', keywords)
 		for keyword in keywords:
 			x = self.jdb.follow(keyword, phone_num)
-		sms(phone_num, 'follow entry added successfully', self.token)
+		self.v.sms(phone_num, 'follow entry added successfully')
 
 
 	def handle(self, msg_data):

@@ -23,8 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os, sys
 sys.path.append(os.getcwd()+"/../..")
-from transport.voicex import *
-from transport.login import *
+from transport.voicex import VoiceX
 from main import *
 import jsonpickle
 
@@ -36,20 +35,20 @@ hackday server
 '''
 
 notifiee = []
-token = None
+v = None
 jms = None
 def register_notifiee(n):
 	notifiee.append(n)
 
 
 def start_server():
-	global token
+	global v
 	global jms
-	token = login('voicex.git@gmail.com', 'VoiceX@Git')
-	jms = JMS(token)
+	v = VoiceX('voicex.git@gmail.com', 'VoiceX@Git')
+	jms = JMS(v)
 	while(True):
 		try:
-			inbox_raw = fetch_unread_sms(token)
+			inbox_raw = v.fetch_unread_sms()
 			print inbox_raw
 			inbox = jsonpickle.decode(inbox_raw)
 			if(inbox['unreadCounts']['unread'] > 0):
@@ -67,11 +66,11 @@ def main():
 	start_server()
 	
 def msg_new(msg):
-	global token
+	global v
 	global jms
 	jms.handle(msg)
-	mark_read(msg, token)	
-	delete(msg, token)
+	v.mark_read(msg)	
+	v.delete(msg)
 
 
 register_notifiee(msg_new)
