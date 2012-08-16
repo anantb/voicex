@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Trisha Kothari
+Copyright (c) 2012 Trisha Kothari, Anant Bhardwaj
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -60,27 +60,24 @@ class Trish:
 		else:
 			zip_code = str(zipcode.group())		
 				
-		job_id = self.mc.insert(phone_num, message, zip_code);		
-		self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(job_id))
+		post_id = self.mc.insert(phone_num, message, zip_code);		
+		self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
+		self.notify_followers(msg_data)
+		
+	def notify_followers(self, msg_data):
 		tokens = re.split(' ', message)
-		print 'tokens: ' + str(tokens)
-		if(tokens != None):
-			for token in tokens:
-				print 'token: ' + token
-				res = self.mc.search(token)
-				if(res!='No matching result'):
-					to_send = self.mc.get_subscription(token)
-					print to_send
-					if(to_send!= None):
-						self.v.sms(to_send, "New Post: " + message +", Post ID: " + str(job_id))		
-				
-		return
-		
-	
-		
+		if(not tokens):
+			return	
+		for token in tokens:
+			print 'token: ' + token
+			res = self.mc.search(token)
+			if(res =='No matching result'):
+				continue
+			to_send = self.mc.get_subscription(token)
+			if(not to_send):
+				continue
+			self.v.sms(to_send, "New Post: " + message +", Post ID: " + str(post_id))	
 
-	def getAllPosts(self):
-		print from_number
 
 	def delete(self, msg_data):
 		msg = msg_data['messageText']
@@ -90,19 +87,19 @@ class Trish:
 		if len(message_array) == 1:
 			self.v.sms(phone_num, "To delete a post text #delete <Post ID>")
 			return
-		job_id = message_array[1]
-		self.mc.delete(str(job_id))
-		self.v.sms(phone_num, "Post ID #" + job_id+ " has been successfully deleted!")
+		post_id = message_array[1]
+		self.mc.delete(str(post_id))
+		self.v.sms(phone_num, "Post ID #" + post_id+ " has been successfully deleted!")
 		
 				
 	def view(self, msg_data):
 		msg = msg_data['messageText']
 		phone_num = msg_data['phoneNumber']
-		job_id = msg[msg.find("#view") + len("#view") : ].strip()
-		if len(job_id) == 0:
+		post_id = msg[msg.find("#view") + len("#view") : ].strip()
+		if len(post_id) == 0:
 			self.v.sms(phone_num, "To view a post text #view <Post ID>")
 			return
-		blurb = self.mc.getPostFromId(int(job_id))
+		blurb = self.mc.getPostFromId(int(post_id))
 		self.v.sms(phone_num, blurb)
 
 	def search(self, msg_data):
@@ -127,23 +124,23 @@ class Trish:
 			return
 		message_array = msg.split(" ")
 		print message_array
-		job_id = message_array[1]
-		job_description = msg[msg.find(str(job_id)) + len(str(job_id)) : ].strip()
-		print "post id obtained is:", job_id, "with msg", str(job_description)
-		self.v.sms(phone_num, 'Your reply to post #' + job_id + " has been sucessfully sumbitted!")
-		return_no = self.mc.reply(int(job_id))
+		post_id = message_array[1]
+		blurb_text = msg[msg.find(str(post_id)) + len(str(post_id)) : ].strip()
+		print "post id obtained is:", post_id, "with msg", str(blurb_text)
+		self.v.sms(phone_num, 'Your reply to post #' + post_id + " has been sucessfully sumbitted!")
+		return_no = self.mc.reply(int(post_id))
 		print return_no
-		self.v.sms(return_no, "New reply from: " + phone_num + " -- " + str(job_description))
+		self.v.sms(return_no, "New reply from: " + phone_num + " -- " + str(blurb_text))
 		return
 		
 	def follow(self, msg_data):
 		msg = msg_data['messageText']
 		phone_num = msg_data['phoneNumber']
 		keywords = msg[msg.find("#follow") + len("#follow") : ].strip()
-		keywords = re.split(',', keywords)
+		keywords = re.split('\w+', keywords)
 		for keyword in keywords:
 			x = self.mc.follow(keyword, phone_num)
-		self.v.sms(phone_num, 'Follow tag added successfully')
+		self.v.sms(phone_num, 'Follow tags added successfully')
 
 
 	def handle(self, msg_data):
