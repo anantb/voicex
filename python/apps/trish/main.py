@@ -67,16 +67,24 @@ class Trish:
 	def notify_followers(self, message, post_id):
 		tokens = re.split(' ', message)
 		if(not tokens):
-			return	
+			return
+		to_send = []
 		for token in tokens:
 			print 'token: ' + token
 			res = self.mc.search(token)
 			if(not res):
 				continue
-			to_send = self.mc.get_subscription(token)
-			if(not to_send):
+			sub_list = self.mc.get_subscription(token)
+			if(not sub_list):
 				continue
-			self.v.sms(to_send, "New Post: " + message +", Post ID: " + str(post_id)+".")	
+			to_send.append(sub_list)
+		if(len(to_send)>0):
+			recepients = ','.join(to_send)
+			to_send = re.split(',', to_send)
+			to_send = filter(lambda x: x!='' and x!=',', to_send)
+			to_send = list(set(to_send))
+			recepients = ','.join(to_send)
+			self.v.sms(recepients, "New Post: " + message +", Post ID: " + str(post_id)+".")	
 
 
 	def delete(self, msg_data):
@@ -139,6 +147,7 @@ class Trish:
 		phone_num = msg_data['phoneNumber']
 		keywords = msg[msg.find("#follow") + len("#follow") : ].strip()
 		keywords = re.split('\w+', keywords)
+		print keywords
 		for keyword in keywords:
 			x = self.mc.follow(keyword, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
