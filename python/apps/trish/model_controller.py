@@ -28,10 +28,14 @@ from xml.etree import ElementTree
 import sys
 
 '''
-@author: Trisha Kothari
+Application database 
+
+@author: Trisha Kothari  (Original Author)
 @date: Aug 3, 2012
 
-application database 
+
+@author: Anant Bhardwaj (Code cleanup and bug fixes)
+
 '''
 
 class ModelController:
@@ -104,7 +108,6 @@ class ModelController:
 
 	def search(self, keyword):
 		stmt = "SELECT blurb, job_id FROM job_in WHERE MATCH (blurb) AGAINST('"+ keyword+"') LIMIT 3"
-		print stmt
 		try:
 			var = self.cursor.execute(stmt)
 			print var
@@ -112,7 +115,7 @@ class ModelController:
 			res = ""
 			for d in data:
 				print d
-				res = res + str(d[0]) + ', job_id ' + str(d[1])
+				res = res + str(d[0]) + ', Post ID #' + str(d[1])
 				res = res + '\n'
 				print res
 			if(res==""):
@@ -126,7 +129,6 @@ class ModelController:
 		try:
 			self.cursor.execute("DELETE FROM job_in WHERE job_id='"+str(job_id)+"'")
 			self.cursor = self.conn.cursor()
-			print "deleting from table "
 		except:
 			self.conn.rollback()
 			print "excpeiton encountered in deletion", sys.exc_info()[0]
@@ -140,9 +142,8 @@ class ModelController:
 		except:
 			print "got exception from getPostFromId", sys.exc_info()[0]
 
-	def apply(self, job_id):
+	def reply(self, job_id):
 			stmt = "SELECT phone_num FROM job_in WHERE job_id='"+str(job_id)+"'"
-			print stmt
 			try:
 				var = self.cursor.execute(stmt)
 			 	print var
