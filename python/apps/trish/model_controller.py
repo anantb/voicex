@@ -114,7 +114,7 @@ class ModelController:
 			data = self.cursor.fetchall()
 			res = ""
 			for d in data:
-				res = res + str(d[0]) + ' (Post ID: ' + str(d[1] + "). ")
+				res = res + str(d[0]) + ' (Post ID: ' + str(d[1]) + "). "
 				res = res + '\n'
 			print res
 			if(res==""):
