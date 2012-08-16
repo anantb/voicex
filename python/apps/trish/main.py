@@ -71,7 +71,7 @@ class Trish:
 		for token in tokens:
 			print 'token: ' + token
 			res = self.mc.search(token)
-			if(res =='No matching result'):
+			if(not res):
 				continue
 			to_send = self.mc.get_subscription(token)
 			if(not to_send):
@@ -111,7 +111,8 @@ class Trish:
 			self.v.sms(phone_num, help_text)
 			return
 		res = self.mc.search(search_params)
-		print res
+		if(not res):
+			res = 'No matching results found' 
 		self.v.sms(phone_num, res)
 
 	def reply(self, msg_data):
