@@ -54,6 +54,7 @@ class ModelController:
 			return row	
 		except:
 			print "find_post: ", sys.exc_info()
+			return None
 
 
 
@@ -73,9 +74,11 @@ class ModelController:
 			stmt = "UPDATE posts SET zipcode = '" +zipcode+ "', post = '" +msg+ "' WHERE id = " + post_id		
 			self.cursor.execute(stmt)
 			self.conn.commit()
+			return True
 		except:
 			self.conn.rollback()
 			print "update_post: ", sys.exc_info()
+			return False
 			
 	
 			
@@ -83,9 +86,11 @@ class ModelController:
 		try:
 			self.cursor.execute("DELETE FROM posts WHERE id='"+str(post_id)+"'")
 			self.cursor = self.conn.cursor()
+			return True
 		except:
 			self.conn.rollback()
 			print "delete_post: ", sys.exc_info()
+			return False
 		
 
 
@@ -130,9 +135,11 @@ class ModelController:
 					new_subscription_list = subscription_list + ','+ phone_number
 					self.cursor.execute("UPDATE follow_tags SET subscription_list=%s WHERE tag=%s", (new_subscription_list, tag.strip()))
 					self.conn.commit()
+			return True
 		except:
 			self.conn.rollback()
 			print "exception encountered", sys.exc_info()
+			return False
 
 
 

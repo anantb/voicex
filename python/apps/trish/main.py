@@ -56,9 +56,12 @@ class Trish:
 			zip_code = '00000'
 		else:
 			zip_code = str(zipcode.group())				
-		post_id = self.mc.insert_post(phone_num, message, zip_code);		
-		self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
-		self.notify_followers(message, post_id)
+		post_id = self.mc.insert_post(phone_num, message, zip_code);
+		if(post_id >= 0):		
+			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
+			self.notify_followers(message, post_id)
+		else:
+			self.v.sms(phone_num, "Error occured while posting the Msg.")
 		
 	
 		
@@ -89,8 +92,10 @@ class Trish:
 		msg = msg_data['messageText']
 		phone_num = msg_data['phoneNumber']
 		post_id = msg.split(" ")[1]
-		self.mc.delete_post(str(post_id))
-		self.v.sms(phone_num, "Post #" + post_id+ " has been successfully deleted!")
+		if(self.mc.delete_post(str(post_id))):
+			self.v.sms(phone_num, "Post #" + post_id+ " has been successfully deleted!")
+		else:
+			self.v.sms(phone_num, "Couldn't delete post #" + post_id)
 		
 				
 	def view(self, msg_data):
@@ -98,8 +103,11 @@ class Trish:
 		phone_num = msg_data['phoneNumber']
 		post_id = msg[msg.find("#view") + len("#view") : ].strip()
 		post = self.mc.find_post(int(post_id))
-		blurb = post[1]
-		self.v.sms(phone_num, blurb)
+		if(post):
+			res = post[1]
+		else			
+			res = 'No post found with id: .' + post_id
+		self.v.sms(phone_num, res)
 
 	def search(self, msg_data):
 		msg = msg_data['messageText']
@@ -115,11 +123,14 @@ class Trish:
 		phone_num = msg_data['phoneNumber']
 		message_array = msg.split(" ")
 		post_id = message_array[1]
-		blurb_text = msg[msg.find(str(post_id)) + len(str(post_id)) : ].strip()
-		self.v.sms(phone_num, 'Your reply to post #' + post_id + " has been sucessfully submitted!")
+		blurb_text = msg[msg.find(str(post_id)) + len(str(post_id)) : ].strip()		
 		post = self.mc.find_post(int(post_id))
-		reply_to  = post[0]
-		self.v.sms(reply_to, "New reply from: " + phone_num + " -- " + str(blurb_text))
+		if(post):
+			self.v.sms(phone_num, 'Your reply to post #' + post_id + " has been sucessfully submitted!")
+			reply_to  = post[0]
+			self.v.sms(reply_to, "New reply from: " + phone_num + " -- " + str(blurb_text))
+		else:
+			self.v.sms(phone_num, 'Error occured while replying to post #' + post_id)
 		
 	def follow(self, msg_data):
 		msg = msg_data['messageText']
@@ -128,7 +139,6 @@ class Trish:
 		tags = re.findall('\w+', tags)
 		tags = map(lambda x: x.strip(), tags)
 		tags = filter(lambda x: x!='' and x!=',', tags)
-		print tags
 		for tag in tags:
 			x = self.mc.update_follow_tag(tag, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
