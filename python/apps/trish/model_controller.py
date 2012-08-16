@@ -40,68 +40,59 @@ Application database
 
 class ModelController:
 	def __init__(self):
-		self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", user="_mysql_admin", passwd="JCAT0486", db="in_hackday")
+		self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", 
+		user="_mysql_admin", passwd="JCAT0486", db="trish")
 		self.cursor = self.conn.cursor()
-		print (self.conn)
 		
 	
-
-	def insert(self, phone_num, blurb, zip_code):
+		
+	def find_post(self, post_id):
 		try:
-			self.cursor.execute("INSERT INTO job_in (phone_num, blurb, zip_code) VALUES (%s, %s, %s)", (phone_num, blurb, zip_code))			
+			stmt = "SELECT phone, post FROM posts WHERE id='"+str(post_id)+"'"		
+			var = self.cursor.execute(stmt)			
+			row = self.cursor.fetchone()
+			return row	
+		except:
+			print "find_post: ", sys.exc_info()
+
+
+
+	def insert_post(self, phone_num, post, zipcode):
+		try:
+			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))			
 			self.conn.commit()
 			return self.cursor.lastrowid
 		except:
 			self.conn.rollback()
-			print "exception encountered", sys.exc_info()[0]
-		return None
-		
+			print "insert_post: ", sys.exc_info()
+			return -1
+
 	
-	
-	def get_subscription(self, keyword):
-		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
-		row = self.cursor.fetchone()
-		if(row == None):
-			return None
-		else:			
-			return(row[0])
-		
-	
-	
-		
-	def follow(self, keyword, phone_number):
-		self.cursor.execute("SELECT subscription FROM follow_in WHERE keyword='"+keyword.strip()+"'")
-		row = self.cursor.fetchone()
-		try:		
-			if(not row):
-				self.cursor.execute("INSERT INTO follow_in (keyword, subscription) VALUES (%s, %s)", (keyword.strip(), phone_number))				
-				self.conn.commit()
-			else:
-				subscription = row[0]
-				if(phone_number not in subscription):
-					new_subscription = subscription + ','+ phone_number
-					self.cursor.execute("UPDATE follow_in SET subscription=%s WHERE keyword=%s", (new_subscription, keyword.strip()))
-					self.conn.commit()
+	def update_post(self, post_id, zipcode, msg):
+		try:
+			stmt = "UPDATE posts SET zipcode = '" +zipcode+ "', post = '" +msg+ "' WHERE id = " + post_id		
+			self.cursor.execute(stmt)
+			self.conn.commit()
 		except:
 			self.conn.rollback()
-			print "exception encountered", sys.exc_info()[0]
-	
-	
-	
-	def update(self, job_id, zip_code, msg):
-		stmt = "UPDATE job_in SET zip_code = " +zip_code+ ", blurb = " +msg+ "WHERE job_id = " + job_id
-		try:
-			var = self.cursor.execute(stmt)
-			print var
-		except:
-			print "exception encountered in search", sys.exc_info()[0]		
+			print "update_post: ", sys.exc_info()
 			
-		
+	
+			
+	def delete_post(self, post_id):
+		try:
+			self.cursor.execute("DELETE FROM posts WHERE id='"+str(post_id)+"'")
+			self.cursor = self.conn.cursor()
+		except:
+			self.conn.rollback()
+			print "delete_post: ", sys.exc_info()
 		
 
-	def search(self, keyword):
-		stmt = "SELECT blurb, job_id FROM job_in WHERE MATCH (blurb) AGAINST('"+ keyword+"') LIMIT 3"
+
+
+	def search_posts(self, tag):
 		try:
+			stmt = "SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ tag+"') LIMIT 3"		
 			var = self.cursor.execute(stmt)
 			data = self.cursor.fetchall()
 			if(not data):
@@ -112,51 +103,40 @@ class ModelController:
 				res = res + '\n'
 			return res
 		except:
-			print "exception encountered in search", sys.exc_info()[0]
-			return 'No matching result'
-			
-	
+			print "search_posts: ", sys.exc_info()
+			return None
 
-	def delete(self, job_id):
-		try:
-			self.cursor.execute("DELETE FROM job_in WHERE job_id='"+str(job_id)+"'")
-			self.cursor = self.conn.cursor()
+	
+			
+	def find_subscription_list(self, tag):
+		self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
+		row = self.cursor.fetchone()
+		if(row == None):
+			return None
+		else:			
+			return(row[0])
+
+
+	def update_follow_tag(self, tag, phone_number):
+		self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
+		row = self.cursor.fetchone()
+		try:		
+			if(not row):
+				self.cursor.execute("INSERT INTO follow_tags (tag, subscription_list) VALUES (%s, %s)", (tag.strip(), phone_number))				
+				self.conn.commit()
+			else:
+				subscription_list = row[0]
+				if(phone_number not in subscription_list):
+					new_subscription_list = subscription_list + ','+ phone_number
+					self.cursor.execute("UPDATE follow_tags SET subscription_list=%s WHERE tag=%s", (new_subscription_list, tag.strip()))
+					self.conn.commit()
 		except:
 			self.conn.rollback()
-			print "excpeiton encountered in deletion", sys.exc_info()[0]
+			print "exception encountered", sys.exc_info()
 
-	
-	
-	def getPostFromId(self, job_id):
-		stmt = "SELECT blurb FROM job_in WHERE job_id='"+str(job_id)+"'"
-		try:
-			var = self.cursor.execute(stmt)			
-			row = self.cursor.fetchone()
-			return row[0]			
-		except:
-			print "got exception from getPostFromId", sys.exc_info()[0]
 
-	
-	
-	def reply(self, job_id):
-			stmt = "SELECT phone_num FROM job_in WHERE job_id='"+str(job_id)+"'"
-			try:
-				var = self.cursor.execute(stmt)
-				for row in self.cursor:
-					x= row[0]
-				return x
-			except:
-				print "got exception from apply", sys.exc_info()[0]
-			
-	
-	
-	def getPostFromZipcode(self, zipcode_obtained):
-		jobs = list()
-		try:
-			var = self.cursor.execute("""SELECT post, job_id FROM job_in WHERE zip_code=%s LIMIT 3""", (zipcode_obtained))
-			for row in self.cursor:
-				jobs.append("Job Id:" + str(row[1]) +  " looking for: " + row[0])
-		except:
-			print "got exception :(", sys.exc_info()[0]
-		self.conn.close()
+
+
+
+
 			
