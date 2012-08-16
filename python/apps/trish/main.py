@@ -80,7 +80,7 @@ class Trish:
 			to_send.append(sub_list)
 		if(len(to_send)>0):
 			recepients = ','.join(to_send)
-			to_send = re.split(',', to_send)
+			to_send = re.split(',', recepients)
 			to_send = filter(lambda x: x!='' and x!=',', to_send)
 			to_send = list(set(to_send))
 			recepients = ','.join(to_send)
@@ -146,7 +146,9 @@ class Trish:
 		msg = msg_data['messageText']
 		phone_num = msg_data['phoneNumber']
 		keywords = msg[msg.find("#follow") + len("#follow") : ].strip()
-		keywords = re.split('\w+', keywords)
+		keywords = re.findall('\w+', keywords)
+		keywords = map(lambda x: x.strip(), keywords)
+		keywords = filter(lambda x: x!='' and x!=',', keywords)
 		print keywords
 		for keyword in keywords:
 			x = self.mc.follow(keyword, phone_num)

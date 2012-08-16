@@ -75,11 +75,13 @@ class ModelController:
 		try:		
 			if(not row):
 				self.cursor.execute("INSERT INTO follow_in (keyword, subscription) VALUES (%s, %s)", (keyword.strip(), phone_number))				
+				self.conn.commit()
 			else:
 				subscription = row[0]
-				new_subscription = subscription + ','+ phone_number
-				self.cursor.execute("UPDATE follow_in SET subscription=%s WHERE keyword=%s", (new_subscription, keyword.strip()))
-			self.conn.commit()
+				if(phone_number not in subscription):
+					new_subscription = subscription + ','+ phone_number
+					self.cursor.execute("UPDATE follow_in SET subscription=%s WHERE keyword=%s", (new_subscription, keyword.strip()))
+					self.conn.commit()
 		except:
 			self.conn.rollback()
 			print "exception encountered", sys.exc_info()[0]
