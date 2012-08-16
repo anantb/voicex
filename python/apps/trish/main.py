@@ -62,9 +62,9 @@ class Trish:
 				
 		post_id = self.mc.insert(phone_num, message, zip_code);		
 		self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
-		self.notify_followers(msg_data)
+		self.notify_followers(message, post_id)
 		
-	def notify_followers(self, msg_data):
+	def notify_followers(self, message, post_id):
 		tokens = re.split(' ', message)
 		if(not tokens):
 			return	
@@ -76,7 +76,7 @@ class Trish:
 			to_send = self.mc.get_subscription(token)
 			if(not to_send):
 				continue
-			self.v.sms(to_send, "New Post: " + message +", Post ID: " + str(post_id))	
+			self.v.sms(to_send, "New Post: " + message +", Post ID: " + str(post_id)+".")	
 
 
 	def delete(self, msg_data):
@@ -89,7 +89,7 @@ class Trish:
 			return
 		post_id = message_array[1]
 		self.mc.delete(str(post_id))
-		self.v.sms(phone_num, "Post ID #" + post_id+ " has been successfully deleted!")
+		self.v.sms(phone_num, "Post #" + post_id+ " has been successfully deleted!")
 		
 				
 	def view(self, msg_data):
