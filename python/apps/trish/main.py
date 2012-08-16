@@ -105,7 +105,7 @@ class Trish:
 		post = self.mc.find_post(int(post_id))
 		if(post):
 			res = post[1]
-		else			
+		else:		
 			res = 'No post found with id: .' + post_id
 		self.v.sms(phone_num, res)
 
