@@ -48,7 +48,7 @@ class ModelController:
 		
 	def find_post(self, post_id):
 		try:
-			stmt = "SELECT phone, post FROM posts WHERE id='"+str(post_id)+"'"		
+			stmt = "SELECT phone, post FROM posts WHERE id='"+post_id+"'"		
 			var = self.cursor.execute(stmt)			
 			row = self.cursor.fetchone()
 			return row	
@@ -84,7 +84,7 @@ class ModelController:
 			
 	def delete_post(self, post_id):
 		try:
-			self.cursor.execute("DELETE FROM posts WHERE id='"+str(post_id)+"'")
+			self.cursor.execute("DELETE FROM posts WHERE id='"+ post_id +"'")
 			self.cursor = self.conn.cursor()
 			return True
 		except:
