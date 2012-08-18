@@ -128,7 +128,7 @@ class Trish:
 		post_id = tokens[0]
 		try:
 			blurb_text = tokens[1]
-			post = self.mc.find_post(int(post_id))
+			post = self.mc.find_post(post_id)
 			if(post):
 				self.v.sms(phone_num, 'Your reply to post #' + post_id + " has been sucessfully submitted!")
 				reply_to  = post[0]
