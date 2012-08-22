@@ -31,7 +31,7 @@ Application Data Acceess
 '''
 PG = 'PG'
 MYSQL = 'MYSQL'
-DB = MYSQL
+DB = PG
 class ModelController:
 	def __init__(self):
 		if(DB==MYSQL):
@@ -44,7 +44,7 @@ class ModelController:
 
 	def find_post(self, post_id):
 		try:
-			stmt = "SELECT phone, post FROM posts WHERE id='"+post_id+"'"		
+			stmt = "SELECT phone, post FROM posts WHERE id="+post_id		
 			var = self.cursor.execute(stmt)			
 			row = self.cursor.fetchone()
 			return row	
@@ -55,14 +55,15 @@ class ModelController:
 
 
 	def insert_post(self, phone_num, post, zipcode):
-		try:
-			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))	
-			self.conn.commit()
+		try:			
 			rowid = -1;
 			if(DB == MYSQL):
+				self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))	
+				self.conn.commit()
 				rowid = self.cursor.lastrowid
 			elif(DB == PG):
-				self.cursor.execute("SELECT currval(pg_get_serial_sequence('posts', 'id')");
+				self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s) RETURNING id", (phone_num, post, zipcode))	
+				self.conn.commit()
 				rowid = self.cursor.fetchone()[0]
 			return rowid
 		except:
@@ -86,8 +87,8 @@ class ModelController:
 			
 	def delete_post(self, post_id):
 		try:
-			self.cursor.execute("DELETE FROM posts WHERE id='"+ post_id +"'")
-			self.cursor = self.conn.cursor()
+			self.cursor.execute("DELETE FROM posts WHERE id="+ post_id)
+			self.conn.commit();
 			return True
 		except:
 			self.conn.rollback()
