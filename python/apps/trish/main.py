@@ -25,6 +25,7 @@ import os, sys, re
 sys.path.append(os.getcwd()+"/../..")
 from model_controller import *
 from transport.voicex import *
+from stemming.porter2 import stem
 
 
 '''
@@ -82,10 +83,7 @@ class Trish:
 		to_send = []
 		for token in tokens:
 			print 'token: ' + token
-			res = self.mc.search_posts(token)
-			if(not res):
-				continue
-			sub_list = self.mc.find_subscription_list(token)
+			sub_list = self.mc.find_subscription_list(stem(token))
 			if(not sub_list):
 				continue
 			to_send.append(sub_list)
@@ -141,6 +139,7 @@ class Trish:
 		tags = re.findall('\w+', msg_data)
 		tags = map(lambda x: x.strip(), tags)
 		tags = filter(lambda x: x!='' and x!=',', tags)
+		tags = map(lambda x: stem(x), tags)
 		for tag in tags:
 			x = self.mc.update_follow_tag(tag, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
