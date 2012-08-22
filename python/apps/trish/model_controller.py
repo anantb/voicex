@@ -100,21 +100,19 @@ class ModelController:
 
 	def search_posts(self, tag):
 		try:
-			results = None
-			if(DB == MYSQL):
-				stmt = "SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ tag+"') LIMIT 3"		
-				var = self.cursor.execute(stmt)
-				data = self.cursor.fetchall()
-				if(not data):
-					return None
-				res = ""
-				for d in data:
-					res = res + str(d[0]) + ' (Post ID: ' + str(d[1]) + "). "
-					res = res + '\n'
-				results = res
+			data = None
+			if(DB == MYSQL):	
+				self.cursor.execute("SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ tag+"') LIMIT 3")				
 			elif(DB == PG):
-				pass
-			return results
+				self.cursor.execute("SELECT post, id FROM posts WHERE to_tsvector('english', post) @@ plainto_tsquery('english', '"+ tag+"') LIMIT 3")
+			data = self.cursor.fetchall()
+			if(not data):
+				return None
+			res = ""
+			for d in data:
+				res = res + str(d[0]) + ' (Post ID: ' + str(d[1]) + "). "
+				res = res + '\n'
+			return res
 		except:
 			print "search_posts: ", sys.exc_info()
 			return None
