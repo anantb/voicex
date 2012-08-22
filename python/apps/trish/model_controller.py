@@ -21,31 +21,27 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os
-import MySQLdb
-import re
-from xml.etree import ElementTree
-import sys
+import os, sys, pgdb, MySQLdb, re
 
 '''
-Application database 
+Application Data Acceess
 
-@author: Trisha Kothari  (Original Author)
+@author: Trisha Kothari, Anant Bhardwaj
 @date: Aug 3, 2012
-
-
-@author: Anant Bhardwaj (Code cleanup and bug fixes)
-
 '''
-
+PG = 'PG'
+MYSQL = 'MYSQL'
+DB = MYSQL
 class ModelController:
 	def __init__(self):
-		self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", 
-		user="_mysql_admin", passwd="JCAT0486", db="trish")
+		if(DB==PG):
+			self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", 
+			user="_mysql_admin", passwd="JCAT0486", db="trish")
+		elif(DB == MYSQL):
+			self.conn = pgdb.connect("localhost:trish:postgres:postgres") 
 		self.cursor = self.conn.cursor()
 		
-	
-		
+
 	def find_post(self, post_id):
 		try:
 			stmt = "SELECT phone, post FROM posts WHERE id='"+post_id+"'"		
@@ -60,9 +56,15 @@ class ModelController:
 
 	def insert_post(self, phone_num, post, zipcode):
 		try:
-			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))			
+			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))	
 			self.conn.commit()
-			return self.cursor.lastrowid
+			rowid = -1;
+			if(DB == PG):
+				rowid = self.cursor.lastrowid
+			else:
+				self.cursor.execute("SELECT currval(pg_get_serial_sequence('posts', 'id')");
+				rowid = self.cursor.fetchone()[0]
+			return rowid
 		except:
 			self.conn.rollback()
 			print "insert_post: ", sys.exc_info()

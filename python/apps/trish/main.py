@@ -30,10 +30,8 @@ from transport.voicex import *
 '''
 Main Handler Interface
 
-@author: Trisha Kothari (Original Author)
+@author: Trisha Kothari, Anant Bhardwaj
 @date: Aug 3, 2012
-
-@author: Anant Bhardwaj (Code cleanup and bug fixes)
 '''
 
 class Trish:
