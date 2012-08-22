@@ -43,16 +43,15 @@ try:
 		cur = conn.cursor()
 		cur.execute('CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, phone varchar(20), post text, zipcode varchar(10))')  
 		cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id serial PRIMARY KEY, tag varchar(20), subscription_list varchar(500))')
-		conn.commit()
-		cur.execute("CREATE INDEX trish_search_idx ON posts USING gin(to_tsvector('english', post))")
+		cur.execute("CREATE INDEX post_index ON posts USING gin(to_tsvector('english', post))")
+		cur.execute("CREATE UNIQUE INDEX tag_index ON follow_tags(tag)")
 		conn.commit()
 	elif(DB == MYSQL):
 		conn = MySQLdb.connect(host="mysql.abhardwaj.org", user="_mysql_admin", passwd="JCAT0486", db="trish")
 		cur = conn.cursor()
 		cur.execute('CREATE TABLE IF NOT EXISTS posts (id INT PRIMARY KEY AUTO_INCREMENT, phone varchar(20), post text, zipcode varchar(10), FULLTEXT(post))')  
-		cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id INT PRIMARY KEY AUTO_INCREMENT, tag varchar(20), subscription_list varchar(500))')
-		conn.commit()
-		
+		cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id INT PRIMARY KEY AUTO_INCREMENT, tag varchar(20), subscription_list varchar(500), UNIQUE(tag))')
+		conn.commit()		
 except:
 	print 'Error: ', sys.exc_info()    
 	sys.exit(1)    
