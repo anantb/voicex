@@ -34,10 +34,10 @@ MYSQL = 'MYSQL'
 DB = MYSQL
 class ModelController:
 	def __init__(self):
-		if(DB==PG):
+		if(DB==MYSQL):
 			self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", 
 			user="_mysql_admin", passwd="JCAT0486", db="trish")
-		elif(DB == MYSQL):
+		elif(DB == PG):
 			self.conn = pgdb.connect("localhost:trish:postgres:postgres") 
 		self.cursor = self.conn.cursor()
 		
@@ -59,9 +59,9 @@ class ModelController:
 			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))	
 			self.conn.commit()
 			rowid = -1;
-			if(DB == PG):
+			if(DB == MYSQL):
 				rowid = self.cursor.lastrowid
-			else:
+			elif(DB == PG):
 				self.cursor.execute("SELECT currval(pg_get_serial_sequence('posts', 'id')");
 				rowid = self.cursor.fetchone()[0]
 			return rowid
