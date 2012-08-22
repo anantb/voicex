@@ -29,20 +29,31 @@ Application database
 @date: Aug 21, 2012
 '''
 
-import psycopg2, sys
+import pgdb, sys, MySQLdb
 
 
-con = None
+conn = None
+PG = 'PG'
+MYSQL = 'MYSQL'
+DB = PG
 
-try: 
-	conn = psycopg2.connect(user='postgres', password='postgres', host="localhost", dbname="trish") 
-	cur = conn.cursor()
-	cur.execute('CREATE TABLE posts (id serial PRIMARY KEY, phone varchar(20), post text, zipcode varchar(10));')  
-	cur.execute('CREATE TABLE follow_tags (id serial PRIMARY KEY, tag varchar(20), subscription_list varchar(500));')
-	cur.execute("CREATE INDEX trish_search_idx ON posts USING gin(to_tsvector('english', post));")
-	conn.commit()
-except psycopg2.DatabaseError, e:
-	print 'Error %s' % e    
+try:
+	if(DB == PG):
+		conn = pgdb.connect("localhost:trish:postgres:postgres")
+		cur = conn.cursor()
+		cur.execute('CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, phone varchar(20), post text, zipcode varchar(10))')  
+		cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id serial PRIMARY KEY, tag varchar(20), subscription_list varchar(500))')
+		cur.execute("CREATE trish_search_idx ON posts USING gin(to_tsvector('english', post))")
+		conn.commit()
+	elif(DB == MYSQL):
+		conn = MySQLdb.connect(host="mysql.abhardwaj.org", user="_mysql_admin", passwd="JCAT0486", db="trish")
+		cur = conn.cursor()
+		cur.execute('CREATE TABLE IF NOT EXISTS posts (id INT PRIMARY KEY AUTO_INCREMENT, phone varchar(20), post text, zipcode varchar(10), FULLTEXT(post))')  
+		cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id INT PRIMARY KEY AUTO_INCREMENT, tag varchar(20), subscription_list varchar(500))')
+		conn.commit()
+		
+except:
+	print 'Error: ', sys.exc_info()    
 	sys.exit(1)    
 
 finally:    
