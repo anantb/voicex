@@ -77,13 +77,13 @@ class Trish:
 	
 		
 	def notify_followers(self, msg_data, post_id):
-		tokens = re.split(' ', msg_data)
+		tokens = re.findall('\w+', msg_data)
 		if(not tokens):
 			return
 		to_send = []
 		for token in tokens:
 			print 'token: ' + token
-			sub_list = self.mc.find_subscription_list(stem(token))
+			sub_list = self.mc.find_subscription_list(stem(token.lower()))
 			if(not sub_list):
 				continue
 			to_send.append(sub_list)
@@ -139,7 +139,7 @@ class Trish:
 		tags = re.findall('\w+', msg_data)
 		tags = map(lambda x: x.strip(), tags)
 		tags = filter(lambda x: x!='' and x!=',', tags)
-		tags = map(lambda x: stem(x), tags)
+		tags = map(lambda x: stem(x.lower()), tags)
 		for tag in tags:
 			x = self.mc.update_follow_tag(tag, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
