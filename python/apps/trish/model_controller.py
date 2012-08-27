@@ -98,13 +98,18 @@ class ModelController:
 
 
 
-	def search_posts(self, tag):
+	def search_posts(self, query):
 		try:
 			data = None
 			if(DB == MYSQL):	
-				self.cursor.execute("SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ tag+"') LIMIT 3")				
+				self.cursor.execute("SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ query+"') LIMIT 3")				
 			elif(DB == PG):
-				self.cursor.execute("SELECT post, id FROM posts WHERE to_tsvector('english', post) @@ plainto_tsquery('english', '"+ tag+"') LIMIT 3")
+				q = re.findall('\w+', query)
+				q = map(lambda x: x.strip(), q)
+				q = filter(lambda x: x!='' and x!=',', q)
+				q = map(lambda x: x.lower(), q)
+				q = '|'.join(q)				
+				self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
 			data = self.cursor.fetchall()
 			if(not data):
 				return None
