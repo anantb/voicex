@@ -35,13 +35,15 @@ from voicex_server import VoiceXServer
 voicex public APIs
 '''	
 class VoiceX:
-	def __init__(self, email, password, server = False, callback = None):
+	def __init__(self, email, password):
 		self.token = login(email, password)
-		if(server):
-			self.server = VoiceXServer(self, callback)
-			#self.server.setDaemon(True)
-			self.server.start()
-			print "server started"
+		
+	def start_server(self, callback):		
+		self.server = VoiceXServer(self, callback)
+		self.server.daemon = True
+		self.server.start()
+		print "server started"
+		self.server.join(1000)
 	
 	def sms(self, to_number, text):
 		print "Sending message to: "+ to_number;
