@@ -109,7 +109,7 @@ class ModelController:
 				q = filter(lambda x: x!='' and x!=',', q)
 				q = map(lambda x: x.lower(), q)
 				q = '|'.join(q)				
-				self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
+				self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
 			data = self.cursor.fetchall()
 			if(not data):
 				return None
