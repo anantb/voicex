@@ -91,13 +91,13 @@ class ModelController:
 
 
 
-	def search_posts(self, query):
+	def search_posts(self, query, limit=3, offset=0):
 		try:
 			data = None		
 			q = re.findall('\w+', query)
 			q = map(lambda x: x.lower(), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), q)))
 			q = '|'.join(q)				
-			self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
+			self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT " + str(limit) + " OFFSET " + str(offset))
 			data = self.cursor.fetchall()
 			if(not data):
 				return None
