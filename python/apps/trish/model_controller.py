@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Trisha Kothari, Anant Bhardwaj
+Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -22,11 +22,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import os, sys, pgdb, re
+from utils import *
 
 '''
 Application Data Acceess
 
-@author: Trisha Kothari, Anant Bhardwaj
+@author: Anant Bhardwaj, Trisha Kothari
 @date: Aug 3, 2012
 '''
 
@@ -48,9 +49,10 @@ class ModelController:
 
 
 
-	def insert_post(self, phone_num, post, zipcode):
-		try:			
-			rowid = -1;			
+	def insert_post(self, phone_num, post):			
+		try:
+			zipcode = extract_zipcode(post)			
+			rowid = -1;	
 			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s) RETURNING id", (phone_num, post, zipcode))	
 			self.conn.commit()
 			rowid = self.cursor.fetchone()[0]
@@ -61,9 +63,10 @@ class ModelController:
 			return -1
 
 	
-	def update_post(self, post_id, zipcode, msg):
+	def update_post(self, post_id, new_post):
 		try:
-			stmt = "UPDATE posts SET zipcode = '" +zipcode+ "', post = '" +msg+ "' WHERE id = " + post_id		
+			zipcode = extract_zipcode(post)	
+			stmt = "UPDATE posts SET post = '" +new_post+ "', zipcode = '" +zipcode+ "' WHERE id = " + post_id		
 			self.cursor.execute(stmt)
 			self.conn.commit()
 			return True
@@ -91,9 +94,7 @@ class ModelController:
 		try:
 			data = None		
 			q = re.findall('\w+', query)
-			q = map(lambda x: x.strip(), q)
-			q = filter(lambda x: x!='' and x!=',', q)
-			q = map(lambda x: x.lower(), q)
+			q = map(lambda x: x.lower(), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), q)))
 			q = '|'.join(q)				
 			self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
 			data = self.cursor.fetchall()
@@ -110,13 +111,22 @@ class ModelController:
 
 	
 			
-	def find_subscription_list(self, tag):
-		self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
-		row = self.cursor.fetchone()
-		if(row == None):
-			return None
-		else:			
-			return(row[0])
+	def find_subscription_list(self, tags):
+		sub_list = []
+		for tag in tags:			
+			self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
+			row = self.cursor.fetchone()
+			if(row == None):
+				continue
+			else:			
+				sub_list_for_this_tag = row[0]
+				sub_list.append(sub_list_for_this_tag)
+		if(len(sub_list) > 0):
+			recipients = ','.join(sub_list)
+			sub_list = re.split(',', recipients)
+			to_send = list(set(filter(lambda x: x!='' and x!=',', sub_list)))
+		return sub_list
+	
 
 
 	def update_follow_tag(self, tag, phone_number):

@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Trisha Kothari, Anant Bhardwaj
+Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -31,7 +31,7 @@ from stemming.porter2 import stem
 '''
 Main Handler Interface
 
-@author: Trisha Kothari, Anant Bhardwaj
+@author: Anant Bhardwaj, Trisha Kothari
 @date: Aug 3, 2012
 '''
 
@@ -62,13 +62,8 @@ class Trish:
 			pass			
 		self.v.sms(phone_num, help_text)
 
-	def post(self, msg_data, phone_num):
-		zipcode = re.search("\d{5}", msg_data)
-		if(zipcode == None):
-			zip_code = '00000'
-		else:
-			zip_code = str(zipcode.group())				
-		post_id = self.mc.insert_post(phone_num, msg_data, zip_code);
+	def post(self, msg_data, phone_num):				
+		post_id = self.mc.insert_post(phone_num, msg_data);
 		if(post_id >= 0):		
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
 			self.notify_followers(msg_data, str(post_id))
@@ -77,24 +72,14 @@ class Trish:
 		
 	
 		
-	def notify_followers(self, msg_data, post_id):
-		tokens = re.findall('\w+', msg_data)
-		if(not tokens):
+	def notify_followers(self, msg, post_id):
+		tags = re.findall('\w+', msg)
+		if(not tags):
 			return
-		to_send = []
-		for token in tokens:
-			print 'token: ' + token
-			sub_list = self.mc.find_subscription_list(stem(token.lower()))
-			if(not sub_list):
-				continue
-			to_send.append(sub_list)
-		if(len(to_send)>0):
-			recepients = ','.join(to_send)
-			to_send = re.split(',', recepients)
-			to_send = filter(lambda x: x!='' and x!=',', to_send)
-			to_send = list(set(to_send))
-			recepients = ','.join(to_send)
-			self.v.sms(recepients, "New Post: " + msg_data +", Post ID: " + post_id +".")	
+		sub_list = self.mc.find_subscription_list(tags)
+		if(len(sub_list)>0):
+			recipients = ','.join(sub_list)
+			self.v.sms(recipients, "New Post: " + msg +", Post ID: " + post_id +".")	
 
 
 	def delete(self, msg_data, phone_num):
@@ -120,8 +105,7 @@ class Trish:
 
 	def reply(self, msg_data, phone_num):
 		tokens = msg_data.strip().split(" ", 1)
-		tokens = map(lambda x: x.strip(), tokens)
-		tokens = filter(lambda x: x!='', tokens)
+		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
 		post_id = tokens[0]
 		try:
 			blurb_text = tokens[1]
@@ -138,9 +122,7 @@ class Trish:
 		
 	def follow(self, msg_data, phone_num):
 		tags = re.findall('\w+', msg_data)
-		tags = map(lambda x: x.strip(), tags)
-		tags = filter(lambda x: x!='' and x!=',', tags)
-		tags = map(lambda x: stem(x.lower()), tags)
+		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		for tag in tags:
 			x = self.mc.update_follow_tag(tag, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
