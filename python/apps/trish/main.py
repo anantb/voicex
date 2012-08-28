@@ -67,7 +67,7 @@ class Trish:
 		post_id = self.mc.insert_post(phone_num, text);
 		if(post_id >= 0):		
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
-			self.notify_followers(msg_data, str(post_id))
+			self.notify_followers(text, str(post_id))
 		else:
 			self.v.sms(phone_num, "Error occured while posting the Msg.")
 		

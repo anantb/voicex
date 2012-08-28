@@ -115,7 +115,7 @@ class ModelController:
 	def find_subscription_list(self, tags):
 		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		sub_list = []
-		for tag in tags:			
+		for tag in tags:	
 			self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
 			row = self.cursor.fetchone()
 			if(row == None):
