@@ -29,9 +29,7 @@ Application Data Acceess
 @author: Trisha Kothari, Anant Bhardwaj
 @date: Aug 3, 2012
 '''
-PG = 'PG'
-MYSQL = 'MYSQL'
-DB = PG
+
 class ModelController:
 	def __init__(self):
 		self.conn = pgdb.connect("localhost:trish:postgres:postgres") 

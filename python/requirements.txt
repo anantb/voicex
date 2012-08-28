@@ -3,6 +3,5 @@ beautifulsoup4
 stemming
 
 ### ubuntu packages ###
-# apt-get install python-mysqldb
 # apt-get install python-pygresql
 
