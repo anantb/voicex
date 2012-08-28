@@ -26,7 +26,6 @@ sys.path.append(os.getcwd()+"/../..")
 from model_controller import *
 from transport.voicex import *
 
-
 '''
 Main Handler Interface
 

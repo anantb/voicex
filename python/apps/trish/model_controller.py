@@ -113,21 +113,25 @@ class ModelController:
 	
 			
 	def find_subscription_list(self, tags):
-		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		sub_list = []
-		for tag in tags:	
-			self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
-			row = self.cursor.fetchone()
-			if(row == None):
-				continue
-			else:			
-				sub_list_for_this_tag = row[0]
-				sub_list.append(sub_list_for_this_tag)
-		if(len(sub_list) > 0):
-			recipients = ','.join(sub_list)
-			sub_list = re.split(',', recipients)
-			sub_list = list(set(filter(lambda x: x!='' and x!=',', sub_list)))
-		return sub_list
+		try:
+			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+			for tag in tags:	
+				self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
+				row = self.cursor.fetchone()
+				if(row == None):
+					continue
+				else:			
+					sub_list_for_this_tag = row[0]
+					sub_list.append(sub_list_for_this_tag)
+			if(len(sub_list) > 0):
+				recipients = ','.join(sub_list)
+				sub_list = re.split(',', recipients)
+				sub_list = list(set(filter(lambda x: x!='' and x!=',', sub_list)))			
+		except:
+			print "search_posts: ", sys.exc_info()
+		finally:
+			return sub_list
 	
 
 
