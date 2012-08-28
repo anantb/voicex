@@ -22,6 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import os, sys, pgdb, re
+from stemming.porter2 import stem
 from utils import *
 
 '''
@@ -112,6 +113,7 @@ class ModelController:
 	
 			
 	def find_subscription_list(self, tags):
+		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		sub_list = []
 		for tag in tags:			
 			self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
@@ -124,29 +126,29 @@ class ModelController:
 		if(len(sub_list) > 0):
 			recipients = ','.join(sub_list)
 			sub_list = re.split(',', recipients)
-			to_send = list(set(filter(lambda x: x!='' and x!=',', sub_list)))
+			sub_list = list(set(filter(lambda x: x!='' and x!=',', sub_list)))
 		return sub_list
 	
 
 
-	def update_follow_tag(self, tag, phone_number):
-		self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
-		row = self.cursor.fetchone()
-		try:		
-			if(not row):
-				self.cursor.execute("INSERT INTO follow_tags (tag, subscription_list) VALUES (%s, %s)", (tag.strip(), phone_number))				
-				self.conn.commit()
-			else:
-				subscription_list = row[0]
-				if(phone_number not in subscription_list):
-					new_subscription_list = subscription_list + ','+ phone_number
-					self.cursor.execute("UPDATE follow_tags SET subscription_list=%s WHERE tag=%s", (new_subscription_list, tag.strip()))
+	def update_follow_tag(self, tags, phone_number):
+		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+		for tag in tags:
+			self.cursor.execute("SELECT subscription_list FROM follow_tags WHERE tag='"+tag.strip()+"'")
+			row = self.cursor.fetchone()
+			try:		
+				if(not row):
+					self.cursor.execute("INSERT INTO follow_tags (tag, subscription_list) VALUES (%s, %s)", (tag.strip(), phone_number))				
 					self.conn.commit()
-			return True
-		except:
-			self.conn.rollback()
-			print "exception encountered", sys.exc_info()
-			return False
+				else:
+					subscription_list = row[0]
+					if(phone_number not in subscription_list):
+						new_subscription_list = subscription_list + ','+ phone_number
+						self.cursor.execute("UPDATE follow_tags SET subscription_list=%s WHERE tag=%s", (new_subscription_list, tag.strip()))
+						self.conn.commit()
+			except:
+				self.conn.rollback()
+				print "exception encountered", sys.exc_info()
 
 
 

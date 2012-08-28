@@ -25,7 +25,6 @@ import os, sys, re
 sys.path.append(os.getcwd()+"/../..")
 from model_controller import *
 from transport.voicex import *
-from stemming.porter2 import stem
 
 
 '''
@@ -61,9 +60,11 @@ class Trish:
 		else:
 			pass			
 		self.v.sms(phone_num, help_text)
+		
+	
 
-	def post(self, msg_data, phone_num):				
-		post_id = self.mc.insert_post(phone_num, msg_data);
+	def post(self, text, phone_num):				
+		post_id = self.mc.insert_post(phone_num, text);
 		if(post_id >= 0):		
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
 			self.notify_followers(msg_data, str(post_id))
@@ -82,23 +83,23 @@ class Trish:
 			self.v.sms(recipients, "New Post: " + msg +", Post ID: " + post_id +".")	
 
 
-	def delete(self, msg_data, phone_num):
+	def delete(self, post_id, phone_num):
 		if(self.mc.delete_post(msg_data)):
-			self.v.sms(phone_num, "Post #" + msg_data + " has been successfully deleted!")
+			self.v.sms(phone_num, "Post #" + post_id + " has been successfully deleted!")
 		else:
-			self.v.sms(phone_num, "Couldn't delete post #" + msg_data)
+			self.v.sms(phone_num, "Couldn't delete post #" + post_id)
 		
 				
-	def view(self, msg_data, phone_num):	
-		post = self.mc.find_post(msg_data)
+	def view(self, post_id, phone_num):	
+		post = self.mc.find_post(post_id)
 		if(post):
 			res = post[1]
 		else:		
-			res = 'No post found with id: ' + msg_data
+			res = 'No post found with id: ' + post_id
 		self.v.sms(phone_num, res)
 
-	def search(self, msg_data, phone_num):
-		res = self.mc.search_posts(msg_data)
+	def search(self, query, phone_num):
+		res = self.mc.search_posts(query)
 		if(not res):
 			res = 'No matching results found.' 
 		self.v.sms(phone_num, res)
@@ -120,11 +121,9 @@ class Trish:
 			self.v.sms(phone_num, 'Error occured while replying to post #' + post_id)
 		
 		
-	def follow(self, msg_data, phone_num):
-		tags = re.findall('\w+', msg_data)
-		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-		for tag in tags:
-			x = self.mc.update_follow_tag(tag, phone_num)
+	def follow(self, msg, phone_num):
+		tags = re.findall('\w+', msg)		
+		self.mc.update_follow_tag(tags, phone_num)
 		self.v.sms(phone_num, 'Follow tags added successfully')
 		
 	
