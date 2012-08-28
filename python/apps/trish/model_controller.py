@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os, sys, pgdb, MySQLdb, re
+import os, sys, pgdb, re
 
 '''
 Application Data Acceess
@@ -34,11 +34,7 @@ MYSQL = 'MYSQL'
 DB = PG
 class ModelController:
 	def __init__(self):
-		if(DB==MYSQL):
-			self.conn = MySQLdb.connect(host="mysql.abhardwaj.org", 
-			user="_mysql_admin", passwd="JCAT0486", db="trish")
-		elif(DB == PG):
-			self.conn = pgdb.connect("localhost:trish:postgres:postgres") 
+		self.conn = pgdb.connect("localhost:trish:postgres:postgres") 
 		self.cursor = self.conn.cursor()
 		
 
@@ -56,15 +52,10 @@ class ModelController:
 
 	def insert_post(self, phone_num, post, zipcode):
 		try:			
-			rowid = -1;
-			if(DB == MYSQL):
-				self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s)", (phone_num, post, zipcode))	
-				self.conn.commit()
-				rowid = self.cursor.lastrowid
-			elif(DB == PG):
-				self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s) RETURNING id", (phone_num, post, zipcode))	
-				self.conn.commit()
-				rowid = self.cursor.fetchone()[0]
+			rowid = -1;			
+			self.cursor.execute("INSERT INTO posts (phone, post, zipcode) VALUES (%s, %s, %s) RETURNING id", (phone_num, post, zipcode))	
+			self.conn.commit()
+			rowid = self.cursor.fetchone()[0]
 			return rowid
 		except:
 			self.conn.rollback()
@@ -100,16 +91,13 @@ class ModelController:
 
 	def search_posts(self, query):
 		try:
-			data = None
-			if(DB == MYSQL):	
-				self.cursor.execute("SELECT post, id FROM posts WHERE MATCH (post) AGAINST('"+ query+"') LIMIT 3")				
-			elif(DB == PG):
-				q = re.findall('\w+', query)
-				q = map(lambda x: x.strip(), q)
-				q = filter(lambda x: x!='' and x!=',', q)
-				q = map(lambda x: x.lower(), q)
-				q = '|'.join(q)				
-				self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
+			data = None		
+			q = re.findall('\w+', query)
+			q = map(lambda x: x.strip(), q)
+			q = filter(lambda x: x!='' and x!=',', q)
+			q = map(lambda x: x.lower(), q)
+			q = '|'.join(q)				
+			self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT 3")
 			data = self.cursor.fetchall()
 			if(not data):
 				return None
