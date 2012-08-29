@@ -36,9 +36,8 @@ Main Handler Interface
 class Trish:
 	def __init__(self, email, password):		
 		self.mc = ModelController()
-		print "initialized"
 		self.v = VoiceX(email, password)
-		self.v.start_server(self.msg_new)
+		self.v.start_server(callback = self.msg_new)
 
 	def show_help(self, msg, phone_num):
 		help_text = "Welcome to Trish! To post : #post <msg>, To search: #search <keywords>, To follow: #follow <post-id>, To reply: #reply <post-id> <reply msg>, To view #view <post-id>, To delete #delete <post-id>"

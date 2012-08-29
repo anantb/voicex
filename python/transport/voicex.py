@@ -42,11 +42,10 @@ class VoiceX:
 		self.server = VoiceXServer(self, callback)
 		self.server.daemon = True
 		self.server.start()
-		print "server started"
 		self.server.join(1000)
 	
 	def sms(self, to_number, text):
-		print "Sending message to: "+ to_number;
+		print "Sending message [ %s ] to: [%s]." %(text, to_number)
 		params = {'phoneNumber': to_number, 'text':text, '_rnr_se':self.token['rnr_se']}
 		return http_post(SMS_SEND_URL, params, self.token['auth'])
 		
@@ -63,19 +62,19 @@ class VoiceX:
 		
 
 	def mark_read(self, msg):
-		print "Marking Msg as Read: "+ msg['messageText']
+		print "Marking message [ %s ] as Read."  %(msg['messageText'])
 		params = {'messages': msg['id'], 'read':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 
 	def mark_unread(self, msg):
-		print "Marking Msg as UnRead: "+ msg['messageText']
+		print "Marking message [ %s ] as UnRead."  %(msg['messageText'])
 		params = {'messages': msg['id'], 'read':'0', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 		
 	def delete(self, msg):
-		print "Deleting Msg: "+ msg['messageText']
+		print "Deleting message [ %s ]."  %(msg['messageText'])
 		params = {'messages': msg['id'], 'trash':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_DELETE_URL, params, self.token['auth'])	
 		
@@ -101,11 +100,11 @@ class VoiceX:
 
 class TestVoiceX():
 	def __init__(self, email, password):		
-		self.v = VoiceX(email, password, server=True, callback = self.msg_new)
-		print "initialized"
+		self.v = VoiceX(email, password)
+		self.v.start_server(callback = self.msg_new)
 		
 	def msg_new(self, msg):
-		print "Got Text from %s -- %s " %(msg['phoneNumber'], msg['messageText'])
+		print "Got text [ %s ] from [%s]." %(msg['messageText'], msg['phoneNumber'])
 		print self.v.mark_read(msg)
 		print self.v.sms(msg['phoneNumber'], "Ack :" + msg['messageText'])
 		print self.v.delete(msg)

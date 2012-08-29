@@ -36,6 +36,7 @@ class VoiceXServer(threading.Thread):
 		self.callback = callback
 		self.v = v
 		threading.Thread.__init__(self)
+		print "voicex server started"
 	
 	
 	def process(self, meta, page):
