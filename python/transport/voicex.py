@@ -35,11 +35,12 @@ from voicex_server import VoiceXServer
 voicex public APIs
 '''	
 class VoiceX:
-	def __init__(self, email, password):
+	def __init__(self, email, password, d = True):
 		self.token = login(email, password)
+		self.d = d
 		
 	def start_server(self, callback):		
-		self.server = VoiceXServer(self, callback)
+		self.server = VoiceXServer(self, callback, d = self.d)
 		self.server.daemon = True
 		self.server.start()
 		self.server.join(1000)
@@ -101,7 +102,7 @@ class VoiceX:
 
 class TestVoiceX():
 	def __init__(self, email, password):		
-		self.v = VoiceX(email, password)
+		self.v = VoiceX(email, password, d = False)
 		self.v.start_server(callback = self.msg_new)
 		
 	def msg_new(self, msg):

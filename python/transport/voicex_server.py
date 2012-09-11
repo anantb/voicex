@@ -32,9 +32,10 @@ voicex daemon server
 '''	
 
 class VoiceXServer(threading.Thread):
-	def __init__(self, v, callback):
+	def __init__(self, v, callback, d = True):
 		self.callback = callback
 		self.v = v
+		self.d = d	
 		threading.Thread.__init__(self)
 		print "voicex server started"
 	
@@ -66,9 +67,12 @@ class VoiceXServer(threading.Thread):
 			time.sleep(1)
 		
 	def run(self):
-		with daemon.DaemonContext():
+		if(self.d):
+			with daemon.DaemonContext():
+				self.poll_new()
+		else:
 			self.poll_new()
-		
+			
 	
 	
 					

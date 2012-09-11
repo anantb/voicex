@@ -36,7 +36,7 @@ Main Handler Interface
 class Trish:
 	def __init__(self, email, password):		
 		self.mc = ModelController()
-		self.v = VoiceX(email, password)
+		self.v = VoiceX(email, password, d = False)
 		self.v.start_server(callback = self.msg_new)
 
 	def show_help(self, msg, phone_num):
