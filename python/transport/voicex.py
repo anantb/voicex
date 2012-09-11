@@ -94,6 +94,7 @@ class VoiceX:
 		page = conn.getresponse().read()
 		soup = BeautifulSoup(page)
 		meta_data = soup.find('json').find(text = True).strip()
+		print meta_data
 		return str(meta_data), page
 		
 

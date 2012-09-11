@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import time, threading, sys, json, re
+import time, threading, sys, json, re, daemon
 from bs4 import BeautifulSoup
 
 '''
@@ -50,7 +50,7 @@ class VoiceXServer(threading.Thread):
 		text = messages[-1].find('span', {'class' : 'gc-message-sms-text'}).find(text=True).strip()
 		return {'id':meta['id'], 'messageText': text, 'phoneNumber': phone_num}
 		
-	def run(self):
+	def poll_new(self):
 		while(True):		
 			try:				
 				meta_data, page = self.v.fetch_unread_sms()				
@@ -64,6 +64,11 @@ class VoiceXServer(threading.Thread):
 			except:
 				print sys.exc_info()
 			time.sleep(1)
+		
+	def run(self):
+		with daemon.DaemonContext():
+			self.poll_new()
+		
 	
 	
 					
