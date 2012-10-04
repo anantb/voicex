@@ -46,15 +46,15 @@ class VoiceX:
 
 
 	def mark_read(self, msg):
-		print "Marking message [ %s ] as Read."  %(msg['messageText'])
+		print "Marking message [ %s ] as Read."  %(msg['text'])
 
 
 	def mark_unread(self, msg):
-		print "Marking message [ %s ] as UnRead."  %(msg['messageText'])
+		print "Marking message [ %s ] as UnRead."  %(msg['text'])
 
 
 	def delete(self, msg):
-		print "Deleting message [ %s ]."  %(msg['messageText'])
+		print "Deleting message [ %s ]."  %(msg['text'])
 
 	def fetch_unread_sms():
 		pass

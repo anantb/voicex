@@ -33,11 +33,31 @@ class AfricaTalking:
 	def __init__(self, username, api_key):
 		self.username = username
 		self.api_key = api_key
-	
-	def sms(self, to, message,frm='2122', bulkSMSMode=1):
+
+
+	def sms(self, to, message,frm ='2122', bulkSMSMode=1):
 		print "Sending message [ %s ] to: [%s]." %(message, to)
 		params = {'to': to, 'message':message, 'username':self.username, 'from':frm, 'bulkSMSMode':bulkSMSMode }
 		return util.http_connect(util.POST, params, self.api_key)
+		
+	
+	def mark_read(self, msg):
+		print "Marking message [ %s ] as Read."  %(msg['text'])
+
+
+	def mark_unread(self, msg):
+		print "Marking message [ %s ] as UnRead."  %(msg['text'])
+
+
+	def delete(self, msg):
+		print "Deleting message [ %s ]."  %(msg['text'])
+
+	def fetch_unread_sms():
+		pass
+
+
+	def fetch_all_sms(self):
+		return fetch_inbox(last_received_id = 0)
 	
 	def fetch_inbox(self, last_received_id = 0):
 		print "Fetching Inbox."
