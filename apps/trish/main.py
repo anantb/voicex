@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os, sys, re
 sys.path.append(os.getcwd()+"/../..")
 from model_controller import *
-from transport.voicex import *
+from transport.google_voice.voicex import *
 
 '''
 Main Handler Interface
