@@ -43,7 +43,7 @@ class AfricaTalking:
 	def fetch_inbox(self):
 		conn = httplib.HTTPSConnection("api.africastalking.com")
 		headers = {"Accept": "application/json", "ApiKey": self.api_key }
-		params = urllib.urlencode({'username':self.username,'lastReceivedId':1})
+		params = urllib.urlencode({'username':self.username,'lastReceivedId':0})
 		conn.request("GET", "/version1/messaging", params, headers)
 		res = conn.getresponse().read()
 		return res
