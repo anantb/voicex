@@ -34,12 +34,12 @@ from gv_poller import GoogleVoicePoller
 
 Google Voice public APIs
 '''	
-class GoogleVoice:
+class GoogleVoice():
 	def __init__(self, email, password, d = True):
 		self.token = login(email, password)
 		self.d = d
 		
-	def start_poll(self, callback):		
+	def set_callback(self, callback):		
 		self.poller = GoogleVoicePoller(self, callback, d = self.d)
 		self.poller.daemon = True
 		self.poller.start()
@@ -101,8 +101,8 @@ class GoogleVoice:
 
 
 class Test():
-	def __init__(self, email, password):		
-		self.client = GoogleVoice(email, password, d = False)
+	def __init__(self):
+		self.client = GoogleVoice('voicex.git@gmail.com', 'VoiceX@Git', d = False)
 		self.client.start_poll(callback = self.msg_new)
 		
 	def msg_new(self, msg):
@@ -112,13 +112,10 @@ class Test():
 		print self.client.delete(msg)
 
 def main():	
-	Test('voicex.git@gmail.com', 'VoiceX@Git')
+	Test()
 
 
 
 if __name__ == "__main__":
 	main()
-	
-	
-					
-			
+

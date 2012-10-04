@@ -22,6 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import json, util
+import sys
 
 '''
 @author: anant bhardwaj
@@ -29,7 +30,7 @@ import json, util
 
 Africa Talking Public APIs
 '''	
-class AfricaTalking:
+class AfricaTalking():
 	def __init__(self, username, api_key):
 		self.username = username
 		self.api_key = api_key
@@ -66,13 +67,13 @@ class AfricaTalking:
 
 
 class Test():
-	def __init__(self, username, api_key):		
-		self.client = AfricaTalking(username, api_key)
+	def __init__(self):		
+		self.client = AfricaTalking("voicex", "57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872")
 		print self.client.fetch_inbox()
 		print self.client.sms(to="254706222092", message="Testing")
 
 def main():	
-	Test("voicex", "57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872")
+	Test()
 
 
 

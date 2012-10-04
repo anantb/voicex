@@ -24,8 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os, sys, re
 sys.path.append(os.getcwd()+"/../..")
 from model_controller import *
-from transport.google_voice.main import *
-
+from transport import voicex
 '''
 Main Handler Interface
 
@@ -34,10 +33,10 @@ Main Handler Interface
 '''
 
 class Trish:
-	def __init__(self, email, password):		
+	def __init__(self):
 		self.mc = ModelController()
-		self.v = GoogleVoice(email, password, d = False)
-		self.v.start_poll(callback = self.msg_new)
+		self.v = voicex.VoiceX()
+		self.v.set_callback(callback = self.msg_new)
 
 	def show_help(self, msg, phone_num):
 		help_text = "Welcome to Trish! To post : #post <msg>, To search: #search <keywords>, To follow: #follow <post-id>, To reply: #reply <post-id> <reply msg>, To view #view <post-id>, To delete #delete <post-id>"
@@ -162,7 +161,7 @@ class Trish:
 		self.v.mark_read(msg)
 
 def main():	
-	Trish('voicex.git@gmail.com', 'VoiceX@Git')
+	Trish()
 
 if __name__ == "__main__":
     main()

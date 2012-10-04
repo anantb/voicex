@@ -20,6 +20,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from abc import ABCMeta, abstractmethod
+from google_voice.main import GoogleVoice
+from africa_talking.main import AfricaTalking
+import config
 
 '''
 @author: anant bhardwaj
@@ -27,34 +31,44 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 VoiceX public APIs
 '''	
+
 class VoiceX:
-	def __init__(self, config=None):
-		pass
-		
+	def __init__(self, client=config.GV):
+		__metaclass__ = ABCMeta
+		if(client == config.GV):
+			self.client = GoogleVoice(config.GV['username'], config.GV['password'], d = False)
+		elif(client == config.AT):
+			self.client = AfricaTalking(config.AP['username'], config.GV['api_key'])
+		else:
+			raise
+	
+	@abstractmethod	
 	def set_callback(self, callback):
-		pass
+		self.client.set_callback(callback)
 
-	def sms(self, to_number, text):
-		print "Sending message [ %s ] to: [%s]." %(text, to_number)
+	@abstractmethod
+	def sms(self, to, text):
+		self.client.sms(to, text)
 
-
+	@abstractmethod
 	def mark_read(self, msg):
-		print "Marking message [ %s ] as Read."  %(msg['text'])
+		self.client.mark_read(msg)
 
-
+	@abstractmethod
 	def mark_unread(self, msg):
-		print "Marking message [ %s ] as UnRead."  %(msg['text'])
+		self.client.mark_unread(msg)
 
-
+	@abstractmethod
 	def delete(self, msg):
-		print "Deleting message [ %s ]."  %(msg['text'])
+		self.client.delete(msg)
 
+	@abstractmethod
 	def fetch_unread_sms():
-		pass
+		self.client.fetch_unread_sms()
 
-
+	@abstractmethod
 	def fetch_all_sms(self):
-		pass
+		self.client.fetch_all_sms()
 
 class Test():
 	def __init__(self):		
