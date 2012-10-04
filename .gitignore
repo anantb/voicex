@@ -1,0 +1,9 @@
+# Ignore all compiled python files.
+*.pyc
+
+# Ignore all emacs backup files
+*.*~
+
+
+# Ignore tokens
+voicex_token
