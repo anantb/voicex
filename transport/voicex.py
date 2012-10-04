@@ -21,13 +21,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import json
-from constants import *
-from login import *
-from util import *
-from bs4 import BeautifulSoup
-from gv_poller import GoogleVoicePoller
-
 '''
 @author: anant bhardwaj
 @date: Oct 4, 2012
