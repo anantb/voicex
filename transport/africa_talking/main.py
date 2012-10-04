@@ -21,8 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import json
-from util import *
+import json, util
 
 '''
 @author: anant bhardwaj
@@ -38,12 +37,12 @@ class AfricaTalking:
 	def sms(self, to, message,frm='2122', bulkSMSMode=1):
 		print "Sending message [ %s ] to: [%s]." %(message, to)
 		params = {'to': to, 'message':message, 'username':self.username, 'from':frm, 'bulkSMSMode':bulkSMSMode }
-		return http_post(params, self.api_key)
+		return util.http_connect(util.POST, params, self.api_key)
 	
 	def fetch_inbox(self, last_received_id = 0):
 		print "Fetching Inbox."
 		params = {'username':self.username,'lastReceivedId':last_received_id}
-		return http_get(params, self.api_key)
+		return util.http_connect(util.GET, params, self.api_key)
 
 
 class Test():
@@ -53,7 +52,7 @@ class Test():
 		print self.client.sms(to="254706222092", message="Testing")
 
 def main():	
-	Test("voicex", "a87d14779ed780172d0d0f7ab47b6183ca1b17b9c047d887ab2a14fc1288cf28")
+	Test("voicex", "57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872")
 
 
 
