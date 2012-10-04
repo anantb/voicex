@@ -39,11 +39,20 @@ class AfricaTalking:
 		print "Sending message [ %s ] to: [%s]." %(message, to)
 		params = {'to': to, 'message':message, 'username':self.username, 'from':frm, 'bulkSMSMode':bulkSMSMode }
 		return http_post(params, self.api_key)
+	
+	def fetch_inbox(self):
+		conn = httplib.HTTPSConnection("api.africastalking.com")
+		headers = {"Accept": "application/json", "ApiKey": self.api_key }
+		params = urllib.urlencode({'username':self.username,'lastReceivedId':1})
+		conn.request("GET", "/version1/messaging", params, headers)
+		res = conn.getresponse().read()
+		return res
 
 
 class Test():
 	def __init__(self, username, api_key):		
 		self.client = AfricaTalking(username, api_key)
+		print self.client.fetch_inbox()
 		print self.client.sms(to="254706222092", message="Testing")
 
 def main():	
