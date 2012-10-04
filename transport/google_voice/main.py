@@ -63,19 +63,19 @@ class GoogleVoice:
 		
 
 	def mark_read(self, msg):
-		print "Marking message [ %s ] as Read."  %(msg['messageText'])
+		print "Marking message [ %s ] as Read."  %(msg['text'])
 		params = {'messages': msg['id'], 'read':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 
 	def mark_unread(self, msg):
-		print "Marking message [ %s ] as UnRead."  %(msg['messageText'])
+		print "Marking message [ %s ] as UnRead."  %(msg['text'])
 		params = {'messages': msg['id'], 'read':'0', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 		
 	def delete(self, msg):
-		print "Deleting message [ %s ]."  %(msg['messageText'])
+		print "Deleting message [ %s ]."  %(msg['text'])
 		params = {'messages': msg['id'], 'trash':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_DELETE_URL, params, self.token['auth'])	
 		
@@ -106,9 +106,9 @@ class Test():
 		self.client.start_poll(callback = self.msg_new)
 		
 	def msg_new(self, msg):
-		print "Got text [ %s ] from [%s]." %(msg['messageText'], msg['phoneNumber'])
+		print "Got text [ %s ] from [%s]." %(msg['text'], msg['from'])
 		print self.client.mark_read(msg)
-		print self.client.sms(msg['phoneNumber'], "Ack :" + msg['messageText'])
+		print self.client.sms(msg['from'], "Ack :" + msg['text'])
 		print self.client.delete(msg)
 
 def main():	

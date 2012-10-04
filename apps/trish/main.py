@@ -149,8 +149,8 @@ class Trish:
 			self.show_help(msg, phone_num)
 
 	def handle(self, msg_data):
-		msg = msg_data['messageText'].strip()
-		phone_num = msg_data['phoneNumber'].strip()
+		msg = msg_data['text'].strip()
+		phone_num = msg_data['from'].strip()
 		if(not msg):
 			self.getHelp(msg, phone_num)
 		else:

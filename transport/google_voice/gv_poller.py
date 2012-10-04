@@ -49,7 +49,7 @@ class GoogleVoicePoller(threading.Thread):
 		messages = msg_thread.findAll('div', {'class' : 'gc-message-sms-row'})
 		phone_num = messages[-1].find('span', {'class' : 'gc-message-sms-from'}).find(text=True).strip().rstrip(':').strip()
 		text = messages[-1].find('span', {'class' : 'gc-message-sms-text'}).find(text=True).strip()
-		return {'id':meta['id'], 'messageText': text, 'phoneNumber': phone_num}
+		return {'id':meta['id'], 'text': text, 'from': phone_num}
 		
 	def poll_new(self):
 		while(True):		
