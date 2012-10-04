@@ -37,8 +37,8 @@ conn = None
 try:	
 	conn = pgdb.connect("localhost:trish:postgres:postgres")
 	cur = conn.cursor()
-	cur.execute('CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, phone varchar(20), post text, zipcode varchar(10))')  
-	cur.execute('CREATE TABLE IF NOT EXISTS follow_tags (id serial PRIMARY KEY, tag varchar(20), subscription_list varchar(500))')
+	cur.execute('CREATE TABLE posts (id serial PRIMARY KEY, phone varchar(20), post text, zipcode varchar(10))')  
+	cur.execute('CREATE TABLE follow_tags (id serial PRIMARY KEY, tag varchar(20), subscription_list varchar(500))')
 	cur.execute("CREATE INDEX post_index ON posts USING gin(to_tsvector('english', post))")
 	cur.execute("CREATE UNIQUE INDEX tag_index ON follow_tags(tag)")
 	conn.commit()	
