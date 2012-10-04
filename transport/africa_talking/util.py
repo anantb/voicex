@@ -23,12 +23,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import httplib, urllib, json
 
+PATH = "/version1/messaging"
 
 def http_post(params, api_key):
 	conn = httplib.HTTPSConnection("api.africastalking.com")
 	headers = {"Content-type": "application/x-www-form-urlencoded",
 			"Accept": "application/json", "ApiKey": api_key }
 	params = urllib.urlencode(params)
-	conn.request("POST", "/version1/messaging", params, headers)	
+	conn.request("POST", PATH, params, headers)	
+	res = conn.getresponse().read()
+	return json.loads(res)
+	
+def http_get(params, api_key):
+	conn = httplib.HTTPSConnection("api.africastalking.com")
+	headers = {"Accept": "application/json", "ApiKey": api_key }
+	params = urllib.urlencode(params)
+	conn.request("GET", PATH, params, headers)
 	res = conn.getresponse().read()
 	return json.loads(res)
