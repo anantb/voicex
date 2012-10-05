@@ -8,14 +8,10 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$','voicex.views.index'),
     url(r'^index', 'voicex.views.index'),
-    url(r'^trish', 'voicex.views.trish'),
-    url(r'^mungano', 'voicex.views.mungano'),
-    # url(r'^$', 'voicex.views.home', name='home'),
-    # url(r'^voicex/', include('voicex.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^voicex', 'voicex.views.voicex_us'),
+    url(r'^mungano', 'voicex.views.mungano_us'),
+    url(r'^voicex/us', 'voicex.views.voicex_us'),
+    url(r'^mungano/us', 'voicex.views.mungano_us'),
+    url(r'^voicex/ke', 'voicex.views.voicex_ke'),
+    url(r'^mungano/ke', 'voicex.views.mungano_ke')
 )

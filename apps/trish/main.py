@@ -41,7 +41,7 @@ class Trish:
 		self.v.set_callback(callback = self.msg_new)
 	
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To post : #post msg, To search: #search keywords, To follow: #follow keywords, To reply: #reply post-id reply msg, To view #view post-id, To delete #delete post-id"
+		help_text = "Welcome to VoiceX! To post : #post msg, To search: #search keywords, To follow: #follow keywords, To reply: #reply post-id reply-msg, To view #view post-id, To delete #delete post-id"
 		if(not msg):
 			pass
 		elif('post' in msg):
@@ -53,7 +53,7 @@ class Trish:
 		elif('delete' in msg):
 			help_text = "Help for #delete : #delete post-id"
 		elif('reply' in msg):
-			help_text = "Help for #reply : #reply post-id reply msg"
+			help_text = "Help for #reply : #reply post-id reply-msg"
 		elif('follow' in msg):
 			help_text = "Help for #follow : #follow keywords"
 		else:
