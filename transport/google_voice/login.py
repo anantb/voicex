@@ -47,14 +47,14 @@ def login(email, password):
 	
 def load_tokens():
 	try:	
-		tokens = open('resources/' + 'voicex_token', 'rU').read()
+		tokens = open('/tmp/resources/' + 'voicex_token', 'rU').read()
 		return tokens
 	except IOError:
 		return None
 	
 
 def write_tokens(auth, rnr_se):
-	f = w_open('resources/' + 'voicex_token')
+	f = w_open('/tmp/resources/' + 'voicex_token')
 	f.write('|'.join([auth, rnr_se]))
 	f.close()
 	
