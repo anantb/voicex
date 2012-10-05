@@ -36,8 +36,10 @@ class Trish:
 	def __init__(self):
 		self.mc = ModelController()
 		self.v = voicex.VoiceX()
+		
+	def init_callback(self):
 		self.v.set_callback(callback = self.msg_new)
-
+	
 	def show_help(self, msg, phone_num):
 		help_text = "Welcome to Trish! To post : #post <msg>, To search: #search <keywords>, To follow: #follow <post-id>, To reply: #reply <post-id> <reply msg>, To view #view <post-id>, To delete #delete <post-id>"
 		if(not msg):
@@ -160,7 +162,8 @@ class Trish:
 		self.handle(msg)
 
 def main():	
-	Trish()
+	t= Trish()
+	t.init_callback()
 
 if __name__ == "__main__":
     main()
