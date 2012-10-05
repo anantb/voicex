@@ -6,6 +6,8 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^$','voicex.views.index'),
+    url(r'^index', 'voicex.views.index'),
     url(r'^trish', 'voicex.views.trish'),
     url(r'^mungano', 'voicex.views.mungano'),
     # url(r'^$', 'voicex.views.home', name='home'),
