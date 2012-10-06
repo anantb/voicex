@@ -2,7 +2,7 @@ from django.http import *
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import *
 import json
-from apps.trish.main import Trish
+from engine import VoiceXEngine
 
 def index(request):
 	return render_to_response("index.html")
@@ -18,7 +18,7 @@ def voicex_us(request):
 			msg_data['text'] = request.POST['text']
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']
-		t = Trish()
+		t = VoiceXEngine()
 		t.msg_new(msg_data)
 		res = {'status':True, 'request':request.POST, 'msg':'response sent to your number'}
 		return HttpResponse(json.dumps(res))
