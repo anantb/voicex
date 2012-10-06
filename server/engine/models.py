@@ -20,7 +20,7 @@ class Reply(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class ReplyAll(models.Model):
+class Reply_All(models.Model):
 	id = models.AutoField(primary_key=True)
 	phone = models.CharField(max_length=20)
 	reply = models.TextField()
@@ -31,7 +31,7 @@ class ReplyAll(models.Model):
 		return self.name
 
 
-class FollowTag(models.Model):
+class Follow_Tag(models.Model):
 	id = models.AutoField(primary_key=True)
 	tag = models.CharField(max_length=20)
 	follow_list = models.TextField()

@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
+Copyright (c) 2012 Anant Bhardwaj
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -110,9 +110,9 @@ class ModelController:
 	def find_follow_list(self, tags):
 		follow_list = []
 		try:
-			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+			tags = map(lambda x: str(stem(x.lower())), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 			for t in tags:	
-				follow_tag = FollowTag.objects.get(tag=t)
+				follow_tag = Follow_Tag.objects.get(tag=t)
 				if(follow_tag == None):
 					continue
 				else:
@@ -129,18 +129,20 @@ class ModelController:
 
 
 	def update_follow_tag(self, tags, phone_number):
-		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+		tags = map(lambda x: str(stem(x.lower())), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		for t in tags:
 			try:
-				follow_tag = FollowTag.objects.get(tag=t)
+				follow_tag = Follow_Tag.objects.get(t)
 				if(not follow_tag):
-					new_follow_tag = Tag(tag = t, follow_list = phone_number)
+					new_follow_tag = Follow_Tag(tag = t, follow_list = str(phone_number))
 					new_follow_tag.save()
 				else:
 					follow_list = follow_tag.follow_list
 					if(phone_number not in follow_list):
 						new_follow_list = follow_list + ','+ phone_number
-						follow_tag.follow_list = follow_list
+						follow_tag.follow_list = new_follow_list
+						follow_tag.update()
+						
 				return True
 			except:
 				print "update_follow_tag: ", sys.exc_info()
