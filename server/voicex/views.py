@@ -2,7 +2,7 @@ from django.http import *
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import *
 import json
-from engine import VoiceXEngine
+from engine.main import VoiceXEngine
 
 def index(request):
 	return render_to_response("index.html")
