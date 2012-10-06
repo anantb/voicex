@@ -35,12 +35,14 @@ class VoiceXEngine:
 	def __init__(self):
 		self.mc = ModelController()
 		self.v = voicex.VoiceX()
-		
+
+
 	def init_callback(self):
 		self.v.set_callback(callback = self.msg_new)
-	
+
+
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To post : #post msg, To search: #search keywords, To follow: #follow tags, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id, To tag #tag post-id tag-id."
+		help_text = "Welcome to VoiceX! To post : #post msg, To search: #search keywords, To follow: #follow tags, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
 		if(not msg):
 			pass
 		elif('post' in msg):
@@ -57,13 +59,11 @@ class VoiceXEngine:
 			help_text = "Help for #comment : #comment post-id comment"
 		elif('follow' in msg):
 			help_text = "Help for #follow : #follow keywords"
-		elif('tag' in msg):
-			help_text = "Help for #tag : #tag post-id tag-id"
 		else:
 			pass			
 		self.v.sms(phone_num, help_text)
-		
-	
+
+
 
 	def post(self, text, phone_num):				
 		post_id = self.mc.insert_post(phone_num, text);
@@ -74,9 +74,9 @@ class VoiceXEngine:
 				self.notify_followers(tags, "New post (ID:" + str(post_id) + "): "+ text +".", post_id)
 		else:
 			self.v.sms(phone_num, "Error occured while posting the Msg.")
-		
-	
-		
+
+
+
 	def notify_followers(self, tags, msg, post_id):
 		follow_list = self.mc.find_follow_list(tags)
 		if(len(follow_list)>0):
@@ -84,13 +84,15 @@ class VoiceXEngine:
 			self.v.sms(recipients, msg)
 
 
+
 	def delete(self, post_id, phone_num):
 		if(self.mc.delete_post(post_id)):
 			self.v.sms(phone_num, "Post ID:(" + post_id + ") has been successfully deleted!")
 		else:
 			self.v.sms(phone_num, "Couldn't delete post (ID:" + post_id+")")
-		
-				
+
+
+
 	def view(self, post_id, phone_num):	
 		post = self.mc.find_post(post_id)
 		if(post):
@@ -99,39 +101,60 @@ class VoiceXEngine:
 			res = 'No post found with id: ' + post_id
 		self.v.sms(phone_num, res)
 
+
+
 	def search(self, query, phone_num):
 		res = self.mc.search_posts(query)
 		if(not res):
 			res = 'No matching results found.' 
 		self.v.sms(phone_num, res)
 
+
+
 	def reply(self, msg_data, phone_num):
 		tokens = msg_data.strip().split(" ", 1)
 		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
-		post_id = tokens[0]
+		post_id = None
+		reply_text = None
 		try:
-			reply_post = tokens[1]
+			post_id = str(int(tokens[0]))
+			reply_text = tokens[1]
+		except:
+			self.getHelp(msg_data, phone_num)
+			return
+			
+		try:
+			reply_text = tokens[1]
 			post = self.mc.find_post(post_id)
 			if(post):
-				reply_id = self.mc.insert_reply(phone_num, reply_post, post)
+				reply_id = str(self.mc.insert_reply(phone_num, reply_text, post))
 				if(reply_id > 0):
 					self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been sucessfully submitted!")
 					reply_to  = post.phone
-					self.v.sms(reply_to, "New Reply (ID:" +str(reply_id)+") : " + reply_post +".")
+					self.v.sms(reply_to, "New Reply (ID:" +reply_id+") : " + reply_text +".")
 			else:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
 			self.v.sms(phone_num, 'Error occured while replying to post (ID:' + post_id+")")
-	
+
+
+
 	def comment(self, msg_data, phone_num):
 		tokens = msg_data.strip().split(" ", 1)
 		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
-		post_id = tokens[0]
+		post_id = None
+		comment_text = None
 		try:
+			post_id = str(int(tokens[0]))
 			comment_text = tokens[1]
+		except:
+			self.getHelp(msg_data, phone_num)
+			return
+					
+		try:			
 			post = self.mc.find_post(post_id)
 			if(post):
-				comment_id = self.mc.insert_reply(phone_num, comment_text, post, to_all = True)
+				comment_id = self.mc.insert_reply(phone_num, comment_text, post, public = True)
 				if(comment_id > 0):
 					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been sucessfully submitted!")
 					reply_to  = post.phone
@@ -143,16 +166,16 @@ class VoiceXEngine:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
 			self.v.sms(phone_num, 'Error occured while adding comment to post (ID:' + post_id+")")
-		
-		
+
+
 	def follow(self, msg, phone_num):
 		tags = re.findall('\w+', msg)		
 		if(self.mc.update_follow_tag(tags, phone_num)):
 			self.v.sms(phone_num, 'Follow tags added successfully.')
 		else:
 			self.v.sms(phone_num, 'Error occured while adding the follow tags.')
-		
-	
+
+
 	def parse(self, msg, phone_num):
 		try:
 			msg_data = (msg.strip()).split(" ", 1)
@@ -179,6 +202,8 @@ class VoiceXEngine:
 			print "parse: ", e
 			self.show_help(msg, phone_num)
 
+
+
 	def handle(self, msg_data):
 		msg = msg_data['text'].strip()
 		phone_num = msg_data['from'].strip()
@@ -191,9 +216,11 @@ class VoiceXEngine:
 	def msg_new(self, msg):
 		self.handle(msg)
 
+
 def main():	
 	t= VoiceXEngine()
 	t.init_callback()
+
 
 if __name__ == "__main__":
     main()

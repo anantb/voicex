@@ -50,7 +50,7 @@ class ModelController:
 	def insert_post(self, phone_num, post):
 		try:
 			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post=post, zip_code = zipcode, to_all = True)
+			p = Post(phone = phone_num, post=post, zip_code = zipcode, public = True)
 			p.save()
 			return p.id
 		except Exception, e:
@@ -81,10 +81,10 @@ class ModelController:
 			return False
 			
 
-	def insert_reply(self, phone_num, post, reply_to, to_all=False):
+	def insert_reply(self, phone_num, post, reply_to, public=False):
 		try:
 			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post=post, zip_code = zipcode, reply_to = reply_to, to_all = to_all)
+			p = Post(phone = phone_num, post=post, zip_code = zipcode, public = public)
 			p.save()
 			return p.id
 		except Exception, e:
@@ -99,14 +99,24 @@ class ModelController:
 			data = None		
 			q = re.findall('\w+', query)
 			q = map(lambda x: x.lower(), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), q)))
-			q = '|'.join(q)				
-			self.cursor.execute("SELECT post, id, ts_rank_cd(to_tsvector('english', post), query, 32 /* rank/(rank+1) */) as rank FROM posts, to_tsquery('english', '"+q+"') as query WHERE to_tsvector('english', post) @@ query ORDER BY rank DESC LIMIT " + str(limit) + " OFFSET " + str(offset))
-			data = self.cursor.fetchall()
+			q = '|'.join(q)
+			data = Post.objects.extra(
+			select={
+				'post': "post",
+				'id': "id",
+				'rank': "ts_rank_cd(post_tsv, %s, 32)",
+				},
+			where=["post_tsv @@ %s"],
+			params=[q],
+			select_params=[q, q],
+			order_by=('-rank',)
+			)
+			
 			if(not data):
 				return None
 			res = ""
 			for d in data:
-				res = res + str(d[0]) + ' (Post ID: ' + str(d[1]) + "). "
+				res = res + str(d.post) + ' (Post ID: ' + str(d.id) + "). "
 				res = res + '\n'
 			return res
 		except Exception, e:

@@ -36,7 +36,7 @@ class Post(models.Model):
 	post = models.TextField()
 	zip_code = models.CharField(max_length=20)
 	reply_to = models.ForeignKey('self', blank=False, null=True, related_name="replies")
-	to_all = models.BooleanField()
+	public = models.BooleanField()
 	timestamp = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
