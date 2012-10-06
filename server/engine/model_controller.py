@@ -50,7 +50,7 @@ class ModelController:
 	def insert_post(self, phone_num, post):
 		try:
 			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post=post, zip_code = zipcode)
+			p = Post(phone = phone_num, post=post, zip_code = zipcode, to_all = True)
 			p.save()
 			return p.id
 		except Exception, e:
@@ -79,7 +79,18 @@ class ModelController:
 		except Exception, e:
 			print "delete_post: ", e
 			return False
-		
+			
+
+	def insert_reply(self, phone_num, post, reply_to, to_all=False):
+		try:
+			zipcode = extract_zipcode(post)
+			p = Post(phone = phone_num, post=post, zip_code = zipcode, reply_to = reply_to, to_all = to_all)
+			p.save()
+			return p.id
+		except Exception, e:
+			print "insert_reply: ", e
+			return -1
+
 
 
 
@@ -110,7 +121,7 @@ class ModelController:
 			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 			for t in tags:
 				try:
-					follow_tag = Follow_Tag.objects.get(tag=t)				
+					follow_tag = Follow_Tag.objects.get(tag=t)
 					follow_list.append(follow_tag.follow_list)
 					if(len(follow_list) > 0):
 						recipients = ','.join(follow_list)
@@ -129,7 +140,7 @@ class ModelController:
 		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		for t in tags:
 			try:
-				follow_tag = Follow_Tag.objects.get(tag=t)				
+				follow_tag = Follow_Tag.objects.get(tag=t)
 				follow_list = follow_tag.follow_list
 				if(phone_number not in follow_list):
 					new_follow_list = follow_list + ','+ phone_number
@@ -146,9 +157,3 @@ class ModelController:
 			except Exception, e:
 				print "update_follow_tag: ", e
 				return False
-
-
-
-
-
-			
