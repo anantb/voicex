@@ -1,6 +1,6 @@
 # Django settings for voicex project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -152,3 +152,9 @@ LOGGING = {
         },
     }
 }
+
+# local Settings - overriden by local_settings.py
+try:
+	from local_settings import *
+except ImportError:
+	pass
