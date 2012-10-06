@@ -36,7 +36,6 @@ class VoiceXEngine:
 	def __init__(self):
 		self.mc = ModelController()
 		self.v = voicex.VoiceX()
-		self.init_callback()
 		
 	def init_callback(self):
 		self.v.set_callback(callback = self.msg_new)
