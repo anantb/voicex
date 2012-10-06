@@ -41,8 +41,8 @@ class ModelController:
 		try:
 			p = Post.objects.get(id = post_id)
 			return p
-		except:
-			print "find_post: ", sys.exc_info()
+		except Exception, e:
+			print "find_post: ", e
 			return None
 
 
@@ -53,9 +53,8 @@ class ModelController:
 			p = Post(phone = phone_num, post=post, zip_code = zipcode)
 			p.save()
 			return p.id
-		except:
-			self.conn.rollback()
-			print "insert_post: ", sys.exc_info()
+		except Exception, e:
+			print "insert_post: ", e
 			return -1
 
 	
@@ -66,9 +65,8 @@ class ModelController:
 			p.post = new_post
 			p.save()
 			return True
-		except:
-			self.conn.rollback()
-			print "update_post: ", sys.exc_info()
+		except Exception, e:
+			print "update_post: ", e
 			return False
 			
 	
@@ -78,9 +76,8 @@ class ModelController:
 			p = Post.objects.get(id = post_id)
 			p.delete()
 			return True
-		except:
-			self.conn.rollback()
-			print "delete_post: ", sys.exc_info()
+		except Exception, e:
+			print "delete_post: ", e
 			return False
 		
 
@@ -101,8 +98,8 @@ class ModelController:
 				res = res + str(d[0]) + ' (Post ID: ' + str(d[1]) + "). "
 				res = res + '\n'
 			return res
-		except:
-			print "search_posts: ", sys.exc_info()
+		except Exception, e:
+			print "search_posts: ", e
 			return None
 
 	
@@ -110,44 +107,45 @@ class ModelController:
 	def find_follow_list(self, tags):
 		follow_list = []
 		try:
-			tags = map(lambda x: str(stem(x.lower())), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-			for t in tags:	
-				follow_tag = Follow_Tag.objects.get(tag=t)
-				if(follow_tag == None):
-					continue
-				else:
+			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+			for t in tags:
+				try:
+					follow_tag = Follow_Tag.objects.get(tag=t)				
 					follow_list.append(follow_tag.follow_list)
-			if(len(follow_list) > 0):
-				recipients = ','.join(follow_list)
-				follow_list = re.split(',', recipients)
-				follow_list = list(set(filter(lambda x: x!='' and x!=',', follow_list)))
-		except:
-			print "find_follow_list: ", sys.exc_info()
+					if(len(follow_list) > 0):
+						recipients = ','.join(follow_list)
+						follow_list = re.split(',', recipients)
+						follow_list = list(set(filter(lambda x: x!='' and x!=',', follow_list)))
+				except Follow_Tag.DoesNotExist:
+					pass
+		except Exception, e:
+			print "find_follow_list: ", e
 		finally:
-			return sub_list
+			return follow_list
 	
 
 
 	def update_follow_tag(self, tags, phone_number):
-		tags = map(lambda x: str(stem(x.lower())), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
+		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		for t in tags:
 			try:
-				follow_tag = Follow_Tag.objects.get(t)
-				if(not follow_tag):
-					new_follow_tag = Follow_Tag(tag = t, follow_list = str(phone_number))
-					new_follow_tag.save()
-				else:
-					follow_list = follow_tag.follow_list
-					if(phone_number not in follow_list):
-						new_follow_list = follow_list + ','+ phone_number
-						follow_tag.follow_list = new_follow_list
-						follow_tag.update()
-						
+				follow_tag = Follow_Tag.objects.get(tag=t)				
+				follow_list = follow_tag.follow_list
+				if(phone_number not in follow_list):
+					new_follow_list = follow_list + ','+ phone_number
+					follow_tag.follow_list = new_follow_list
+					follow_tag.update()
 				return True
-			except:
-				print "update_follow_tag: ", sys.exc_info()
+			except Follow_Tag.DoesNotExist:
+				try:
+					new_follow_tag = Follow_Tag(tag = t, follow_list = phone_number)
+					new_follow_tag.save()
+					return True
+				except:
+					return False
+			except Exception, e:
+				print "update_follow_tag: ", e
 				return False
-
 
 
 

@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
+Copyright (c) 2012 Anant Bhardwaj
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -76,13 +76,13 @@ class VoiceXEngine:
 		if(not tags):
 			return
 		follow_list = self.mc.find_follow_list(tags)
-		if(len(sub_list)>0):
+		if(len(follow_list)>0):
 			recipients = ','.join(follow_list)
 			self.v.sms(recipients, "New Post: " + msg +", Post ID: " + post_id +".")	
 
 
 	def delete(self, post_id, phone_num):
-		if(self.mc.delete_post(msg_data)):
+		if(self.mc.delete_post(post_id)):
 			self.v.sms(phone_num, "Post #" + post_id + " has been successfully deleted!")
 		else:
 			self.v.sms(phone_num, "Couldn't delete post #" + post_id)
@@ -128,9 +128,9 @@ class VoiceXEngine:
 		
 	
 	def parse(self, msg, phone_num):
-		msg_data = msg.strip().split(" ", 1)
-		msg_data = map(lambda x: x.strip(), msg_data)
 		try:
+			msg_data = (msg.strip()).split(" ", 1)
+			msg_data = map(lambda x: x.strip(), msg_data)
 			if (msg_data[0] == "#post"):
 				self.post(msg_data[1], phone_num)
 			elif(msg_data[0] == "#view"):
@@ -147,7 +147,8 @@ class VoiceXEngine:
 				self.show_help(msg_data[1], phone_num)
 			else:
 				self.show_help(msg, phone_num)
-		except:
+		except Exception, e:
+			print "parse: ", e
 			self.show_help(msg, phone_num)
 
 	def handle(self, msg_data):
