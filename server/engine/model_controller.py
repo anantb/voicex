@@ -24,6 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os, sys, pgdb, re
 from stemming.porter2 import stem
 from utils import *
+from models import *
 
 '''
 Application Model Controller
