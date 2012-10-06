@@ -112,7 +112,7 @@ class ModelController:
 		try:
 			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 			for t in tags:	
-				follow_tag = FollowTag.objects.get(tag=t))
+				follow_tag = FollowTag.objects.get(tag=t)
 				if(follow_tag == None):
 					continue
 				else:
