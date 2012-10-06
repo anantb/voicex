@@ -111,7 +111,7 @@ class ModelController:
 		try:
 			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 			for tag in tags:	
-				follow_tag = Tag.objects.get(tag=tag.strip())
+				follow_tag = Follow_Tag.objects.get(tag=tag.strip())
 				if(follow_tag == None):
 					continue
 				else:
@@ -121,7 +121,7 @@ class ModelController:
 				sub_list = re.split(',', recipients)
 				sub_list = list(set(filter(lambda x: x!='' and x!=',', sub_list)))			
 		except:
-			print "search_posts: ", sys.exc_info()
+			print "find_subscription_list: ", sys.exc_info()
 		finally:
 			return sub_list
 	
@@ -130,7 +130,7 @@ class ModelController:
 	def update_follow_tag(self, tags, phone_number):
 		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
 		for tag in tags:
-			follow_tag = Tag.objects.get(tag=tag.strip)
+			follow_tag = Follow_Tag.objects.get(tag=tag.strip)
 			try:		
 				if(not follow_tag):
 					t = Tag(tag.strip(), phone_number)
