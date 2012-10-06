@@ -84,7 +84,7 @@ class ModelController:
 	def insert_reply(self, phone_num, post, reply_to, public=False):
 		try:
 			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post=post, zip_code = zipcode, public = public)
+			p = Post(phone = phone_num, post = post, reply_to=reply_to, zip_code = zipcode, public = public)
 			p.save()
 			return p.id
 		except Exception, e:
@@ -104,10 +104,11 @@ class ModelController:
 			select={
 				'post': "post",
 				'id': "id",
+				'public': "public",
 				'rank': "ts_rank_cd(post_tsv, %s, 32)",
 				},
-			where=["post_tsv @@ %s"],
-			params=[q],
+			where=["(post_tsv @@ %s) AND (public = %s)"],
+			params=[q, True],
 			select_params=[q, q],
 			order_by=('-rank',)
 			)

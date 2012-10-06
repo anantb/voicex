@@ -23,7 +23,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import sys, re
 from model_controller import *
+from models import *
 from transport import voicex
+
 '''
 Main Handler Interface
 
@@ -97,6 +99,9 @@ class VoiceXEngine:
 		post = self.mc.find_post(post_id)
 		if(post):
 			res = post.post
+			posts = Post.objects.filter(reply_to = post, public = True)
+			for p in posts:
+				res =  res + "[Comment (ID:" + str(p.id) + "): " + p.post + "] "
 		else:		
 			res = 'No post found with id: ' + post_id
 		self.v.sms(phone_num, res)
