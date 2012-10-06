@@ -31,7 +31,7 @@ class ReplyAll(models.Model):
 		return self.name
 
 
-class Follow_Tag(models.Model):
+class FollowTag(models.Model):
 	id = models.AutoField(primary_key=True)
 	tag = models.CharField(max_length=20)
 	follow_list = models.TextField()

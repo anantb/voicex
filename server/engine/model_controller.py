@@ -107,22 +107,22 @@ class ModelController:
 
 	
 			
-	def find_subscription_list(self, tags):
-		sub_list = []
+	def find_follow_list(self, tags):
+		follow_list = []
 		try:
 			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-			for tag in tags:	
-				follow_tag = Follow_Tag.objects.get(tag=tag.strip())
+			for t in tags:	
+				follow_tag = FollowTag.objects.get(tag=t))
 				if(follow_tag == None):
 					continue
 				else:
-					sub_list.append(follow_tag.follow_list)
-			if(len(sub_list) > 0):
-				recipients = ','.join(sub_list)
-				sub_list = re.split(',', recipients)
-				sub_list = list(set(filter(lambda x: x!='' and x!=',', sub_list)))			
+					follow_list.append(follow_tag.follow_list)
+			if(len(follow_list) > 0):
+				recipients = ','.join(follow_list)
+				follow_list = re.split(',', recipients)
+				follow_list = list(set(filter(lambda x: x!='' and x!=',', follow_list)))
 		except:
-			print "find_subscription_list: ", sys.exc_info()
+			print "find_follow_list: ", sys.exc_info()
 		finally:
 			return sub_list
 	
@@ -130,20 +130,21 @@ class ModelController:
 
 	def update_follow_tag(self, tags, phone_number):
 		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-		for tag in tags:
-			follow_tag = Follow_Tag.objects.get(tag=tag.strip)
-			try:		
+		for t in tags:			
+			try
+				follow_tag = FollowTag.objects.get(tag=t)
 				if(not follow_tag):
-					t = Tag(tag.strip(), phone_number)
-					t.save()
+					new_follow_tag = Tag(tag = t, follow_list = phone_number)
+					new_follow_tag.save()
 				else:
-					subscription_list = row[0]
-					if(phone_number not in subscription_list):
-						new_subscription_list = subscription_list + ','+ phone_number
-						follow_tag.subscription_list = new_subscription_list
+					follow_list = follow_tag.follow_list
+					if(phone_number not in follow_list):
+						new_follow_list = follow_list + ','+ phone_number
+						follow_tag.follow_list = follow_list
+				return True
 			except:
-				self.conn.rollback()
-				print "exception encountered", sys.exc_info()
+				print "update_follow_tag: ", sys.exc_info()
+				return False
 
 
 

@@ -76,9 +76,9 @@ class VoiceXEngine:
 		tags = re.findall('\w+', msg)
 		if(not tags):
 			return
-		sub_list = self.mc.find_subscription_list(tags)
+		follow_list = self.mc.find_follow_list(tags)
 		if(len(sub_list)>0):
-			recipients = ','.join(sub_list)
+			recipients = ','.join(follow_list)
 			self.v.sms(recipients, "New Post: " + msg +", Post ID: " + post_id +".")	
 
 
@@ -122,8 +122,10 @@ class VoiceXEngine:
 		
 	def follow(self, msg, phone_num):
 		tags = re.findall('\w+', msg)		
-		self.mc.update_follow_tag(tags, phone_num)
-		self.v.sms(phone_num, 'Follow tags added successfully')
+		if(self.mc.update_follow_tag(tags, phone_num)):
+			self.v.sms(phone_num, 'Follow tags added successfully.')
+		else:
+			self.v.sms(phone_num, 'Error occured while adding the follow tags.')
 		
 	
 	def parse(self, msg, phone_num):
