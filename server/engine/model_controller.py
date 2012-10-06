@@ -130,8 +130,8 @@ class ModelController:
 
 	def update_follow_tag(self, tags, phone_number):
 		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-		for t in tags:			
-			try
+		for t in tags:
+			try:
 				follow_tag = FollowTag.objects.get(tag=t)
 				if(not follow_tag):
 					new_follow_tag = Tag(tag = t, follow_list = phone_number)

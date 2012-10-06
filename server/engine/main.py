@@ -21,8 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os, sys, re
-sys.path.append(os.getcwd()+"/../..")
+import sys, re
 from model_controller import *
 from transport import voicex
 '''
