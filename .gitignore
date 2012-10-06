@@ -7,3 +7,6 @@
 
 # Ignore tokens
 voicex_token
+
+# Local Settings
+local_settings.py
