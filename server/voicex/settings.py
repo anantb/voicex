@@ -121,7 +121,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south',
     'voicex',
-    'engine'
+    'engine',
+    'mungano'
 )
 
 # A sample logging configuration. The only tangible logging

@@ -35,8 +35,9 @@ Mungano Handler Interface
 
 class Mungano:
 	def __init__(self):
-		self.mc = ModelController()
-		self.v = voicex.VoiceX()
+		print "here"
+		#self.mc = ModelController()
+		#self.v = voicex.VoiceX()
 
 
 	def init_callback(self):
@@ -111,6 +112,7 @@ class Mungano:
 
 
 	def handle(self, msg_data):
+		print msg_data
 		msg = msg_data['text'].strip()
 		phone_num = msg_data['from'].strip()
 		if(not msg):

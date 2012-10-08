@@ -28,7 +28,7 @@ class Subscription(models.Model):
 	id = models.AutoField(primary_key=True)
 	phone = models.CharField(max_length=20, unique=True)
 	sub_list = models.TextField()
-	pass_phrase = phone = models.CharField(max_length=20)
+	pass_phrase = models.CharField(max_length=20)
 	timestamp = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return self.name

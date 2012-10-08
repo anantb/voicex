@@ -1,6 +1,8 @@
 ### python packages ####
 beautifulsoup4
 stemming
+django
+south
 
 ### ubuntu packages ###
 # apt-get install python-pygresql
