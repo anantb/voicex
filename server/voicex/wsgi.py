@@ -16,12 +16,11 @@ framework.
 import os, sys
 
 p = os.path.abspath(os.path.dirname(__file__))
+
 if(os.path.abspath(p+"/../..") not in sys.path):
-	print os.path.abspath(p+"/../..")
 	sys.path.append(os.path.abspath(p+"/../.."))
 
 if(os.path.abspath(p+"/..") not in sys.path):
-	print os.path.abspath(p+"/..")
 	sys.path.append(os.path.abspath(p+"/.."))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "voicex.settings")
