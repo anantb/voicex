@@ -33,11 +33,11 @@ VoiceX public APIs
 '''	
 
 class VoiceX:
-	def __init__(self, transport=config.TRANSPORT):
-		if(transport == config.GV):
-			self.client = GoogleVoice(config.GV['username'], config.GV['password'], d = False)
-		elif(transport == config.AT):
-			self.client = AfricaTalking(config.AP['username'], config.GV['api_key'])
+	def __init__(self, username, password=None, api_key=None):
+		if(config.TRANSPORT == config.GV):
+			self.client = GoogleVoice(username, password, d = False)
+		elif(config.TRANSPORT == config.AT):
+			self.client = AfricaTalking(username, api_key)
 		else:
 			raise NotImplementedError(transport + " not implemented")
 
@@ -64,7 +64,7 @@ class VoiceX:
 
 class Test():
 	def __init__(self):		
-		self.client = VoiceX()
+		self.client = VoiceX(username=config.GV_VOICEX['username'], password = config.GV_VOICEX['password'])
 		self.client.set_callback(callback = self.msg_new)
 
 	def msg_new(self, msg):

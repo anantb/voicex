@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import sys, re
 from model_controller import *
 from models import *
-from transport import voicex
+from transport import voicex, config
 
 '''
 Mungano Handler Interface
@@ -36,8 +36,8 @@ Mungano Handler Interface
 class Mungano:
 	def __init__(self):
 		print "here"
-		#self.mc = ModelController()
-		#self.v = voicex.VoiceX()
+		self.mc = ModelController()
+		self.v = voicex.VoiceX(username=config.GV_MUNGANO['username'], password=config.GV_MUNGANO['password'])
 
 
 	def init_callback(self):
@@ -98,11 +98,11 @@ class Mungano:
 			if (msg_data[0] == "#sub"):
 				self.subscribe(msg_data[1], phone_num)
 			elif(msg_data[0] == "#view"):
-				self.view(msg_data[1], phone_num)
+				self.view(msg, phone_num)
 			elif(msg_data[0] == "#alert"):
-				self.handle_alert(msg_data[1], phone_num)
+				self.handle_alert(msg, phone_num)
 			elif(msg_data[0] == "#help"):
-				self.show_help(msg_data[1], phone_num)
+				self.show_help(msg, phone_num)
 			else:
 				self.show_help(msg, phone_num)
 		except Exception, e:

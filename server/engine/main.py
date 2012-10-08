@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import sys, re
 from model_controller import *
 from models import *
-from transport import voicex
+from transport import voicex, config
 
 '''
 Main Handler Interface
@@ -36,7 +36,7 @@ Main Handler Interface
 class VoiceXEngine:
 	def __init__(self):
 		self.mc = ModelController()
-		self.v = voicex.VoiceX()
+		self.v = voicex.VoiceX(username=config.GV_VOICEX['username'], password = config.GV_VOICEX['password'])
 
 
 	def init_callback(self):

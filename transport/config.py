@@ -21,11 +21,20 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+GV = "Google Voice"
+AT = "Africa Talking"
+
 '''Google Voice Setting'''
-GV = {
+GV_VOICEX = {
 'name':'Google Voice', 
 'username':'voicex.git@gmail.com', 
 'password':'VoiceX@Git'
+}
+
+GV_MUNGANO = {
+'name':'Google Voice', 
+'username':'mungano.dlt@gmail.com', 
+'password':'Mungano@DLT'
 }
 
 '''Africa Talking Setting'''
