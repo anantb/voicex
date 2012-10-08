@@ -69,17 +69,17 @@ def voicex_ke(request):
 @csrf_exempt
 def mungano_us(request):
         if(request.POST):
-                msg_data = {}
-		if('number' in request.POST):
-			msg_data['from'] = request.POST['number']
-		if('text' in request.POST):
-			msg_data['text'] = request.POST['text']
-		if('from' in request.POST):
-			msg_data['from'] = request.POST['from']
-		t = Mungano()
-		t.msg_new(msg_data)
-		res = {'status':True, 'request':request.POST, 'msg':'response sent to your number'}
-		return HttpResponse(json.dumps(res))
+			msg_data = {}
+			if('number' in request.POST):
+				msg_data['from'] = request.POST['number']
+			if('text' in request.POST):
+				msg_data['text'] = request.POST['text']
+			if('from' in request.POST):
+				msg_data['from'] = request.POST['from']
+			t = Mungano()
+			t.msg_new(msg_data)
+			res = {'status':True, 'request':request.POST, 'msg':'response sent to your number'}
+			return HttpResponse(json.dumps(res))
         else:
                 return render_to_response("mungano_us.html")
                 
@@ -87,7 +87,7 @@ def mungano_us(request):
 @csrf_exempt
 def mungano_ke(request):
         if(request.POST):
-                res = {'status':False, 'request':request.POST, 'msg':'not available'}
-                return HttpResponse(json.dumps(res))
+			res = {'status':False, 'request':request.POST, 'msg':'not available'}
+			return HttpResponse(json.dumps(res))
         else:
-                return render_to_response("mungano_ke.html")
+			return render_to_response("mungano_ke.html")
