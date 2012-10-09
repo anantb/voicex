@@ -37,7 +37,7 @@ class Mungano:
 	def __init__(self):
 		print "here"
 		self.mc = ModelController()
-		self.v = voicex.VoiceX(username=config.GV_MUNGANO['username'], password=config.GV_MUNGANO['password'])
+		self.v = voicex.VoiceX(transport=config.GV, auth= config.GV_MUNGANO_AUTH)
 
 
 	def init_callback(self):

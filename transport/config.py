@@ -21,29 +21,31 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+''' Transport '''
 GV = "Google Voice"
 AT = "Africa Talking"
 
-'''Google Voice Setting'''
-GV_VOICEX = {
+'''Auth Settings '''
+GV_VOICEX_AUTH = {
 'name':'Google Voice', 
 'username':'voicex.git@gmail.com', 
 'password':'VoiceX@Git'
 }
 
-GV_MUNGANO = {
+GV_MUNGANO_AUTH = {
 'name':'Google Voice', 
 'username':'mungano.dlt@gmail.com', 
 'password':'Mungano@DLT'
 }
 
-'''Africa Talking Setting'''
-AT = {
+AT_VOICEX_AUTH = {
 'name':'Africa Talking', 
 'username': 'voicex', 
 'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872'
 }
 
-
-'''Transport Setting'''
-TRANSPORT = GV #{GV: Google Vpice, AT: Africa Talking}
+AT_MUNGANO_AUTH = {
+'name':'Africa Talking', 
+'username': 'voicex', 
+'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872'
+}

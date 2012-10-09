@@ -36,7 +36,7 @@ Main Handler Interface
 class VoiceXEngine:
 	def __init__(self):
 		self.mc = ModelController()
-		self.v = voicex.VoiceX(username=config.GV_VOICEX['username'], password = config.GV_VOICEX['password'])
+		self.v = voicex.VoiceX(transport=config.GV, auth= config.GV_VOICEX_AUTH)
 
 
 	def init_callback(self):
