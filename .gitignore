@@ -5,6 +5,11 @@
 *.*~
 
 
+# Ignore all xcode files
+*.pbxproj
+*.xcworkspace
+
+
 # Ignore tokens
 voicex_token
 
