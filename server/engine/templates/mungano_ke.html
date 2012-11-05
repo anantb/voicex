@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mungano (Kenya) Simulator </h1>
+<form method="POST" action="mungano_ke">
+	You can post to our system by putting the details below:
+	<hr />
+	<label for="from">Your Kenya Phone Number (we will send the response to this number)</label><br />
+	<input type="text" name="from" id="from" /><br />
+	<label for="text">Text (as if you were sending it from your phone)</label> <br />
+	<textarea name="text" id="text" rows="4" cols="50"></textarea> <br />
+	<input type="submit" value="Submit" />
+	</form>
+{% endblock %}

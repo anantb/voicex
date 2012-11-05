@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>VoiceX (US) Simulator </h1>
+<form method="POST" action="voicex_us">
+	You can post to our system by putting the details below:
+	<hr />
+	<label for="from">Your US Phone Number (we will send the response to this number)</label><br />
+	<input type="text" name="from" id="from" value="+16503088677" /><br />
+	<label for="text">Text (as if you were sending it from your phone)</label> <br />
+	<textarea name="text" id="text" rows="4" cols="50"></textarea> <br />
+	<input type="submit" value="Submit" />
+	</form>
+{% endblock %}
