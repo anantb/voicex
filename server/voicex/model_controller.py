@@ -109,7 +109,7 @@ class ModelController:
 				},
 			where=["(post_tsv @@ %s) AND (public = %s)"],
 			params=[q, True],
-			select_params=[q, q],
+			select_params=[q],
 			order_by=('-rank',)
 			)
 			
