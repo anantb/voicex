@@ -29,10 +29,10 @@ import config
 @author: anant bhardwaj
 @date: Oct 4, 2012
 
-VoiceX public APIs
+VoiceX Transport public APIs
 '''	
 
-class VoiceX:
+class VoiceXTransport:
 	def __init__(self, transport, auth):
 		if(transport == config.GV):
 			self.client = GoogleVoice(auth['username'], auth['password'], d = False)
@@ -64,7 +64,7 @@ class VoiceX:
 
 class Test():
 	def __init__(self):		
-		self.client = VoiceX(username=config.GV_VOICEX['username'], password = config.GV_VOICEX['password'])
+		self.client = VoiceXTransport(username=config.GV_VOICEX['username'], password = config.GV_VOICEX['password'])
 		self.client.set_callback(callback = self.msg_new)
 
 	def msg_new(self, msg):
