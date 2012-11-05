@@ -103,7 +103,7 @@ class GoogleVoice():
 class Test():
 	def __init__(self):
 		self.client = GoogleVoice('voicex.git@gmail.com', 'VoiceX@Git', d = False)
-		self.client.start_poll(callback = self.msg_new)
+		self.client.set_callback(callback = self.msg_new)
 		
 	def msg_new(self, msg):
 		print "Got text [ %s ] from [%s]." %(msg['text'], msg['from'])
