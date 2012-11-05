@@ -29,7 +29,7 @@ from models import *
 '''
 Application Model Controller
 
-@author: Anant Bhardwaj
+@author: Anant Bhardwaj, Trisha Kothari
 @date: Aug 3, 2012
 '''
 
