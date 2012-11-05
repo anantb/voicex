@@ -48,7 +48,7 @@ class Migration(SchemaMigration):
             ('public', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('engine', ['Post'])
+        db.send_create_signal('voicex', ['Post'])
 
         # Adding model 'Follow_Tag'
         db.create_table('follow_tags', (
@@ -58,7 +58,7 @@ class Migration(SchemaMigration):
             ('parent_tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name='children', null=True, to=orm['engine.Follow_Tag'])),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('engine', ['Follow_Tag'])
+        db.send_create_signal('voicex', ['Follow_Tag'])
         
         db.execute("""
 			ALTER TABLE posts ADD COLUMN post_tsv tsvector;
@@ -78,7 +78,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'engine.follow_tag': {
+        'voicex.follow_tag': {
             'Meta': {'object_name': 'Follow_Tag', 'db_table': "'follow_tags'"},
             'follow_list': ('django.db.models.fields.TextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -86,7 +86,7 @@ class Migration(SchemaMigration):
             'tag': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
-        'engine.post': {
+        'voicex.post': {
             'Meta': {'object_name': 'Post', 'db_table': "'posts'"},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
@@ -98,4 +98,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['engine']
+    complete_apps = ['voicex']

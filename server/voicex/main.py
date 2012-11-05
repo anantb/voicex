@@ -21,7 +21,17 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import sys, re
+import os, sys, re
+
+if __name__ == "__main__":
+	p = os.path.abspath(os.path.dirname(__file__))
+	if(os.path.abspath(p+"/../..") not in sys.path):
+		sys.path.append(os.path.abspath(p+"/../.."))
+	if(os.path.abspath(p+"/..") not in sys.path):
+		sys.path.append(os.path.abspath(p+"/.."))
+	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "engine.settings")
+
+
 from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
@@ -223,13 +233,11 @@ class VoiceX:
 		self.handle(msg)
 
 
-def main():	
-	t= VoiceXEngine()
-	t.init_callback()
+def main():
+	v = VoiceX()
+	v.init_callback()
 
 
 if __name__ == "__main__":
-    main()
-	
-	
+	main()
 

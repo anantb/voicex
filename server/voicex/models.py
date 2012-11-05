@@ -44,6 +44,7 @@ class Post(models.Model):
 	
 	class Meta:
 		db_table = "posts"
+		app_label = 'voicex'
 
 
 class Follow_Tag(models.Model):
@@ -57,6 +58,7 @@ class Follow_Tag(models.Model):
 
 	class Meta:
 		db_table = "follow_tags"
+		app_label = 'voicex'
 
 """
 class Tag(models.Model):
