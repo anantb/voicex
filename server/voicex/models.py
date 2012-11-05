@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Anant Bhardwaj
+Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -26,7 +26,7 @@ from django.db import models
 '''
 VoiceX Models
 
-@author: Anant Bhardwaj
+@author: Anant Bhardwaj, Trisha Kothari
 @date: Oct 8, 2012
 '''
 
