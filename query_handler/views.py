@@ -29,7 +29,7 @@ from voicex.main import VoiceX
 from mungano.main import Mungano
 
 '''
-VoiceX Query Handler (Views)
+Main Query Handler (Views)
 
 @author: Anant Bhardwaj
 @date: Oct 8, 2012
