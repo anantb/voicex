@@ -45,5 +45,9 @@ cd src/voicex
 python manage.py syncdb
 python manage.py migrate
 
-# run voicex server
+# run voicex server (development version)
 python manage.py runserver
+
+# run voicex with apache (production version) -- add the following lines in /etc/apache2/httpd.conf
+WSGIDaemonProcess voicex python-path=/path/to/voicex
+WSGIScriptAlias /voicex /path/to/voicex/http_handler/wsgi.py process-group=voicex application-group=%{GLOBAL}
