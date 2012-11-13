@@ -13,11 +13,7 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os, sys
-
-p = os.path.abspath(os.path.dirname(__file__))
-if(os.path.abspath(p+"/..") not in sys.path):
-	sys.path.append(os.path.abspath(p+"/.."))
+import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "http_handler.settings")
 

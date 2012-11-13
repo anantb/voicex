@@ -1,7 +1,7 @@
 # Django settings for voicex project.
 
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = False
 
 ADMINS = (
     ('Anant Bhardwaj', 'anantb@csail.mit.edu'),
@@ -120,7 +120,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'http_handler',
-    'query_handler',
     'voicex',
     'mungano',
     'south'
