@@ -125,6 +125,15 @@ class VoiceX:
 
 
 
+	def testdelay(self, delay, phone_num):
+		try:
+			d = int(delay)
+			self.v.sms(phone_num, "you should get a text after %s minutes" %(delay))			
+		except:
+			self.v.sms(phone_num, "something went wrong")
+
+
+
 	def reply(self, msg_data, phone_num):
 		tokens = msg_data.strip().split(" ", 1)
 		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
@@ -208,6 +217,8 @@ class VoiceX:
 				self.comment(msg_data[1], phone_num)
 			elif(msg_data[0] == "#follow"):
 				self.follow(msg_data[1], phone_num)
+			elif(msg_data[0] == "#testdelay"):
+                                self.testdelay(msg_data[1], phone_num)
 			elif(msg_data[0] == "#help"):
 				self.show_help(msg_data[1], phone_num)
 			else:
