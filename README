@@ -2,26 +2,30 @@ VoiceX is an infrastructure designed for rural areas/slums where people do not h
 
 ##### Installation Instruction #####
 
-# setup a virtual environment
-virtualenv voicex
-surce bin/activate
-
-# install required python packages
-pip install django
-pip install south
-pip install psycopg2
-pip install stemming
-pip install djcelery
-
-
 # install required linux packages
-sudo apr-get install postgresql
+sudo apt-get install postgresql
 sudo apt-get install rabbitmq-server
+
 
 # create rabbitmq user and vhost
 sudo rabbitmqctl add_user voicex voicex
 sudo rabbitmqctl add_vhost /voicex
 sudo rabbitmqctl set_permissions -p /voicex voicex ".*" ".*" ".*"
+
+
+# setup a virtual environment
+virtualenv voicex
+cd voicex
+surce bin/activate
+
+
+# install required python packages
+pip install django
+pip install south
+pip install psycopg2
+pip install beautifulsoup4
+pip install stemming
+pip install djcelery
 
 
 # download voicex
