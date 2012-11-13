@@ -108,11 +108,14 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+import djcelery
+djcelery.setup_loader()
+
 BROKER_HOST = "127.0.0.1"
 BROKER_PORT = 5672
-BROKER_VHOST = "/"
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/voicex"
+BROKER_USER = "voicex"
+BROKER_PASSWORD = "voicex"
 
 INSTALLED_APPS = (
     #'django.contrib.auth',
