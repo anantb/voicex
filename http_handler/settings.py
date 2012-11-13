@@ -108,6 +108,12 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+BROKER_HOST = "127.0.0.1"
+BROKER_PORT = 5672
+BROKER_VHOST = "/"
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+
 INSTALLED_APPS = (
     #'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -122,7 +128,8 @@ INSTALLED_APPS = (
     'http_handler',
     'voicex',
     'mungano',
-    'south'
+    'south',
+    'djcelery',
 )
 
 # A sample logging configuration. The only tangible logging

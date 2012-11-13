@@ -44,7 +44,7 @@ class Migration(SchemaMigration):
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('post', self.gf('django.db.models.fields.TextField')()),
             ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('reply_to', self.gf('django.db.models.fields.related.ForeignKey')(related_name='replies', null=True, to=orm['engine.Post'])),
+            ('reply_to', self.gf('django.db.models.fields.related.ForeignKey')(related_name='replies', null=True, to=orm['voicex.Post'])),
             ('public', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
@@ -55,7 +55,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('tag', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
             ('follow_list', self.gf('django.db.models.fields.TextField')()),
-            ('parent_tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name='children', null=True, to=orm['engine.Follow_Tag'])),
+            ('parent_tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name='children', null=True, to=orm['voicex.Follow_Tag'])),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal('voicex', ['Follow_Tag'])
@@ -82,7 +82,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Follow_Tag', 'db_table': "'follow_tags'"},
             'follow_list': ('django.db.models.fields.TextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'parent_tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': "orm['engine.Follow_Tag']"}),
+            'parent_tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': "orm['voicex.Follow_Tag']"}),
             'tag': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
@@ -92,7 +92,7 @@ class Migration(SchemaMigration):
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'post': ('django.db.models.fields.TextField', [], {}),
             'public': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'reply_to': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'replies'", 'null': 'True', 'to': "orm['engine.Post']"}),
+            'reply_to': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'replies'", 'null': 'True', 'to': "orm['voicex.Post']"}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         }
