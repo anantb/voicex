@@ -1,4 +1,4 @@
-##### Installation Instruction #####
+##### VoiceX Installation Instruction #####
 
 # install required linux packages
 sudo apt-get install postgresql
@@ -14,7 +14,7 @@ sudo rabbitmqctl set_permissions -p /voicex voicex ".*" ".*" ".*"
 # setup a virtual environment
 virtualenv voicex
 cd voicex
-surce bin/activate
+source bin/activate
 
 
 # install required python packages
@@ -44,8 +44,12 @@ python manage.py syncdb
 python manage.py migrate
 
 # run voicex server (development version)
+python manage.py celeryd
 python manage.py runserver
 
-# run voicex with apache (production version) -- add the following lines in /etc/apache2/httpd.conf
+# run voicex with apache (production version) 
+# add the following lines in /etc/apache2/httpd.conf
 WSGIDaemonProcess voicex python-path=/path/to/voicex
 WSGIScriptAlias /voicex /path/to/voicex/http_handler/wsgi.py process-group=voicex application-group=%{GLOBAL}
+
+# make sure that celeryd is in init script (/etc/init.d)
