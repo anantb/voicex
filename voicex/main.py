@@ -126,9 +126,10 @@ class VoiceX:
 
 	def testdelay(self, delay, phone_num):
 		try:
-			d = int(delay)
+			d = float(delay)
 			voicex.tasks.delayed_sms.delay(self.v, phone_num, "this text is delayed by %s minutes" %(delay), d)			
 		except:
+			print sys.exc_info()
 			self.v.sms(phone_num, "couldn't schedule a delayed msg")
 
 
