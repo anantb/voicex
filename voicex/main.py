@@ -128,9 +128,7 @@ class VoiceX:
 		try:
 			d = int(delay)
 			voicex.tasks.delayed_sms.delay(phone_num, "you should get a text after %s minutes" %(delay), d)			
-
 		except:
-			print sys.exc_info()[0] 
 			self.v.sms(phone_num, "something went wrong")
 
 
