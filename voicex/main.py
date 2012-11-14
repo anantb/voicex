@@ -239,7 +239,6 @@ class VoiceX:
 	
 	def msg_new(self, msg):
 		self.handle(msg)
-		self.v.mark_read(msg)
 
 
 def main():
