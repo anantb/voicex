@@ -44,7 +44,10 @@ python manage.py syncdb
 python manage.py migrate
 
 # start celeryd (development mode)
-python manage.py celeryd    # for production mode create a celeryd script in /etc/init.d
+python manage.py celeryd
+OR
+celeryd
+# for production mode create a celeryd script in /etc/init.d
 
 # run voicex server (development version)
 python manage.py runserver
