@@ -61,7 +61,7 @@ class GoogleVoicePoller(threading.Thread):
 						if(not (inbox['messages'][msg]['isRead'] or inbox['messages'][msg]['isTrash'])):							
 							m = self.process(inbox['messages'][msg], page)
 							print m
-							self.v.marg_read(m)
+							self.v.mark_read(m)
 							self.callback(m)						
 			except:
 				print sys.exc_info()
