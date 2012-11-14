@@ -34,8 +34,7 @@ from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
 from transport import config
-from tasks import *
-
+import voicex
 '''
 Main Handler Interface
 
@@ -129,7 +128,7 @@ class VoiceX:
 	def testdelay(self, delay, phone_num):
 		try:
 			d = int(delay)
-			delayed_sms(phone_num, "you should get a text after %s minutes" %(delay), d)			
+			voicex.tasks.delayed_sms.delay(phone_num, "you should get a text after %s minutes" %(delay), d)			
 
 		except:
 			print sys.exc_info()[0] 
@@ -243,6 +242,7 @@ class VoiceX:
 	
 	def msg_new(self, msg):
 		self.handle(msg)
+		self.v.mark_read(msg)
 
 
 def main():

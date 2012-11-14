@@ -1,4 +1,5 @@
 # Django settings for voicex project.
+import voicex
 
 DEBUG = False
 TEMPLATE_DEBUG = False
@@ -108,14 +109,10 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-import djcelery
-djcelery.setup_loader()
+CELERY_IMPORTS=("voicex.tasks",)
+CELERY_RESULT_BACKEND = "amqp"
+BROKER_URL = "amqp://voicex:voicex@localhost:5672//voicex"
 
-BROKER_HOST = "127.0.0.1"
-BROKER_PORT = 5672
-BROKER_VHOST = "/voicex"
-BROKER_USER = "voicex"
-BROKER_PASSWORD = "voicex"
 
 INSTALLED_APPS = (
     #'django.contrib.auth',
@@ -134,6 +131,7 @@ INSTALLED_APPS = (
     'south',
     'djcelery',
 )
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
