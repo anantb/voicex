@@ -129,8 +129,7 @@ class VoiceX:
 	def testdelay(self, delay, phone_num):
 		try:
 			d = int(delay)
-			print_msg.delay(d)
-			self.v.sms(phone_num, "you should get a text after %s minutes" %(delay))			
+			delayed_sms(phone_num, "you should get a text after %s minutes" %(delay), d)			
 
 		except:
 			print sys.exc_info()[0] 
