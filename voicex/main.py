@@ -34,7 +34,7 @@ from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
 from transport import config
-import voicex
+import voicex.tasks
 '''
 Main Handler Interface
 
@@ -85,7 +85,6 @@ class VoiceX:
 				self.notify_followers(tags, "New post (ID:" + str(post_id) + "): "+ text +".", post_id)
 		else:
 			self.v.sms(phone_num, "Error occured while posting the Msg.")
-
 
 
 	def notify_followers(self, tags, msg, post_id):

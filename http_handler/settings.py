@@ -1,5 +1,4 @@
 # Django settings for voicex project.
-import voicex
 
 DEBUG = False
 TEMPLATE_DEBUG = False
