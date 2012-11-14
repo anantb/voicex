@@ -43,13 +43,13 @@ cd src/voicex
 python manage.py syncdb
 python manage.py migrate
 
+# start celeryd (development mode)
+python manage.py celeryd    # for production mode create a celeryd script in /etc/init.d
+
 # run voicex server (development version)
-python manage.py celeryd
 python manage.py runserver
 
-# run voicex with apache (production version) 
+# run voicex server with apache (production version) 
 # add the following lines in /etc/apache2/httpd.conf
 WSGIDaemonProcess voicex python-path=/path/to/voicex
 WSGIScriptAlias /voicex /path/to/voicex/http_handler/wsgi.py process-group=voicex application-group=%{GLOBAL}
-
-# make sure that celeryd is in init script (/etc/init.d)
