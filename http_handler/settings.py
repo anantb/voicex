@@ -108,9 +108,6 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-CELERY_IMPORTS=("voicex.tasks",)
-CELERY_RESULT_BACKEND = "amqp"
-BROKER_URL = "amqp://voicex:voicex@localhost:5672//voicex"
 
 
 INSTALLED_APPS = (
@@ -160,6 +157,15 @@ LOGGING = {
         },
     }
 }
+
+
+# celery settings
+try:
+        from celeryconfig import *
+except ImportError:
+        pass
+
+
 
 # local Settings - overriden by local_settings.py
 try:
