@@ -48,7 +48,7 @@ class ModelController:
 
 	def insert_alert(self, sub, delay=0, msg=None):
 		try:
-			alert = Alert(sub=sub, delay=delay, msg=msg)
+			alert = Alert(sub=sub, delay=0, msg=msg)
 			alert.save()
 			return alert.id
 		except Exception, e:
@@ -65,7 +65,8 @@ class ModelController:
 			return True
 		except Subscription.DoesNotExist:
 			try:
-				sub = Subscription(phone = phone_number, sub = sub_list)
+				print "sublist is "+ sub_list
+				sub = Subscription(phone = phone_number, sub_list = sub_list)
 				sub.save()
 				return True
 			except Exception, e:

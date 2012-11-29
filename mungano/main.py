@@ -20,7 +20,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-
+import mungano.tasks
 import sys, re
 from model_controller import *
 from models import *
@@ -64,12 +64,19 @@ class Mungano:
 	def handle_alert(self, msg_data, phone_num):	
 		sub = self.mc.find_subscription(phone_num)
 		if(sub):
-			alert_id = self.mc.insert_alert(sub);
+		#	alert_id = self.mc.insert_alert(sub);
 			self.alert(sub, "alert from %s" %phone_num)
 		else:		
 			res = 'No subscription found for phone number: %s' %(phone_num)
 		
-
+        def testdelay(self, delay, phone_num):
+		try:
+			d = float(delay)
+			print "Your d is " + d
+			mungano.tasks.delayed_sms.delay(self.v, phone_num, "this text is delayed by %s minutes" %(delay), d)          
+		except:
+			print sys.exc_info()
+			self.v.sms(phone_num, "couldn't schedule a delayed msg")
 
 
 	def alert(self, sub, msg):
@@ -99,9 +106,11 @@ class Mungano:
 			if (msg_data[0] == "#sub"):
 				self.subscribe(msg_data[1], phone_num)
 			elif(msg_data[0] == "#view"):
-				self.view(msg, phone_num)
+				self.view(phone_num)
 			elif(msg_data[0] == "#alert"):
 				self.handle_alert(msg, phone_num)
+			elif (msg_data[0] == "#delayalert"):
+				self.testdelay(msg_data[1], phone_num)
 			elif(msg_data[0] == "#help"):
 				self.show_help(msg, phone_num)
 			else:
