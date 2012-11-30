@@ -5,6 +5,7 @@ TEMPLATE_DEBUG = False
 
 ADMINS = (
     ('Anant Bhardwaj', 'anantb@csail.mit.edu'),
+    ('Trisha Kothari', 'kotharitrisha@gmail.com')
 )
 
 MANAGERS = ADMINS

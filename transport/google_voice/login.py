@@ -34,7 +34,7 @@ service = "grandcentral";
 source = "voicex";
 
 def login(email, password):
-	tokens = load_tokens()
+	tokens = load_tokens(email)
 	if(tokens !=None):
 		t = tokens.split('|')
 		print "loaded tokens"
@@ -45,16 +45,16 @@ def login(email, password):
 		tokens = login_reset(email, password)
 	return tokens
 	
-def load_tokens():
+def load_tokens(email):
 	try:	
-		tokens = open('/tmp/resources/' + 'voicex_token', 'rU').read()
+		tokens = open('/tmp/resources/' + email, 'rU').read()
 		return tokens
 	except IOError:
 		return None
 	
 
-def write_tokens(auth, rnr_se):
-	f = w_open('/tmp/resources/' + 'voicex_token')
+def write_tokens(email, auth, rnr_se):
+	f = w_open('/tmp/resources/' + email)
 	f.write('|'.join([auth, rnr_se]))
 	f.close()
 	
@@ -96,5 +96,5 @@ def login_reset(email, password):
 			rnr_se = line[line.find("'_rnr_se': '")+len("_rnr_se': "):-1]
 			rnr_se = rnr_se.replace("'",'').strip()
 			print rnr_se
-	write_tokens(auth, rnr_se)
+	write_tokens(email, auth, rnr_se)
 	return {'auth':auth, 'rnr_se':rnr_se}

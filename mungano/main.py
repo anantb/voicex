@@ -36,7 +36,6 @@ Mungano Handler Interface
 
 class Mungano:
 	def __init__(self):
-		print "here"
 		self.mc = ModelController()
 		self.v = VoiceXTransport(transport=config.GV, auth= config.GV_MUNGANO_AUTH)
 
@@ -46,13 +45,15 @@ class Mungano:
 
 
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to Mungano! To subscribe : #sub phone_numbers_separated_by_a_comma, To send an immediate alert: #alert, To send delayed alert: #alert delay_time_in_minutes msg, To view your subscription list: #view, To override your old subscription with a new list: #sub new_list_of_phone_numbers_separated_by_a_comma"
+		help_text = "Welcome to Mungano! To subscribe : #sub phone_numbers_separated_by_a_comma, To send an immediate alert: #alert, To send delayed alert: #alarm delay_time_in_minutes msg, To view your subscription list: #view, To override your old subscription with a new list: #sub new_list_of_phone_numbers_separated_by_a_comma"
 		if(not msg):
 			pass
 		elif('sub' in msg):
 			help_text = "Help for #sub : #sub phone_numbers_separated_by_a_comma"
 		elif('alert' in msg):
-			help_text = "Help for #alert : For immediate alert: #alert, For delayed alert: #alert delay_time_in_minutes msg"
+			help_text = "Help for #alert : #alert message"
+		elif('alarm' in msg):
+                        help_text = "Help for #alarm : #alarm delay-in-minutes message"
 		elif('view' in msg):
 			help_text = "Help for #view : #view"
 		else:
@@ -64,20 +65,20 @@ class Mungano:
 	def handle_alert(self, msg_data, phone_num):	
 		sub = self.mc.find_subscription(phone_num)
 		if(sub):
-		#	alert_id = self.mc.insert_alert(sub);
-			self.alert(sub, "alert from %s" %phone_num)
+			self.alert(sub, "alert from %s: %s" %(phone_num, msg_data))
 		else:		
 			res = 'No subscription found for phone number: %s' %(phone_num)
 		
-        def testdelay(self, delay, phone_num):
+        def handle_alarm(self, msg_data, phone_num):
 		try:
-			d = float(delay)
-			print "Your d is " + d
-			mungano.tasks.delayed_sms.delay(self.v, phone_num, "this text is delayed by %s minutes" %(delay), d)          
-		except:
-			print sys.exc_info()
-			self.v.sms(phone_num, "couldn't schedule a delayed msg")
-
+			tokens = msg_data.strip().split(" ", 1)
+                        delay = float(tokens[0])
+                        msg = tokens[1]
+			sub = self.mc.find_subscription(phone_num)
+                        mungano.tasks.delayed_sms.delay(self.v, sub.sub_list, "alarm (%s minutes): %s. copy sent to: %s" %(str(delay), str(msg), sub.sub_list), delay)
+                except:
+                        self.getHelp(msg_data, phone_num)
+                        return
 
 	def alert(self, sub, msg):
 		self.v.sms(sub.sub_list, msg)
@@ -86,7 +87,7 @@ class Mungano:
 	def view(self, phone_num):	
 		sub = self.mc.find_subscription(phone_num)
 		if(sub):
-			res = sub.sub_list
+			res = 'subscribed numbers: ' + str(sub.sub_list)
 		else:		
 			res = 'No subscription found for phone number: %s' %(phone_num)
 		self.v.sms(phone_num, res)
@@ -94,9 +95,9 @@ class Mungano:
 
 	def subscribe(self, sub_list, phone_num):
 		if(self.mc.update_subscription(sub_list, phone_num)):
-			self.v.sms(phone_num, 'Alert subscription updated successfully for %s.' %(phone_num))
+			self.v.sms(phone_num, 'alert subscription updated successfully for %s.' %(phone_num))
 		else:
-			self.v.sms(phone_num, 'Error occured while updating the alert subscription for %s.' %(phone_num))
+			self.v.sms(phone_num, 'error occured while updating the alert subscription for %s.' %(phone_num))
 
 
 	def parse(self, msg, phone_num):
@@ -108,9 +109,9 @@ class Mungano:
 			elif(msg_data[0] == "#view"):
 				self.view(phone_num)
 			elif(msg_data[0] == "#alert"):
-				self.handle_alert(msg, phone_num)
-			elif (msg_data[0] == "#delayalert"):
-				self.testdelay(msg_data[1], phone_num)
+				self.handle_alert(msg_data[1], phone_num)
+			elif (msg_data[0] == "#alarm"):
+				self.handle_alarm(msg_data[1], phone_num)
 			elif(msg_data[0] == "#help"):
 				self.show_help(msg, phone_num)
 			else:

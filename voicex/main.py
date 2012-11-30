@@ -124,15 +124,6 @@ class VoiceX:
 
 
 
-	def testdelay(self, delay, phone_num):
-		try:
-			d = float(delay)
-			voicex.tasks.delayed_sms.delay(self.v, phone_num, "this text is delayed by %s minutes" %(delay), d)			
-		except:
-			print sys.exc_info()
-			self.v.sms(phone_num, "couldn't schedule a delayed msg")
-
-
 
 	def reply(self, msg_data, phone_num):
 		tokens = msg_data.strip().split(" ", 1)
@@ -217,8 +208,6 @@ class VoiceX:
 				self.comment(msg_data[1], phone_num)
 			elif(msg_data[0] == "#follow"):
 				self.follow(msg_data[1], phone_num)
-			elif(msg_data[0] == "#testdelay"):
-                                self.testdelay(msg_data[1], phone_num)
 			elif(msg_data[0] == "#help"):
 				self.show_help(msg_data[1], phone_num)
 			else:
