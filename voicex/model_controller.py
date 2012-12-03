@@ -43,7 +43,7 @@ class ModelController:
 		name=name.lower().strip()
 		phone = phone_num.strip()
 		try:
-			acc = Account.objects.get()
+			acc = Account.objects.get(name = name)
 			if (acc.phone == phone):
 				return True
 			else:

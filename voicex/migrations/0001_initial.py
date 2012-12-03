@@ -1,34 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright (c) 2012 Anant Bhardwaj
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
-
-'''
-Schema Migrations
-
-@author: Anant Bhardwaj
-@date: Oct 6, 2012
-'''
-
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
@@ -50,40 +20,80 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('voicex', ['Post'])
 
-        # Adding model 'Follow_Tag'
-        db.create_table('follow_tags', (
+        # Adding model 'Following'
+        db.create_table('following', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tag', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
-            ('follow_list', self.gf('django.db.models.fields.TextField')()),
-            ('parent_tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name='children', null=True, to=orm['voicex.Follow_Tag'])),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['voicex.Account'])),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
-        db.send_create_signal('voicex', ['Follow_Tag'])
-        
-        db.execute("""
-			ALTER TABLE posts ADD COLUMN post_tsv tsvector;
-			CREATE TRIGGER post_tsvector_update BEFORE INSERT OR UPDATE ON posts 
-			FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(post_tsv, 'pg_catalog.english', post);
-			CREATE INDEX post_index ON posts USING gin(post_tsv);
-			UPDATE posts SET post_tsv=to_tsvector(post);
-		""")  
+        db.send_create_signal('voicex', ['Following'])
+
+        # Adding unique constraint on 'Following', fields ['phone', 'account']
+        db.create_unique('following', ['phone', 'account_id'])
+
+        # Adding model 'Account'
+        db.create_table('accounts', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
+            ('phone', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
+            ('password', self.gf('django.db.models.fields.CharField')(max_length=20)),
+        ))
+        db.send_create_signal('voicex', ['Account'])
+
+        # Adding model 'Delegate'
+        db.create_table('delegates', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('phone', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
+            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['voicex.Account'])),
+        ))
+        db.send_create_signal('voicex', ['Delegate'])
+	
+	db.execute("""
+                        ALTER TABLE posts ADD COLUMN post_tsv tsvector;
+                        CREATE TRIGGER post_tsvector_update BEFORE INSERT OR UPDATE ON posts 
+                        FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(post_tsv, 'pg_catalog.english', post);
+                        CREATE INDEX post_index ON posts USING gin(post_tsv);
+                        UPDATE posts SET post_tsv=to_tsvector(post);
+                """)  
 
 
     def backwards(self, orm):
+        # Removing unique constraint on 'Following', fields ['phone', 'account']
+        db.delete_unique('following', ['phone', 'account_id'])
+
         # Deleting model 'Post'
         db.delete_table('posts')
 
-        # Deleting model 'Follow_Tag'
-        db.delete_table('follow_tags')
+        # Deleting model 'Following'
+        db.delete_table('following')
+
+        # Deleting model 'Account'
+        db.delete_table('accounts')
+
+        # Deleting model 'Delegate'
+        db.delete_table('delegates')
 
 
     models = {
-        'voicex.follow_tag': {
-            'Meta': {'object_name': 'Follow_Tag', 'db_table': "'follow_tags'"},
-            'follow_list': ('django.db.models.fields.TextField', [], {}),
+        'voicex.account': {
+            'Meta': {'object_name': 'Account', 'db_table': "'accounts'"},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'parent_tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': "orm['voicex.Follow_Tag']"}),
-            'tag': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'phone': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'})
+        },
+        'voicex.delegate': {
+            'Meta': {'object_name': 'Delegate', 'db_table': "'delegates'"},
+            'account': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['voicex.Account']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'})
+        },
+        'voicex.following': {
+            'Meta': {'unique_together': "(('phone', 'account'),)", 'object_name': 'Following', 'db_table': "'following'"},
+            'account': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['voicex.Account']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         'voicex.post': {
