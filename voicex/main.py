@@ -53,7 +53,7 @@ class VoiceX:
 
 
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To post : #post msg, To search: #search keywords, To follow: #follow tags, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
+		help_text = "Welcome to VoiceX! To register: #register name, To post: #post msg, To search: #search query, To follow: #follow name, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
 		if(not msg):
 			pass
 		elif('post' in msg):
@@ -74,21 +74,40 @@ class VoiceX:
 			pass			
 		self.v.sms(phone_num, help_text)
 
+	
+	
+	def register(self, name, phone_num):	
+		if(self.mc.add_account(name, phone_num)):
+			self.v.sms(phone_num, 'Account created successfully.')
+		else:
+			self.v.sms(phone_num, 'Error occurred while creating the account.')
+	
+	
+	def deactivate(self, name, phone_num):	
+		if(self.mc.deactivate_account(name, phone_num)):
+			self.v.sms(phone_num, 'Account de-activated successfully.')
+		else:
+			self.v.sms(phone_num, 'Error occurred while de-activating the account.')
+	
+	
+	def activate(self, name, phone_num):	
+		if(self.mc.activate_account(name, phone_num)):
+			self.v.sms(phone_num, 'Account activated successfully.')
+		else:
+			self.v.sms(phone_num, 'Error occurred while activating the account.')
 
-
+	
 	def post(self, text, phone_num):				
 		post_id = self.mc.insert_post(phone_num, text);
 		if(post_id >= 0):		
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
-			tags = re.findall('\w+', text)
-			if(tags):
-				self.notify_followers(tags, "New post (ID:" + str(post_id) + "): "+ text +".", post_id)
+			self.notify_followers(phone_num, "New post (ID:" + str(post_id) + "): "+ text +".", post_id)
 		else:
-			self.v.sms(phone_num, "Error occured while posting the Msg.")
+			self.v.sms(phone_num, "Error occurred while posting the Msg.")
 
 
-	def notify_followers(self, tags, msg, post_id):
-		follow_list = self.mc.find_follow_list(tags)
+	def notify_followers(self, phone_num, msg, post_id):
+		follow_list = self.mc.find_follow_list(phone_num)
 		if(len(follow_list)>0):
 			recipients = ','.join(follow_list)
 			self.v.sms(recipients, msg)
@@ -143,13 +162,13 @@ class VoiceX:
 			if(post):
 				reply_id = str(self.mc.insert_reply(phone_num, reply_text, post))
 				if(reply_id > 0):
-					self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been sucessfully submitted!")
+					self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 					reply_to  = post.phone
 					self.v.sms(reply_to, "New Reply (ID:" +reply_id+") : " + reply_text +".")
 			else:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
-			self.v.sms(phone_num, 'Error occured while replying to post (ID:' + post_id+")")
+			self.v.sms(phone_num, 'Error occurred while replying to post (ID:' + post_id+")")
 
 
 
@@ -170,7 +189,7 @@ class VoiceX:
 			if(post):
 				comment_id = self.mc.insert_reply(phone_num, comment_text, post, public = True)
 				if(comment_id > 0):
-					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been sucessfully submitted!")
+					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been successfully submitted!")
 					reply_to  = post.phone
 					self.v.sms(reply_to, "New comment to post (ID:" +post_id+"): " + comment_text +".")
 					tags = re.findall('\w+', post.post)
@@ -179,22 +198,25 @@ class VoiceX:
 			else:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
-			self.v.sms(phone_num, 'Error occured while adding comment to post (ID:' + post_id+")")
+			self.v.sms(phone_num, 'Error occurred while adding comment to post (ID:' + post_id+")")
 
 
-	def follow(self, msg, phone_num):
-		tags = re.findall('\w+', msg)		
-		if(self.mc.update_follow_tag(tags, phone_num)):
-			self.v.sms(phone_num, 'Follow tags added successfully.')
+	def follow(self, name, phone_num):
+		if(self.mc.update_follow_list(name, phone_num)):
+			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
-			self.v.sms(phone_num, 'Error occured while adding the follow tags.')
+			self.v.sms(phone_num, 'Error occurred while adding the follow list for %s.' %(name))
+	
+	
 
 
 	def parse(self, msg, phone_num):
 		try:
 			msg_data = (msg.strip()).split(" ", 1)
 			msg_data = map(lambda x: x.strip(), msg_data)
-			if (msg_data[0] == "#post"):
+			if (msg_data[0] == "#register"):
+				self.register(msg_data[1], phone_num)
+			elif (msg_data[0] == "#post"):
 				self.post(msg_data[1], phone_num)
 			elif(msg_data[0] == "#view"):
 				self.view(msg_data[1], phone_num)

@@ -47,53 +47,42 @@ class Post(models.Model):
 		app_label = 'voicex'
 
 
-class Follow_Tag(models.Model):
+class Following(models.Model):
 	id = models.AutoField(primary_key=True)
-	tag = models.CharField(max_length=20, unique=True)
-	follow_list = models.TextField()
-	parent_tag = models.ForeignKey('self', blank=False, null=True, related_name="children")
+	phone = models.CharField(max_length=20)
+	account = models.ForeignKey('Account')
 	timestamp = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return self.name
 
 	class Meta:
-		db_table = "follow_tags"
+		db_table = "following"
+		app_label = 'voicex'
+		unique_together = ('phone', 'account',)
+
+
+
+class Account(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=20, unique=True)
+	phone = models.CharField(max_length=20, unique=True)
+	password = models.CharField(max_length=20)
+	def __unicode__(self):
+		return self.name
+
+	class Meta:
+		db_table = "accounts"
 		app_label = 'voicex'
 
-"""
-class Tag(models.Model):
+
+
+class Delegate(models.Model):
 	id = models.AutoField(primary_key=True)
-	tag = models.CharField(max_length=20, unique=True)
-	desc = models.TextField()
-	parent_tag = models.ForeignKey('self', blank=False, null=True, related_name="children")
-	timestamp = models.DateTimeField(auto_now=True)
+	phone = models.CharField(max_length=20, unique=True)
+	account = models.ForeignKey('Account')
 	def __unicode__(self):
 		return self.name
 
 	class Meta:
-		db_table = "tags"
-
-
-class Subscription(models.Model):
-	id = models.AutoField(primary_key=True)
-	tag = models.ForeignKey('Tag')
-	phone = models.CharField(max_length=20)
-	timestamp = models.DateTimeField(auto_now=True)
-	def __unicode__(self):
-		return self.name
-
-	class Meta:
-		db_table = "subscriptions"
-
-
-class Post_Tags(models.Model):
-	id = models.AutoField(primary_key=True)
-	tag_id = models.ForeignKey('Tag')
-	post_id = models.ForeignKey('Post')
-	timestamp = models.DateTimeField(auto_now=True)
-	def __unicode__(self):
-		return self.name
-
-	class Meta:
-		db_table = "subscriptions"
-"""
+		db_table = "delegates"
+		app_label = 'voicex'

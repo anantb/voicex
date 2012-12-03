@@ -36,7 +36,30 @@ Application Model Controller
 class ModelController:
 	def __init__(self):
 		pass
-
+	
+	
+	
+	def add_account(self, phone_num, name):
+		name=name.lower().strip()
+		phone = phone_num.strip()
+		try:
+			acc = Account.objects.get()
+			if (acc.phone == phone):
+				return True
+			else:
+				return False
+		except Account.DoesNotExist:
+			try:
+				acc = Account(name = name, phone = phone)
+				acc.save()
+				return True
+			except:
+				return False
+		except Exception, e:
+			print "insert_post: ", e
+			return False
+	
+	
 	def find_post(self, post_id):
 		try:
 			p = Post.objects.get(id = post_id)
@@ -126,20 +149,14 @@ class ModelController:
 
 	
 			
-	def find_follow_list(self, tags):
+	def find_following(self, phone):
+		phone = phone.strip()
 		follow_list = []
 		try:
-			tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-			for t in tags:
-				try:
-					follow_tag = Follow_Tag.objects.get(tag=t)
-					follow_list.append(follow_tag.follow_list)
-					if(len(follow_list) > 0):
-						recipients = ','.join(follow_list)
-						follow_list = re.split(',', recipients)
-						follow_list = list(set(filter(lambda x: x!='' and x!=',', follow_list)))
-				except Follow_Tag.DoesNotExist:
-					pass
+			account = Account.objects.get(phone = phone)
+			following = Following.objects.get(account = account)
+			for f in following:
+				follow_list.append(f['phone'])
 		except Exception, e:
 			print "find_follow_list: ", e
 		finally:
@@ -147,24 +164,19 @@ class ModelController:
 	
 
 
-	def update_follow_tag(self, tags, phone_number):
-		tags = map(lambda x: stem(x.lower()), filter(lambda x: x!='' and x!=',', map(lambda x: x.strip(), tags)))
-		for t in tags:
+	def update_following(self, name, phone_number):
+		account = None	
+		try:
+			account = Account.objects.get(name = name.lower())
+			following = Following.objects.get(account = account, phone = phone)
+			return True
+		except Follow_Tag.DoesNotExist:
 			try:
-				follow_tag = Follow_Tag.objects.get(tag=t)
-				follow_list = follow_tag.follow_list
-				if(phone_number not in follow_list):
-					new_follow_list = follow_list + ','+ phone_number
-					follow_tag.follow_list = new_follow_list
-					follow_tag.update()
+				following = Following(account = account, phone = phone)
+				following.save()
 				return True
-			except Follow_Tag.DoesNotExist:
-				try:
-					new_follow_tag = Follow_Tag(tag = t, follow_list = phone_number)
-					new_follow_tag.save()
-					return True
-				except:
-					return False
-			except Exception, e:
-				print "update_follow_tag: ", e
+			except:
 				return False
+		except Exception, e:
+			print "update_follow_tag: ", e
+			return False
