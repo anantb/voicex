@@ -53,9 +53,13 @@ class VoiceX:
 
 
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To register: #register name, To post: #post msg, To search: #search query, To follow: #follow name, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
+		help_text = "Welcome to VoiceX! To register: #register name, To unregister: #unregister name, To post: #post msg, To search: #search query, To follow: #follow name, To unfollow: #unfollow name, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
 		if(not msg):
 			pass
+		elif('register' in msg):
+			help_text = "Help for #register : #register name"
+		elif('unregister' in msg):
+			help_text = "Help for #unregister : #unregister name"
 		elif('post' in msg):
 			help_text = "Help for #post : #post msg"
 		elif('search' in msg):
@@ -69,7 +73,9 @@ class VoiceX:
 		elif('comment' in msg):
 			help_text = "Help for #comment : #comment post-id comment"
 		elif('follow' in msg):
-			help_text = "Help for #follow : #follow keywords"
+			help_text = "Help for #follow : #follow name"
+		elif('unfollow' in msg):
+			help_text = "Help for #unfollow : #unfollow name"
 		else:
 			pass			
 		self.v.sms(phone_num, help_text)
@@ -83,18 +89,12 @@ class VoiceX:
 			self.v.sms(phone_num, 'Error occurred while creating the account.')
 	
 	
-	def deactivate(self, name, phone_num):	
-		if(self.mc.deactivate_account(name, phone_num)):
-			self.v.sms(phone_num, 'Account de-activated successfully.')
+	def unregister(self, name, phone_num):	
+		if(self.mc.delete_account(name , phone_num)):
+			self.v.sms(phone_num, 'Account deleted successfully.')
 		else:
-			self.v.sms(phone_num, 'Error occurred while de-activating the account.')
+			self.v.sms(phone_num, 'Error occurred while deleting the account.')
 	
-	
-	def activate(self, name, phone_num):	
-		if(self.mc.activate_account(name, phone_num)):
-			self.v.sms(phone_num, 'Account activated successfully.')
-		else:
-			self.v.sms(phone_num, 'Error occurred while activating the account.')
 
 	
 	def post(self, text, phone_num):				
@@ -201,12 +201,17 @@ class VoiceX:
 
 
 	def follow(self, name, phone_num):
-		if(self.mc.update_following(name, phone_num)):
+		if(self.mc.add_following(name, phone_num)):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
 			self.v.sms(phone_num, 'Error occurred while adding the follow list for %s.' %(name))
 	
 	
+	def unfollow(self, name, phone_num):
+		if(self.mc.delete_following(name, phone_num)):
+			self.v.sms(phone_num, 'You are now not following %s.' %(name))
+		else:
+			self.v.sms(phone_num, 'Error occurred while removing the follow list for %s.' %(name))
 
 
 	def parse(self, msg, phone_num):
@@ -215,7 +220,9 @@ class VoiceX:
 			msg_data = map(lambda x: x.strip(), msg_data)
 			if (msg_data[0] == "#register"):
 				self.register(msg_data[1], phone_num)
-			elif (msg_data[0] == "#post"):
+			elif(msg_data[0] == "#unregister"):
+				self.unregister(msg_data[1], phone_num)
+			elif(msg_data[0] == "#post"):
 				self.post(msg_data[1], phone_num)
 			elif(msg_data[0] == "#view"):
 				self.view(msg_data[1], phone_num)
@@ -229,6 +236,8 @@ class VoiceX:
 				self.comment(msg_data[1], phone_num)
 			elif(msg_data[0] == "#follow"):
 				self.follow(msg_data[1], phone_num)
+			elif(msg_data[0] == "#unfollow"):
+				self.unfollow(msg_data[1], phone_num)
 			elif(msg_data[0] == "#help"):
 				self.show_help(msg_data[1], phone_num)
 			else:

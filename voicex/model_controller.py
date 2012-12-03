@@ -43,11 +43,8 @@ class ModelController:
 		name=name.lower().strip()
 		phone = phone.strip()
 		try:
-			acc = Account.objects.get(name = name)
-			if (acc.phone == phone):
-				return True
-			else:
-				return False
+			acc = Account.objects.get(name = name, phone)
+			return True
 		except Account.DoesNotExist:
 			try:
 				acc = Account(name = name, phone = phone)
@@ -58,7 +55,22 @@ class ModelController:
 		except Exception, e:
 			print "insert_post: ", e
 			return False
+	
+	
+	def delete_account(self, name, phone):
+		name=name.lower().strip()
+		phone = phone.strip()
+		try:
+			acc = Account.objects.get(name = name, phone = phone)
+			acc.delete()
+			return True
+		except Account.DoesNotExist:
+			return False
+		except Exception, e:
+			print "insert_post: ", e
+			return False
 			
+	
 	def find_account(self, phone):
 		try:
 			acc = Account.objects.get(phone = phone)
@@ -164,13 +176,28 @@ class ModelController:
 			for f in following:
 				follow_list.append(f['phone'])
 		except Exception, e:
-			print "find_follow_list: ", e
+			print "find_following: ", e
 		finally:
 			return follow_list
 	
+	
+	
+	def delete_following(self, name, phone_number):
+		account = None
+		phone = phone_number.strip()
+		try:
+			account = Account.objects.get(name = name.lower())
+			following = Following.objects.get(account = account, phone = phone)
+			following.delete()
+			return True
+		except Exception, e:
+			print "delete_following: ", e
+		finally:
+			return follow_list
+			
+	
 
-
-	def update_following(self, name, phone_number):
+	def add_following(self, name, phone_number):
 		account = None
 		phone = phone_number.strip()	
 		try:
@@ -185,5 +212,5 @@ class ModelController:
 			except:
 				return False
 		except Exception, e:
-			print "update_follow_tag: ", e
+			print "add_following: ", e
 			return False
