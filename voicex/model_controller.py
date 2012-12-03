@@ -172,7 +172,7 @@ class ModelController:
 	def find_following(self, account):
 		follow_list = []
 		try:
-			following = Following.objects.get(account = account)
+			following = Following.objects.filter(account = account).values()
 			for f in following:
 				follow_list.append(f['phone'])
 		except Exception, e:
