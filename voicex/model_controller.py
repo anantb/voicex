@@ -58,6 +58,14 @@ class ModelController:
 		except Exception, e:
 			print "insert_post: ", e
 			return False
+			
+	def find_account(self, phone):
+		try:
+			acc = Account.objects.get(phone = phone)
+			return acc
+		except Exception, e:
+			print "find_post: ", e
+			return None
 	
 	
 	def find_post(self, post_id):
@@ -149,11 +157,9 @@ class ModelController:
 
 	
 			
-	def find_following(self, phone):
-		phone = phone.strip()
+	def find_following(self, account):
 		follow_list = []
 		try:
-			account = Account.objects.get(phone = phone)
 			following = Following.objects.get(account = account)
 			for f in following:
 				follow_list.append(f['phone'])

@@ -36,7 +36,7 @@ class Post(models.Model):
 	post = models.TextField()
 	zip_code = models.CharField(max_length=20)
 	reply_to = models.ForeignKey('self', blank=False, null=True, related_name="replies")
-	public = models.BooleanField()
+	public = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
@@ -67,6 +67,7 @@ class Account(models.Model):
 	name = models.CharField(max_length=20, unique=True)
 	phone = models.CharField(max_length=20, unique=True)
 	password = models.CharField(max_length=20)
+	active = models.BooleanField(default=True)
 	def __unicode__(self):
 		return self.name
 

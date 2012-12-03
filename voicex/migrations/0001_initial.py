@@ -49,7 +49,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('voicex', ['Delegate'])
 	
-	db.execute("""
+		db.execute("""
                         ALTER TABLE posts ADD COLUMN post_tsv tsvector;
                         CREATE TRIGGER post_tsvector_update BEFORE INSERT OR UPDATE ON posts 
                         FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(post_tsv, 'pg_catalog.english', post);
