@@ -177,6 +177,8 @@ class VoiceX:
 
 
 	def comment(self, msg_data, phone_num):
+		tokens = msg_data.strip().split(" ", 1)
+                tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
 		post_id = None
 		comment_text = None
 		try:

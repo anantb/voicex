@@ -38,6 +38,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
             ('phone', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
             ('password', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal('voicex', ['Account'])
 
@@ -48,14 +49,6 @@ class Migration(SchemaMigration):
             ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['voicex.Account'])),
         ))
         db.send_create_signal('voicex', ['Delegate'])
-	
-		db.execute("""
-                        ALTER TABLE posts ADD COLUMN post_tsv tsvector;
-                        CREATE TRIGGER post_tsvector_update BEFORE INSERT OR UPDATE ON posts 
-                        FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(post_tsv, 'pg_catalog.english', post);
-                        CREATE INDEX post_index ON posts USING gin(post_tsv);
-                        UPDATE posts SET post_tsv=to_tsvector(post);
-                """)  
 
 
     def backwards(self, orm):
@@ -78,6 +71,7 @@ class Migration(SchemaMigration):
     models = {
         'voicex.account': {
             'Meta': {'object_name': 'Account', 'db_table': "'accounts'"},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
