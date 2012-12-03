@@ -39,9 +39,9 @@ class ModelController:
 	
 	
 	
-	def add_account(self, phone_num, name):
+	def add_account(self, name, phone):
 		name=name.lower().strip()
-		phone = phone_num.strip()
+		phone = phone.strip()
 		try:
 			acc = Account.objects.get(name = name)
 			if (acc.phone == phone):
@@ -165,12 +165,13 @@ class ModelController:
 
 
 	def update_following(self, name, phone_number):
-		account = None	
+		account = None
+		phone = phone_number.strip()	
 		try:
 			account = Account.objects.get(name = name.lower())
 			following = Following.objects.get(account = account, phone = phone)
 			return True
-		except Follow_Tag.DoesNotExist:
+		except Following.DoesNotExist:
 			try:
 				following = Following(account = account, phone = phone)
 				following.save()

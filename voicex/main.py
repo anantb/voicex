@@ -77,7 +77,7 @@ class VoiceX:
 	
 	
 	def register(self, name, phone_num):	
-		if(self.mc.add_account(name, phone_num)):
+		if(self.mc.add_account(name , phone_num)):
 			self.v.sms(phone_num, 'Account created successfully.')
 		else:
 			self.v.sms(phone_num, 'Error occurred while creating the account.')
@@ -101,13 +101,13 @@ class VoiceX:
 		post_id = self.mc.insert_post(phone_num, text);
 		if(post_id >= 0):		
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
-			self.notify_followers(phone_num, "New post (ID:" + str(post_id) + "): "+ text +".", post_id)
+			self.notify_followers(phone_num, text, post_id)
 		else:
 			self.v.sms(phone_num, "Error occurred while posting the Msg.")
 
 
 	def notify_followers(self, phone_num, msg, post_id):
-		follow_list = self.mc.find_follow_list(phone_num)
+		follow_list = self.mc.find_following(phone_num)
 		if(len(follow_list)>0):
 			recipients = ','.join(follow_list)
 			self.v.sms(recipients, msg)
@@ -173,8 +173,6 @@ class VoiceX:
 
 
 	def comment(self, msg_data, phone_num):
-		tokens = msg_data.strip().split(" ", 1)
-		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
 		post_id = None
 		comment_text = None
 		try:
@@ -192,9 +190,6 @@ class VoiceX:
 					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been successfully submitted!")
 					reply_to  = post.phone
 					self.v.sms(reply_to, "New comment to post (ID:" +post_id+"): " + comment_text +".")
-					tags = re.findall('\w+', post.post)
-					if(tags):
-						self.notify_followers(tags, "New comment to post (ID:"+ post_id+"): "+ comment_text +".", post_id)
 			else:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
@@ -202,7 +197,7 @@ class VoiceX:
 
 
 	def follow(self, name, phone_num):
-		if(self.mc.update_follow_list(name, phone_num)):
+		if(self.mc.update_following(name, phone_num)):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
 			self.v.sms(phone_num, 'Error occurred while adding the follow list for %s.' %(name))
