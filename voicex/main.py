@@ -53,7 +53,7 @@ class VoiceX:
 
 
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To register: #register name, To unregister: #unregister name, To post: #post msg, To search: #search query, To follow: #follow name, To unfollow: #unfollow name, To reply: #reply post-id reply-msg, To comment: #comment post-id comment, To view #view post-id, To delete #delete post-id"
+		help_text = "Welcome to VoiceX! To commands: #register name, #unregister name, #post msg, #view post-id, #delete post-id, #search query, #reply post-id msg, #comment post-id comment, #follow name, #unfollow name"
 		if(not msg):
 			pass
 		elif('register' in msg):
