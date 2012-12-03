@@ -43,7 +43,7 @@ class ModelController:
 		name=name.lower().strip()
 		phone = phone.strip()
 		try:
-			acc = Account.objects.get(name = name, phone)
+			acc = Account.objects.get(name = name, phone = phone)
 			return True
 		except Account.DoesNotExist:
 			try:
