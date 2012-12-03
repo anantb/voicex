@@ -53,7 +53,7 @@ class ModelController:
 			except:
 				return False
 		except Exception, e:
-			print "insert_post: ", e
+			print "add_account: ", e
 			return False
 	
 	
@@ -67,7 +67,7 @@ class ModelController:
 		except Account.DoesNotExist:
 			return False
 		except Exception, e:
-			print "insert_post: ", e
+			print "delete_account: ", e
 			return False
 			
 	
@@ -192,8 +192,7 @@ class ModelController:
 			return True
 		except Exception, e:
 			print "delete_following: ", e
-		finally:
-			return follow_list
+			False
 			
 	
 
@@ -212,5 +211,5 @@ class ModelController:
 			except:
 				return False
 		except Exception, e:
-			print "add_following: ", e
+			print "adds_following: ", e
 			return False
