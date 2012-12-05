@@ -4,6 +4,8 @@
 # Ignore all emacs backup files
 *.*~
 
+# Ignore Mac DS_Store Files
+.DS_Store
 
 # Ignore all xcode files
 *.pbxproj
