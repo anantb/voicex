@@ -182,7 +182,7 @@ class ModelController:
 	
 	
 	
-	def delete_subsriber(self, name, phone_number):
+	def delete_subscriber(self, name, phone_number):
 		account = None
 		phone = phone_number.strip()
 		try:
