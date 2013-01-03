@@ -195,7 +195,7 @@ class VoiceX:
 				if(comment_id > 0):
 					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been successfully submitted!")
 					reply_to  = post.phone
-					self.v.sms(reply_to, "New comment to post (ID:" +post_id+"): " + comment_text +".")
+					self.v.sms(reply_to, "New comment (ID:" +comment_id+"): " + comment_text +".")
 			else:
 				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
 		except:
