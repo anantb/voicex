@@ -110,7 +110,7 @@ class VoiceX:
 		account = self.mc.find_account(phone_num)
 		if(not account):
 			return
-		follow_list = self.mc.find_following(account)
+		follow_list = self.mc.find_subscribers(account)
 		text = "From: %s (Post ID: %s): %s" %(account.name, post_id, msg)
 		if(len(follow_list)>0):
 			recipients = ','.join(follow_list)
@@ -203,14 +203,14 @@ class VoiceX:
 
 
 	def follow(self, name, phone_num):
-		if(self.mc.add_following(name, phone_num)):
+		if(self.mc.add_subscriber(name, phone_num)):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
 			self.v.sms(phone_num, 'Error occurred while adding the follow list for %s.' %(name))
 	
 	
 	def unfollow(self, name, phone_num):
-		if(self.mc.delete_following(name, phone_num)):
+		if(self.mc.delete_subscriber(name, phone_num)):
 			self.v.sms(phone_num, 'You are now not following %s.' %(name))
 		else:
 			self.v.sms(phone_num, 'Error occurred while removing the follow list for %s.' %(name))

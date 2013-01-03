@@ -169,7 +169,7 @@ class ModelController:
 
 	
 			
-	def find_subscriber(self, account):
+	def find_subscribers(self, account):
 		subscribers_list = []
 		try:
 			subscribers = Subscriber.objects.filter(account = account).values()
