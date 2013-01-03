@@ -169,47 +169,47 @@ class ModelController:
 
 	
 			
-	def find_following(self, account):
-		follow_list = []
+	def find_subscriber(self, account):
+		subscribers_list = []
 		try:
-			following = Following.objects.filter(account = account).values()
-			for f in following:
-				follow_list.append(f['phone'])
+			subscribers = Subscriber.objects.filter(account = account).values()
+			for s in subscribers:
+				subscribers_list.append(s['phone'])
 		except Exception, e:
-			print "find_following: ", e
+			print "find_subscriber: ", e
 		finally:
-			return follow_list
+			return subscribers_list
 	
 	
 	
-	def delete_following(self, name, phone_number):
+	def delete_subsriber(self, name, phone_number):
 		account = None
 		phone = phone_number.strip()
 		try:
 			account = Account.objects.get(name = name.lower())
-			following = Following.objects.get(account = account, phone = phone)
-			following.delete()
+			s = Subscriber.objects.get(account = account, phone = phone)
+			s.delete()
 			return True
 		except Exception, e:
-			print "delete_following: ", e
+			print "delete_subscriber: ", e
 			False
 			
 	
 
-	def add_following(self, name, phone_number):
+	def add_subscriber(self, name, phone_number):
 		account = None
 		phone = phone_number.strip()	
 		try:
 			account = Account.objects.get(name = name.lower())
-			following = Following.objects.get(account = account, phone = phone)
+			s = Subscriber.objects.get(account = account, phone = phone)
 			return True
-		except Following.DoesNotExist:
+		except Subscriber.DoesNotExist:
 			try:
-				following = Following(account = account, phone = phone)
-				following.save()
+				s = Subscriber(account = account, phone = phone)
+				s.save()
 				return True
 			except:
 				return False
 		except Exception, e:
-			print "adds_following: ", e
+			print "add_subscriber: ", e
 			return False
