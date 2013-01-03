@@ -33,10 +33,10 @@ VoiceX Transport public APIs
 '''	
 
 class VoiceXTransport:
-	def __init__(self, transport, auth):
-		if(transport == config.GV):
+	def __init__(self, auth):
+		if(auth['type'] == config.GV):
 			self.client = GoogleVoice(auth['username'], auth['password'], d = False)
-		elif(transport == config.AT):
+		elif(auth['type'] == config.AT):
 			self.client = AfricaTalking(auth['username'], auth['api_key'])
 		else:
 			raise NotImplementedError(transport + " not implemented")

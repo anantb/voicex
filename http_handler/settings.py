@@ -4,8 +4,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 
 ADMINS = (
-    ('Anant Bhardwaj', 'anantb@csail.mit.edu'),
-    ('Trisha Kothari', 'kotharitrisha@gmail.com')
+    ('Anant Bhardwaj', 'anantb@csail.mit.edu')
 )
 
 MANAGERS = ADMINS
@@ -162,7 +161,7 @@ LOGGING = {
 
 # celery settings
 try:
-        from celeryconfig import *
+	from celeryconfig import *
 except ImportError:
         pass
 

@@ -23,6 +23,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import httplib, urllib, json
 
+'''
+@author: anant bhardwaj
+@date: Oct 4, 2012
+
+HTTP wrappers
+'''	
+
 PATH = "/version1/messaging"
 GET = "GET"
 POST = "POST"

@@ -1,9 +1,14 @@
-# -*- coding: utf-8 -*-
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+'''
+Triggers for building search indexes
+
+@author: Anant Bhardwaj
+@date: Oct 8, 2012
+'''
 
 class Migration(SchemaMigration):
 

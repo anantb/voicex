@@ -1,5 +1,5 @@
 """
-Copyright (c) 2012 Anant Bhardwaj, Trisha Kothari
+Copyright (c) 2012 Anant Bhardwaj
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -45,7 +45,7 @@ Main Handler Interface
 class VoiceX:
 	def __init__(self):
 		self.mc = ModelController()
-		self.v = VoiceXTransport(transport=config.GV, auth= config.GV_VOICEX_AUTH)
+		self.v = VoiceXTransport(auth= config.VOICEX_AUTH)
 
 
 	def init_callback(self):

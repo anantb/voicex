@@ -21,31 +21,40 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-''' Transport '''
+''' Transport Types'''
 GV = "Google Voice"
 AT = "Africa Talking"
 
-'''Auth Settings '''
-GV_VOICEX_AUTH = {
-'name':'Google Voice', 
+
+
+'''Some Auth Settings '''
+GV_VOICEX_AUTH = { 
 'username':'voicex.git@gmail.com', 
-'password':'VoiceX@Git'
+'password':'VoiceX@Git',
+'type': GV
 }
 
 GV_MUNGANO_AUTH = {
-'name':'Google Voice', 
 'username':'mungano.dlt@gmail.com', 
-'password':'Mungano@DLT'
+'password':'Mungano@DLT',
+'type': GV
 }
 
 AT_VOICEX_AUTH = {
-'name':'Africa Talking', 
 'username': 'voicex', 
-'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872'
+'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872',
+'type': AT
 }
 
 AT_MUNGANO_AUTH = {
-'name':'Africa Talking', 
 'username': 'voicex', 
-'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872'
+'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872',
+'type': AT
 }
+
+
+
+'''Auth settings in use'''
+
+VOICEX_AUTH = GV_VOICEX_AUTH
+MUNGANO_AUTH = GV_MUNGANO_AUTH
