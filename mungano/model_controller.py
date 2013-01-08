@@ -61,7 +61,7 @@ class ModelController:
 		try:
 			sub = Subscription.objects.get(phone = phone_number)
 			sub.sub_list = sub_list
-			sub.update()
+			sub.save()
 			return True
 		except Subscription.DoesNotExist:
 			try:

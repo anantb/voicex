@@ -77,8 +77,9 @@ class Mungano:
 			msg = tokens[1]
 			sub = self.mc.find_subscription(phone_num)
 			mungano.tasks.delayed_sms.delay(self.v, sub.sub_list, "alarm (%s minutes): %s. copy sent to: %s" %(str(delay), str(msg), sub.sub_list), delay)
-		except:
-			self.getHelp(msg_data, phone_num)
+		except Exception, e:
+			print "handle_alarm: ", e
+			self.show_help(msg_data, phone_num)
 			return
 
 	def alert(self, sub, msg):
