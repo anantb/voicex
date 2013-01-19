@@ -52,8 +52,11 @@ def voicex_us(request):
 		try:
 			v = VoiceX(auth= config.GV_VOICEX_AUTH)
 			v.msg_new(msg_data)
+			return HttpResponse(json.dumps({status:'ok'})
 		except Exception, e:
 			print e
+			return HttpResponse(json.dumps({status:'error'})
+		
 		
 
 @csrf_exempt
@@ -70,8 +73,10 @@ def voicex_ke(request):
 		try:
 			v = VoiceX(auth= config.AT_VOICEX_AUTH)
 			v.msg_new(msg_data)
+			return HttpResponse(json.dumps({status:'ok'})
 		except Exception, e:
 			print e
+			return HttpResponse(json.dumps({status:'error'})
 		
 
 
