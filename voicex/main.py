@@ -33,7 +33,6 @@ if __name__ == "__main__":
 from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
-from transport import config
 import voicex.tasks
 
 '''

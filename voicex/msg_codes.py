@@ -30,9 +30,9 @@ Log constants
 
 #Define all log constants here
 msg_code={
-	'NAME_ALREADY_TAKEN': 'Name is already taken',
-	'INVALID_ACCOUNT_NAME': 'No account with this name.',
-	'POST_NOT_FOUND_ERROR': 'Post not found',
+	'NAME_ALREADY_TAKEN_ERROR': 'Name is already taken',
+	'INVALID_ACCOUNT_NAME_ERROR': 'Invalid Account Name',
+	'INVALID_POST_ID_ERROR': 'Invalid Post ID',
 	'NUMBER_ALREADY_REGISTERED_ERROR': 'Number already registered with other account name',
 	'REQUEST_ERROR': 'Incorrect request parameters',
 	'UNKNOWN_ERROR': 'Unknown Error',

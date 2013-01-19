@@ -68,7 +68,7 @@ class ModelController:
 			except:
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 	
@@ -82,9 +82,9 @@ class ModelController:
 			acc.delete()
 			res['status']= True
 		except Account.DoesNotExist:
-			res['code']= msg_code['INVALID_ACCOUNT_NAME']
+			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 			
@@ -96,9 +96,9 @@ class ModelController:
 			res['status']= True
 			res['val']=acc
 		except Account.DoesNotExist:
-			res['code']= msg_code['INVALID_ACCOUNT_NAME']
+			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 	
@@ -110,9 +110,9 @@ class ModelController:
 			res['status']= True
 			res['val']=p
 		except Post.DoesNotExist:
-			res['code']= msg_code['INVALID_POST_ID']
+			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 
@@ -126,7 +126,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = p.id
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROER']
 		logging.debug(res)
 		return res
 
@@ -139,9 +139,9 @@ class ModelController:
 			p.save()
 			res['status']= True
 		except Post.DoesNotExist:
-			res['code']= msg_code['INVALID_POST_ID']
+			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 			
@@ -154,9 +154,9 @@ class ModelController:
 			p.delete()
 			res['status']= True
 		except Post.DoesNotExist:
-			res['code']= msg_code['INVALID_POST_ID']
+			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 			
@@ -169,7 +169,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = p.id
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 
@@ -198,13 +198,14 @@ class ModelController:
 			
 			if(not data):
 				return None
-			res = ""
+			out = ""
 			for d in data:
-				res = res + str(d.post) + ' (Post ID: ' + str(d.id) + "). "
-				res = res + '\n'
-			return res
+				out = out + str(d.post) + ' (Post ID: ' + str(d.id) + "). "
+				out = out + '\n'
+			res['val'] = out
+			res['status'] = True
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 
@@ -220,7 +221,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = subscribers_list
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 	
@@ -236,7 +237,7 @@ class ModelController:
 			s.delete()
 			res['status']= True
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 			
@@ -258,6 +259,6 @@ class ModelController:
 			except:
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
-			res['code']= msg_code['UNKNOWN_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
