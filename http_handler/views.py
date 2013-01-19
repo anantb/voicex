@@ -49,8 +49,11 @@ def voicex_us(request):
 			msg_data['text'] = request.POST['text']
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']
-		v = VoiceX(auth= config.GV_VOICEX_AUTH)
-		v.msg_new(msg_data)
+		try:
+			v = VoiceX(auth= config.GV_VOICEX_AUTH)
+			v.msg_new(msg_data)
+		except Exception, e:
+			print e
 		
 
 @csrf_exempt
@@ -63,8 +66,12 @@ def voicex_ke(request):
                 msg_data['text'] = request.POST['text']
         if('from' in request.POST):
                 msg_data['from'] = request.POST['from']
-        v = VoiceX(auth= config.AT_VOICEX_AUTH)
-        v.msg_new(msg_data)
+        
+		try:
+			v = VoiceX(auth= config.AT_VOICEX_AUTH)
+			v.msg_new(msg_data)
+		except Exception, e:
+			print e
 		
 
 
