@@ -1,7 +1,7 @@
 # Django settings for voicex project.
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 ADMINS = (
     ('Anant Bhardwaj', 'anantb@csail.mit.edu')

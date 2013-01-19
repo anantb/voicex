@@ -33,7 +33,7 @@ if __name__ == "__main__":
 from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
-import voicex.tasks
+#import voicex.tasks
 
 '''
 Main Handler Interface
@@ -168,7 +168,7 @@ class VoiceX:
 		if(res_find['status']):
 			post = res_find['val']
 			res_insert = self.mc.insert_reply(phone_num, reply_text, post)
-			if(res_insert['status'])
+			if(res_insert['status']):
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 				reply_to  = post.phone

@@ -50,12 +50,16 @@ def voicex_us(request):
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']
 		try:
+			print "...here ..."
 			v = VoiceX(auth= config.GV_VOICEX_AUTH)
 			v.msg_new(msg_data)
-			return HttpResponse(json.dumps({status:'ok'})
+			print "... end ..."
+			return HttpResponse(json.dumps({'status':'ok'}))
 		except Exception, e:
 			print e
-			return HttpResponse(json.dumps({status:'error'})
+			return HttpResponse(json.dumps({'status':'error'}))
+	else:
+		return HttpResponse(json.dumps({'status':'ok'}))
 		
 		
 
@@ -63,21 +67,22 @@ def voicex_us(request):
 def voicex_ke(request):
 	if(request.POST):
 		msg_data = {}
-        if('number' in request.POST):
-                msg_data['from'] = request.POST['number']
-        if('text' in request.POST):
-                msg_data['text'] = request.POST['text']
-        if('from' in request.POST):
-                msg_data['from'] = request.POST['from']
-        
+		if('number' in request.POST):
+			msg_data['from'] = request.POST['number']
+		if('text' in request.POST):
+			msg_data['text'] = request.POST['text']
+		if('from' in request.POST):
+			msg_data['from'] = request.POST['from']
+		
 		try:
 			v = VoiceX(auth= config.AT_VOICEX_AUTH)
 			v.msg_new(msg_data)
-			return HttpResponse(json.dumps({status:'ok'})
+			return HttpResponse(json.dumps({'status':'ok'}))
 		except Exception, e:
 			print e
-			return HttpResponse(json.dumps({status:'error'})
+			return HttpResponse(json.dumps({'status':'error'}))
 		
-
+	else:
+		return HttpResponse(json.dumps({'status':'ok'}))
 
 
