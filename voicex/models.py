@@ -34,7 +34,6 @@ class Post(models.Model):
 	id = models.AutoField(primary_key=True)
 	phone = models.CharField(max_length=20)
 	post = models.TextField()
-	zip_code = models.CharField(max_length=20)
 	reply_to = models.ForeignKey('self', blank=False, null=True, related_name="replies")
 	public = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now=True)

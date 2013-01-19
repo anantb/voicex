@@ -44,67 +44,69 @@ Main Handler Interface
 '''
 
 class VoiceX:
-	def __init__(self):
+	def __init__(self, auth):
 		self.mc = ModelController()
-		self.v = VoiceXTransport(auth= config.VOICEX_AUTH)
+		self.v = VoiceXTransport(auth = auth)
 
-
+	
+	# only for testing (polling mode)
 	def init_callback(self):
 		self.v.set_callback(callback = self.msg_new)
 
 
 	def show_help(self, msg, phone_num):
-		help_text = "Welcome to VoiceX! To commands: #register name, #unregister name, #post msg, #view post-id, #delete post-id, #search query, #reply post-id msg, #comment post-id comment, #follow name, #unfollow name"
+		help_text = "Welcome to VoiceX! To commands: register name, unregister name, post msg, view post-id, delete post-id, search query, reply post-id msg, follow @name/#tag, unfollow @name/#tag"
 		if(not msg):
 			pass
 		elif('register' in msg):
-			help_text = "Help for #register : #register name"
+			help_text = "Help for register : register name. Example: register voicex"
 		elif('unregister' in msg):
-			help_text = "Help for #unregister : #unregister name"
+			help_text = "Help for unregister : unregister name. Example: unregister voicex"
 		elif('post' in msg):
-			help_text = "Help for #post : #post msg"
+			help_text = "Help for post : post message. Example (simple post): post hello world. Example (tagged post): post voicex is free #voicex. Example (anonymous post): post voicex is free #anon"
 		elif('search' in msg):
-			help_text = "Help for #search : #search keywords"
+			help_text = "Help for search : search search-keywords. Example: search kenya election"
 		elif('view' in msg):
-			help_text = "Help for #view : #view post-id"
+			help_text = "Help for view : view post-id. Example: view 1"
 		elif('delete' in msg):
-			help_text = "Help for #delete : #delete post-id"
+			help_text = "Help for delete : delete post-id. Example: delete 1"
 		elif('reply' in msg):
-			help_text = "Help for #reply : #reply post-id reply-msg"
-		elif('comment' in msg):
-			help_text = "Help for #comment : #comment post-id comment"
+			help_text = "Help for reply : reply post-id reply-msg. Example (private reply): reply 1 welcome to voicex. Example (public reply): reply 1 welcome to voicex #public. Example (anonymous reply): reply 1 welcome to voicex #anon"
 		elif('follow' in msg):
-			help_text = "Help for #follow : #follow name"
+			help_text = "Help for follow : follow @name/#tag. Example: follow @voicex or follow #election"
 		elif('unfollow' in msg):
-			help_text = "Help for #unfollow : #unfollow name"
+			help_text = "Help for unfollow : unfollow @name/#tag. Example: unfollow @voicex or unfollow #election."
 		else:
 			pass			
 		self.v.sms(phone_num, help_text)
 
 	
 	
-	def register(self, name, phone_num):	
-		if(self.mc.add_account(name , phone_num)):
+	def register(self, name, phone_num):
+		res = self.mc.add_account(name , phone_num)
+		if(res['status']):
 			self.v.sms(phone_num, 'Account created successfully.')
 		else:
-			self.v.sms(phone_num, 'Error occurred while creating the account.')
+			self.v.sms(phone_num, res['code'])
 	
 	
-	def unregister(self, name, phone_num):	
-		if(self.mc.delete_account(name , phone_num)):
+	def unregister(self, name, phone_num):
+		self.mc.delete_account(name , phone_num)	
+		if(res['status']):
 			self.v.sms(phone_num, 'Account deleted successfully.')
 		else:
-			self.v.sms(phone_num, 'Error occurred while deleting the account.')
+			self.v.sms(phone_num, res['code'])
 	
 
 	
 	def post(self, text, phone_num):				
-		post_id = self.mc.insert_post(phone_num, text);
-		if(post_id >= 0):		
+		res = self.mc.insert_post(phone_num, text);
+		if(res['status']):
+			post_id = res['val']	
 			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
 			self.notify_followers(phone_num, text, post_id)
 		else:
-			self.v.sms(phone_num, "Error occurred while posting the Msg.")
+			self.v.sms(phone_num, res['code'])
 
 
 	def notify_followers(self, phone_num, msg, post_id):
@@ -120,10 +122,11 @@ class VoiceX:
 
 
 	def delete(self, post_id, phone_num):
-		if(self.mc.delete_post(post_id)):
+		res = self.mc.delete_post(post_id)
+		if(res['status']):
 			self.v.sms(phone_num, "Post ID:(" + post_id + ") has been successfully deleted!")
 		else:
-			self.v.sms(phone_num, "Couldn't delete post (ID:" + post_id+")")
+			self.v.sms(phone_num, res['code'])
 
 
 
@@ -159,89 +162,65 @@ class VoiceX:
 			reply_text = tokens[1]
 		except:
 			self.getHelp(msg_data, phone_num)
-			return
-			
-		try:
-			reply_text = tokens[1]
-			post = self.mc.find_post(post_id)
-			if(post):
-				reply_id = str(self.mc.insert_reply(phone_num, reply_text, post))
-				if(reply_id > 0):
-					self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
-					reply_to  = post.phone
-					self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +") : " + reply_text +".")
+			return		
+		
+		reply_text = tokens[1]
+		res_find = self.mc.find_post(post_id)
+		if(res_find['status']):
+			post = res_find['val']
+			res_insert = self.mc.insert_reply(phone_num, reply_text, post)
+			if(res_insert['status'])
+				reply_id = str(res_insert['val'])
+				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
+				reply_to  = post.phone
+				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +") : " + reply_text +".")
 			else:
-				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
-		except:
-			self.v.sms(phone_num, 'Error occurred while replying to post (ID:' + post_id+")")
-
-
-
-	def comment(self, msg_data, phone_num):
-		tokens = msg_data.strip().split(" ", 1)
-                tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
-		post_id = None
-		comment_text = None
-		try:
-			post_id = str(int(tokens[0]))
-			comment_text = tokens[1]
-		except:
-			self.getHelp(msg_data, phone_num)
-			return
-					
-		try:			
-			post = self.mc.find_post(post_id)
-			if(post):
-				comment_id = self.mc.insert_reply(phone_num, comment_text, post, public = True)
-				if(comment_id > 0):
-					self.v.sms(phone_num, 'Your comment to post (ID:' + post_id + ") has been successfully submitted!")
-					reply_to  = post.phone
-					self.v.sms(reply_to, "New comment (ID:" + str(comment_id) +"): " + comment_text +".")
-			else:
-				self.v.sms(phone_num, 'No post found with ID: ' + post_id)
-		except:
-			self.v.sms(phone_num, 'Error occurred while adding comment to post (ID:' + post_id+")")
+				self.v.sms(phone_num, res_insert['code'])
+		else:
+			self.v.sms(phone_num, res_find['code'])
+	
 
 
 	def follow(self, name, phone_num):
-		if(self.mc.add_subscriber(name, phone_num)):
+		res = self.mc.add_subscriber(name, phone_num)
+		if(res['status']):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
-			self.v.sms(phone_num, 'Error occurred while adding the follow list for %s.' %(name))
+			self.v.sms(phone_num, res['code'])
 	
 	
 	def unfollow(self, name, phone_num):
-		if(self.mc.delete_subscriber(name, phone_num)):
+		res = self.mc.delete_subscriber(name, phone_num)
+		if(res['status']):
 			self.v.sms(phone_num, 'You are now not following %s.' %(name))
 		else:
-			self.v.sms(phone_num, 'Error occurred while removing the follow list for %s.' %(name))
+			self.v.sms(phone_num, res['code'])
 
 
 	def parse(self, msg, phone_num):
 		try:
 			msg_data = (msg.strip()).split(" ", 1)
 			msg_data = map(lambda x: x.strip(), msg_data)
-			if (msg_data[0] == "#register"):
+			cmd = msg_data[0].lower()
+			if (cmd == "#register"):
 				self.register(msg_data[1], phone_num)
-			elif(msg_data[0] == "#unregister"):
+			elif(cmd == "#unregister"):
 				self.unregister(msg_data[1], phone_num)
-			elif(msg_data[0] == "#post"):
+			elif(cmd == "#post"):
 				self.post(msg_data[1], phone_num)
-			elif(msg_data[0] == "#view"):
+			elif(cmd == "#view"):
 				self.view(msg_data[1], phone_num)
-			elif(msg_data[0] ==  "#search"):
+			elif(cmd ==  "#search"):
 				self.search(msg_data[1], phone_num)
-			elif(msg_data[0] == "#delete"):
+			elif(cmd == "#delete"):
 				self.delete(msg_data[1], phone_num)
-			elif(msg_data[0] == "#reply"):
+			elif(cmd == "#reply"):
 				self.reply(msg_data[1], phone_num)
-			elif(msg_data[0] == "#comment"):
-				self.comment(msg_data[1], phone_num)
-			elif(msg_data[0] == "#follow"):
+			elif(cmd == "#follow"):
 				self.follow(msg_data[1], phone_num)
-			elif(msg_data[0] == "#unfollow"):
+			elif(cmd == "#unfollow"):
 				self.unfollow(msg_data[1], phone_num)
-			elif(msg_data[0] == "#help"):
+			elif(cmd == "#help"):
 				self.show_help(msg_data[1], phone_num)
 			else:
 				self.show_help(msg, phone_num)

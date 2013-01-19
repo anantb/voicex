@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os, sys, re
+import os, sys, re, logging
 from stemming.porter2 import stem
 from utils import *
 from models import *
@@ -33,6 +33,20 @@ Application Model Controller
 @date: Aug 3, 2012
 '''
 
+'''
+please use the below generic return type
+
+{
+'status' : True/False,
+'code' : msg_code (especially to indicate error),
+'val' : return value,
+'msg' :additional error message
+} 
+
+
+
+'''
+
 class ModelController:
 	def __init__(self):
 		pass
@@ -40,104 +54,130 @@ class ModelController:
 	
 	
 	def add_account(self, name, phone):
+		res = {'status':False}
 		name=name.lower().strip()
 		phone = phone.strip()
 		try:
 			acc = Account.objects.get(name = name, phone = phone)
-			return True
+			res['status']= True
 		except Account.DoesNotExist:
 			try:
 				acc = Account(name = name, phone = phone)
 				acc.save()
-				return True
+				res['status']= True
 			except:
-				return False
+				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
-			print "add_account: ", e
-			return False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 	
 	
 	def delete_account(self, name, phone):
+		res = {'status':False}
 		name=name.lower().strip()
 		phone = phone.strip()
 		try:
 			acc = Account.objects.get(name = name, phone = phone)
 			acc.delete()
-			return True
+			res['status']= True
 		except Account.DoesNotExist:
-			return False
+			res['code']= msg_code['INVALID_ACCOUNT_NAME']
 		except Exception, e:
-			print "delete_account: ", e
-			return False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 			
 	
 	def find_account(self, phone):
+		res = {'status':False}
 		try:
 			acc = Account.objects.get(phone = phone)
-			return acc
+			res['status']= True
+			res['val']=acc
+		except Account.DoesNotExist:
+			res['code']= msg_code['INVALID_ACCOUNT_NAME']
 		except Exception, e:
-			print "find_post: ", e
-			return None
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 	
 	
 	def find_post(self, post_id):
+		res = {'status':False}
 		try:
 			p = Post.objects.get(id = post_id)
-			return p
+			res['status']= True
+			res['val']=p
+		except Post.DoesNotExist:
+			res['code']= msg_code['INVALID_POST_ID']
 		except Exception, e:
-			print "find_post: ", e
-			return None
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 
 
 
 	def insert_post(self, phone_num, post):
+		res = {'status':False}
 		try:
-			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post=post, zip_code = zipcode, public = True)
+			p = Post(phone = phone_num, post=post, public = True)
 			p.save()
-			return p.id
+			res['status']= True
+			res['val'] = p.id
 		except Exception, e:
-			print "insert_post: ", e
-			return -1
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 
 	
 	def update_post(self, post_id, new_post):
+		res = {'status':False}
 		try:
-			zipcode = extract_zipcode(post)	
 			p = Post.objects.get(id = post_id)
 			p.post = new_post
 			p.save()
-			return True
+			res['status']= True
+		except Post.DoesNotExist:
+			res['code']= msg_code['INVALID_POST_ID']
 		except Exception, e:
-			print "update_post: ", e
-			return False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 			
 	
 			
 	def delete_post(self, post_id):
+		res = {'status':False}
 		try:
 			p = Post.objects.get(id = post_id)
 			p.delete()
-			return True
+			res['status']= True
+		except Post.DoesNotExist:
+			res['code']= msg_code['INVALID_POST_ID']
 		except Exception, e:
-			print "delete_post: ", e
-			return False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 			
 
 	def insert_reply(self, phone_num, post, reply_to, public=False):
+		res = {'status':False}
 		try:
-			zipcode = extract_zipcode(post)
-			p = Post(phone = phone_num, post = post, reply_to=reply_to, zip_code = zipcode, public = public)
+			p = Post(phone = phone_num, post = post, reply_to=reply_to, public = public)
 			p.save()
-			return p.id
+			res['status']= True
+			res['val'] = p.id
 		except Exception, e:
-			print "insert_reply: ", e
-			return -1
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 
 
 
 
 	def search_posts(self, query, limit=3, offset=0):
+		res = {'status':False}
 		try:
 			data = None		
 			q = re.findall('\w+', query)
@@ -164,52 +204,60 @@ class ModelController:
 				res = res + '\n'
 			return res
 		except Exception, e:
-			print "search_posts: ", e
-			return None
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 
 	
 			
 	def find_subscribers(self, account):
+		res = {'status':False}
 		subscribers_list = []
 		try:
 			subscribers = Subscriber.objects.filter(account = account).values()
 			for s in subscribers:
 				subscribers_list.append(s['phone'])
+			res['status']= True
+			res['val'] = subscribers_list
 		except Exception, e:
-			print "find_subscriber: ", e
-		finally:
-			return subscribers_list
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 	
 	
 	
 	def delete_subscriber(self, name, phone_number):
+		res = {'status':False}
 		account = None
 		phone = phone_number.strip()
 		try:
 			account = Account.objects.get(name = name.lower())
 			s = Subscriber.objects.get(account = account, phone = phone)
 			s.delete()
-			return True
+			res['status']= True
 		except Exception, e:
-			print "delete_subscriber: ", e
-			False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
 			
 	
 
 	def add_subscriber(self, name, phone_number):
+		res = {'status':False}
 		account = None
 		phone = phone_number.strip()	
 		try:
 			account = Account.objects.get(name = name.lower())
 			s = Subscriber.objects.get(account = account, phone = phone)
-			return True
+			res['status']= True
 		except Subscriber.DoesNotExist:
 			try:
 				s = Subscriber(account = account, phone = phone)
 				s.save()
-				return True
+				res['status']= True
 			except:
-				return False
+				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
-			print "add_subscriber: ", e
-			return False
+			res['code']= msg_code['UNKNOWN_ERROER']
+		logging.debug(res)
+		return res
