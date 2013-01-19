@@ -22,28 +22,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
-from django.db import models
+from celery.decorators import task
+from transport.voicex import VoiceXTransport
+from transport import config
+import time
 
-class Subscription(models.Model):
-	id = models.AutoField(primary_key=True)
-	phone = models.CharField(max_length=20, unique=True)
-	sub_list = models.TextField()
-	pass_phrase = models.CharField(max_length=20)
-	timestamp = models.DateTimeField(auto_now=True)
-	def __unicode__(self):
-		return self.name
+'''
+Async calling -- schedule function calling
 
-	class Meta:
-		db_table = "subscriptions"
-		
-class Alert(models.Model):
-	id = models.AutoField(primary_key=True)
-	sub = models.ForeignKey('Subscription')
-	delay = models.PositiveIntegerField(default=0)
-	msg = models.TextField()
-	timestamp = models.DateTimeField(auto_now=True)
-	def __unicode__(self):
-		return self.name
+@author: Anant Bhardwaj
+@date: Jan 19, 2013
+'''
 
-	class Meta:
-		db_table = "alerts"
+@task(name='voicex.tasks.schedule')
+def schedule(func_ptr, args, delay=None):
+	print "inside tasks"
+	if(delay):
+		time.sleep(delay * 60)
+	func_ptr(*args)
