@@ -34,7 +34,7 @@ GV_VOICEX_AUTH = {
 'type': GV
 }
 
-GV_MUNGANO_AUTH = {
+GV_VOICEX_AUTH_2 = {
 'username':'mungano.dlt@gmail.com', 
 'password':'Mungano@DLT',
 'type': GV
@@ -46,15 +46,4 @@ AT_VOICEX_AUTH = {
 'type': AT
 }
 
-AT_MUNGANO_AUTH = {
-'username': 'voicex', 
-'api_key':'57f6be2007591baaa07450c1a5104ea131d17098efef56e4c4bcfd49b1dcb872',
-'type': AT
-}
 
-
-
-'''Auth settings in use'''
-
-VOICEX_AUTH = AT_VOICEX_AUTH
-MUNGANO_AUTH = GV_MUNGANO_AUTH
