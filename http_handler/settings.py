@@ -152,7 +152,7 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename':"voicex.log",
+            'filename':"/production/voicex/logs/voicex.log",
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'standard',
