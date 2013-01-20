@@ -259,7 +259,7 @@ class ModelController:
 			f.delete()
 			res['status']= True
 		except Following.DoesNotExist:
-			res['code']= msg_code['INVALID_FOLLOW_TAG_ERROR']
+			res['code']= msg_code['INVALID_TAG_NAME_ERROR']
 		except Exception, e:
 			logger.exception('delete_following')
 			res['code']= msg_code['DB_ERROR']
