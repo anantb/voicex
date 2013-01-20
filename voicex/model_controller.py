@@ -24,6 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os, sys, re, logging
 from stemming.porter2 import stem
 from models import *
+from django.db import *
 from msg_codes import *
 
 '''
@@ -66,7 +67,7 @@ class ModelController:
 				acc = Account(name = name, phone = phone)
 				acc.save()
 				res['status']= True
-			except Account.IntegrityError:
+			except IntegrityError:
 				res['code']= msg_code['REGISTER_ERROR']
 			except Exception, e:
 				logger.exception('add_account')
