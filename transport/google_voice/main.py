@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import json
+import json, logging
 from constants import *
 from login import *
 from util import *
@@ -34,25 +34,31 @@ from gv_poller import GoogleVoicePoller
 
 Google Voice public APIs
 '''	
+logger = logging.getLogger(__name__)
+
 class GoogleVoice():
 	def __init__(self, email, password, d = True):
+		logger.debug('__init__')
 		self.token = login(email, password)
 		self.d = d
 		
-	def set_callback(self, callback):		
+	def set_callback(self, callback):
+		logger.debug('set_callback')
 		self.poller = GoogleVoicePoller(self, callback, d = self.d)
 		self.poller.daemon = True
 		self.poller.start()
 		self.poller.join(1000)
 	
 	def sms(self, to_number, text):
-		print "Sending message [ %s ] to: [%s]." %(text, to_number)
+		logger.debug('sms')
+		logger.debug("Sending message [ %s ] to: [%s]." %(text, to_number))
 		params = {'phoneNumber': to_number, 'text':text, '_rnr_se':self.token['rnr_se']}
 		return http_post(SMS_SEND_URL, params, self.token['auth'])
 		
 
 	def call(self, forwardingNumber, outgoingNumber):
-		print "Initiating call to: "+outgoingNumber + ", through: " + forwardingNumber
+		logger.debug('call')
+		logger.debug("Initiating call to: "+outgoingNumber + ", through: " + forwardingNumber)
 		params = {'forwardingNumber': forwardingNumber, 
 				  'outgoingNumber':outgoingNumber, 
 				  'phoneType':'1',
@@ -63,31 +69,37 @@ class GoogleVoice():
 		
 
 	def mark_read(self, msg):
-		print "Marking message [ %s ] as Read."  %(msg['text'])
+		logger.debug('mark_read')
+		logger.debug("Marking message [ %s ] as Read."  %(msg['text']))
 		params = {'messages': msg['id'], 'read':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 
 	def mark_unread(self, msg):
-		print "Marking message [ %s ] as UnRead."  %(msg['text'])
+		logger.debug('mark_unread')
+		logger.debug("Marking message [ %s ] as UnRead."  %(msg['text']))
 		params = {'messages': msg['id'], 'read':'0', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_MARK_READ_URL, params, self.token['auth'])
 
 		
 	def delete(self, msg):
-		print "Deleting message [ %s ]."  %(msg['text'])
+		logger.debug('delete')
+		logger.debug("Deleting message [ %s ]."  %(msg['text']))
 		params = {'messages': msg['id'], 'trash':'1', '_rnr_se':self.token['rnr_se']}
 		return http_post(MSG_DELETE_URL, params, self.token['auth'])	
 		
 
 	def fetch_unread_sms(self, url = SMS_UNREAD_URL):
+		logger.debug('fetch_unread_sms')
 		return self.fetch_inbox(url = url)
 
 
 	def fetch_all_sms(self, url = SMS_URL):
+		logger.debug('fetch_all_sms')
 		return self.fetch_inbox(url = url)
 
 	def fetch_inbox(self, url = INBOX_URL):
+		logger.debug('fetch_inbox')
 		conn = httplib.HTTPSConnection("www.google.com")
 		conn.putrequest("GET", url)
 		conn.putheader( "Authorization", "GoogleLogin auth="+self.token['auth'])
@@ -95,7 +107,7 @@ class GoogleVoice():
 		page = conn.getresponse().read()
 		soup = BeautifulSoup(page)
 		meta_data = soup.find('json').find(text = True).strip()
-		print meta_data
+		logger.debug(meta_data)
 		return str(meta_data), page
 		
 

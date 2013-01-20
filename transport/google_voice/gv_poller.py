@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import time, threading, sys, json, re, daemon
+import time, threading, sys, json, re, daemon, logging
 from bs4 import BeautifulSoup
 
 '''
@@ -30,6 +30,7 @@ from bs4 import BeautifulSoup
 
 Google Voice Poller Thread
 '''	
+logger = logging.getLogger(__name__)
 
 class GoogleVoicePoller(threading.Thread):
 	def __init__(self, v, callback, d = True):
@@ -37,7 +38,7 @@ class GoogleVoicePoller(threading.Thread):
 		self.v = v
 		self.d = d	
 		threading.Thread.__init__(self)
-		print "Google Voice polling thread started"
+		logger.info("Google Voice polling thread started")
 	
 	
 	def process(self, meta, page):
@@ -60,11 +61,11 @@ class GoogleVoicePoller(threading.Thread):
 					for msg in inbox['messages']:						
 						if(not (inbox['messages'][msg]['isRead'] or inbox['messages'][msg]['isTrash'])):							
 							m = self.process(inbox['messages'][msg], page)
-							print m
+							logger.debug(m)
 							self.v.mark_read(m)
 							self.callback(m)						
 			except:
-				print sys.exc_info()
+				logger.exception(poll_new)
 			time.sleep(1)
 		
 	def run(self):

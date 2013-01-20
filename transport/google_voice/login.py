@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import httplib, urllib, re, os
+import httplib, urllib, re, os, logging
 from constants import *
 '''
 @author: anant bhardwaj
@@ -29,23 +29,27 @@ from constants import *
 
 voicex login
 '''
+
+logger = logging.getLogger(__name__)
 accountType = "google";
 service = "grandcentral";
 source = "voicex";
 
-def login(email, password):
+def login(email, password, reset = False):
+	logger.debug('login')
 	tokens = load_tokens(email)
 	if(tokens !=None):
 		t = tokens.split('|')
-		print "loaded tokens"
+		logger.info("loaded tokens")
 		return {'auth':t[0], 'rnr_se':t[1]}
 		
 	else:
-		print "login reset"
+		logger.info("login reset")
 		tokens = login_reset(email, password)
 	return tokens
 	
 def load_tokens(email):
+	logger.debug('load_tokens')
 	try:	
 		tokens = open('/tmp/resources/' + email, 'rU').read()
 		return tokens
@@ -54,11 +58,13 @@ def load_tokens(email):
 	
 
 def write_tokens(email, auth, rnr_se):
+	logger.debug('write_tokens')
 	f = w_open('/tmp/resources/' + email)
 	f.write('|'.join([auth, rnr_se]))
 	f.close()
 	
 def w_open(filename):
+	logger.debug('w_open')
 	dir = os.path.dirname(filename)
 	try:
 		os.stat(dir)
@@ -67,6 +73,7 @@ def w_open(filename):
 	return open(filename, 'w')
 
 def login_reset(email, password):
+	logger.debug('login_reset')
 	conn = httplib.HTTPSConnection("www.google.com")
 	headers = {"Content-type": "application/x-www-form-urlencoded",
 			"Accept": "text/plain"}
@@ -77,13 +84,13 @@ def login_reset(email, password):
 						   'source':source})	
 	conn.request("POST", LOGIN_URL, params, headers)
 	res = conn.getresponse().read()
-	print res
+	logger.debug(res)
 	if('Auth=' in res):		
 		auth = res[res.find('Auth=')+len('Auth='):].strip()
-		print "auth success: " + auth
+		logger.info("auth success: " + auth)
 	elif('Error=: ' in res):
 		error = res[res.find('Error=')+len('Error='):].strip()
-		print "auth failed: " + error
+		logger.error("auth failed: " + error)
 	conn = httplib.HTTPSConnection("www.google.com")
 	conn.putrequest("GET", ROOT_URL)
 	conn.putheader( "Authorization", "GoogleLogin auth="+auth)
@@ -92,9 +99,9 @@ def login_reset(email, password):
 	lines = re.split('\n', res)
 	for line in lines:
 		if("'_rnr_se': '" in line):
-			print line
+			logger.debug(line)
 			rnr_se = line[line.find("'_rnr_se': '")+len("_rnr_se': "):-1]
 			rnr_se = rnr_se.replace("'",'').strip()
-			print rnr_se
+			logger.debug(rnr_se)
 	write_tokens(email, auth, rnr_se)
 	return {'auth':auth, 'rnr_se':rnr_se}

@@ -30,14 +30,17 @@ import sys
 
 Africa Talking Public APIs
 '''	
+logger = logging.getLogger(__name__)
+
 class AfricaTalking():
 	def __init__(self, username, api_key):
+		logger.debug('__init__')
 		self.username = username
 		self.api_key = api_key
 
 
 	def sms(self, to, message,frm ='2122', bulkSMSMode=1):
-		print "Sending message [ %s ] to: [%s]." %(message, to)
+		logger.debug("Sending message [ %s ] to: [%s]." %(message, to))
 		params = {'to': to, 'message':message, 'username':self.username, 'from':frm, 'bulkSMSMode':bulkSMSMode }
 		return util.http_connect(util.POST, params, self.api_key)
 		
@@ -61,7 +64,7 @@ class AfricaTalking():
 		return fetch_inbox(last_received_id = 0)
 	
 	def fetch_inbox(self, last_received_id = 0):
-		print "Fetching Inbox."
+		logger.debug('fetch_inbox')
 		params = {'username':self.username,'lastReceivedId':last_received_id}
 		return util.http_connect(util.GET, params, self.api_key)
 
