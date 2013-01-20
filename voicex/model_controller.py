@@ -54,26 +54,32 @@ class ModelController:
 	
 	
 	def add_account(self, name, phone):
+		logger.debug('add_account')
 		res = {'status':False}
 		name=name.lower().strip()
 		phone = phone.strip()
 		try:
 			acc = Account.objects.get(name = name, phone = phone)
-			res['status']= True
+			res['code']= msg_code['ALREADY_REGISTERED_ERROR']
 		except Account.DoesNotExist:
 			try:
 				acc = Account(name = name, phone = phone)
 				acc.save()
 				res['status']= True
-			except:
+			except Account.IntegrityError:
+				res['code']= msg_code['REGISTER_ERROR']
+			except Exception, e:
+				logger.error(e)
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
 	
 	
 	def delete_account(self, name, phone):
+		logger.debug('delete_account')
 		res = {'status':False}
 		name=name.lower().strip()
 		phone = phone.strip()
@@ -84,12 +90,14 @@ class ModelController:
 		except Account.DoesNotExist:
 			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
 			
 	
 	def find_account(self, phone):
+		logger.debug('find_account')
 		res = {'status':False}
 		try:
 			acc = Account.objects.get(phone = phone)
@@ -98,12 +106,14 @@ class ModelController:
 		except Account.DoesNotExist:
 			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
 	
 	
 	def find_post(self, post_id):
+		logger.debug('find_post')
 		res = {'status':False}
 		try:
 			p = Post.objects.get(id = post_id)
@@ -112,6 +122,7 @@ class ModelController:
 		except Post.DoesNotExist:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -119,6 +130,7 @@ class ModelController:
 
 
 	def insert_post(self, phone_num, post):
+		logger.debug('insert_post')
 		res = {'status':False}
 		try:
 			p = Post(phone = phone_num, post=post, public = True)
@@ -126,12 +138,14 @@ class ModelController:
 			res['status']= True
 			res['val'] = p.id
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
 
 	
 	def update_post(self, post_id, new_post):
+		logger.debug('update_post')
 		res = {'status':False}
 		try:
 			p = Post.objects.get(id = post_id)
@@ -141,6 +155,7 @@ class ModelController:
 		except Post.DoesNotExist:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -148,6 +163,7 @@ class ModelController:
 	
 			
 	def delete_post(self, post_id):
+		logger.debug('delete_post')
 		res = {'status':False}
 		try:
 			p = Post.objects.get(id = post_id)
@@ -156,12 +172,14 @@ class ModelController:
 		except Post.DoesNotExist:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
 			
 
 	def insert_reply(self, phone_num, post, reply_to, public=False):
+		logger.debug('insert_reply')
 		res = {'status':False}
 		try:
 			p = Post(phone = phone_num, post = post, reply_to=reply_to, public = public)
@@ -169,6 +187,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = p.id
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -177,6 +196,7 @@ class ModelController:
 
 
 	def search_posts(self, query, limit=3, offset=0):
+		logger.debug('search_posts')
 		res = {'status':False}
 		try:
 			data = None		
@@ -205,6 +225,7 @@ class ModelController:
 			if(data):
 				res['val'] = out
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -212,6 +233,7 @@ class ModelController:
 	
 			
 	def find_following(self, tags):
+		logger.debug('find_following')
 		res = {'status':False}
 		following_list = []
 		try:
@@ -221,6 +243,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = list(set(following_list))
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -228,13 +251,17 @@ class ModelController:
 	
 	
 	def delete_following(self, tag, phone_number):
+		logger.debug('delete_following')
 		res = {'status':False}
 		phone = phone_number.strip()
 		try:
 			f = Following.objects.get(tag = tag, phone = phone)
 			f.delete()
 			res['status']= True
+		except Following.DoesNotExist:
+			res['code']= msg_code['INVALID_FOLLOW_TAG_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res
@@ -242,19 +269,22 @@ class ModelController:
 	
 
 	def add_following(self, tag, phone_number):
+		logger.debug('add_following')
 		res = {'status':False}
 		phone = phone_number.strip()	
 		try:
 			f = Following.objects.get(tag = tag, phone = phone)
-			res['status']= True
+			res['code']= msg_code['ALREADY_FOLLOWING_ERROR']
 		except Following.DoesNotExist:
 			try:
 				f = Following(tag = tag, phone = phone)
 				f.save()
 				res['status']= True
-			except:
+			except Exception, e:
+				logger.error(e)
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
+			logger.error(e)
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
 		return res

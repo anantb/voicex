@@ -33,9 +33,12 @@ msg_code={
 	'NAME_ALREADY_TAKEN_ERROR': 'Name is already taken',
 	'INVALID_ACCOUNT_NAME_ERROR': 'Invalid Account Name',
 	'INVALID_POST_ID_ERROR': 'Invalid Post ID',
-	'NUMBER_ALREADY_REGISTERED_ERROR': 'Number already registered with other account name',
+	'REGISTER_ERROR': 'Either this number is already registered with an another account name or the account name is already taken',
 	'REQUEST_ERROR': 'Incorrect request parameters',
 	'UNKNOWN_ERROR': 'Unknown Error',
 	'DB_ERROR': 'Database Error',
+	'ALREADY_REGISTERED_ERROR' : 'Already Registered',
+	'ALREADY_FOLLOWING_ERROR' : 'Already Following',
+	'INVALID_FOLLOW_TAG_ERROR': 'Invalid Follow Tag',
 	
 }
