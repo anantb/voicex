@@ -167,7 +167,7 @@ LOGGING = {
         'django': {
             'handlers':['console'],
             'propagate': True,
-            'level':'WARN',
+            'level':'DEBUG',
         },
         'django.request': {
             'handlers': ['console'],

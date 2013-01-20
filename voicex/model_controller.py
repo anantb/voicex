@@ -42,10 +42,10 @@ please use the below generic return type
 'val' : return value,
 'msg' :additional error message
 } 
-
-
-
 '''
+
+logger = logging.getLogger(__name__)
+
 
 class ModelController:
 	def __init__(self):
@@ -69,7 +69,7 @@ class ModelController:
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 	
 	
@@ -85,7 +85,7 @@ class ModelController:
 			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 			
 	
@@ -99,7 +99,7 @@ class ModelController:
 			res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 	
 	
@@ -113,7 +113,7 @@ class ModelController:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 
 
@@ -127,7 +127,7 @@ class ModelController:
 			res['val'] = p.id
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 
 	
@@ -142,7 +142,7 @@ class ModelController:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 			
 	
@@ -157,7 +157,7 @@ class ModelController:
 			res['code']= msg_code['INVALID_POST_ID_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 			
 
@@ -170,7 +170,7 @@ class ModelController:
 			res['val'] = p.id
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 
 
@@ -206,7 +206,7 @@ class ModelController:
 				res['val'] = out
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 
 	
@@ -222,7 +222,7 @@ class ModelController:
 			res['val'] = subscribers_list
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 	
 	
@@ -238,7 +238,7 @@ class ModelController:
 			res['status']= True
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
 			
 	
@@ -260,5 +260,5 @@ class ModelController:
 				res['code']= msg_code['DB_ERROR']
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
-		logging.debug(res)
+		logger.debug(res)
 		return res
