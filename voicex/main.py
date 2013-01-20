@@ -33,6 +33,7 @@ if __name__ == "__main__":
 from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
+from transport import config
 #import voicex.tasks
 
 '''
@@ -90,7 +91,7 @@ class VoiceX:
 	
 	
 	def unregister(self, name, phone_num):
-		self.mc.delete_account(name , phone_num)	
+		res = self.mc.delete_account(name , phone_num)	
 		if(res['status']):
 			self.v.sms(phone_num, 'Account deleted successfully.')
 		else:
@@ -109,9 +110,10 @@ class VoiceX:
 
 
 	def notify_followers(self, phone_num, msg, post_id):
-		account = self.mc.find_account(phone_num)
-		if(not account):
+		res = self.mc.find_account(phone_num)
+		if(not res['status']):
 			return
+		account = res['val']
 		follow_list = self.mc.find_subscribers(account)
 		text = "From: %s (Post ID: %s): %s" %(account.name, post_id, msg)
 		if(len(follow_list)>0):
@@ -130,23 +132,27 @@ class VoiceX:
 
 
 	def view(self, post_id, phone_num):	
-		post = self.mc.find_post(post_id)
-		if(post):
-			res = post.post
+		res = self.mc.find_post(post_id)
+		if(res['status']):
+			post = res['val']
+			out = post.post
 			posts = Post.objects.filter(reply_to = post, public = True)
 			for p in posts:
-				res =  res + "[Comment (ID:" + str(p.id) + "): " + p.post + "] "
+				out =  out + "[Comment (ID:" + str(p.id) + "): " + p.post + "] "
+			self.v.sms(phone_num, out)
 		else:		
-			res = 'No post found with id: ' + post_id
-		self.v.sms(phone_num, res)
+			self.v.sms(phone_num, res['code'])
+		
 
 
 
 	def search(self, query, phone_num):
 		res = self.mc.search_posts(query)
-		if(not res):
-			res = 'No matching results found.' 
-		self.v.sms(phone_num, res)
+		if(res['status']):
+			self.v.sms(phone_num, res['val'])
+		else:
+			self.v.sms(phone_num, res['code'])
+		
 
 
 
@@ -201,31 +207,31 @@ class VoiceX:
 			msg_data = (msg.strip()).split(" ", 1)
 			msg_data = map(lambda x: x.strip(), msg_data)
 			cmd = msg_data[0].lower()
-			if (cmd == "#register"):
+			if (cmd == "register"):
 				self.register(msg_data[1], phone_num)
-			elif(cmd == "#unregister"):
+			elif(cmd == "unregister"):
 				self.unregister(msg_data[1], phone_num)
-			elif(cmd == "#post"):
+			elif(cmd == "post"):
 				self.post(msg_data[1], phone_num)
-			elif(cmd == "#view"):
+			elif(cmd == "view"):
 				self.view(msg_data[1], phone_num)
-			elif(cmd ==  "#search"):
+			elif(cmd ==  "search"):
 				self.search(msg_data[1], phone_num)
-			elif(cmd == "#delete"):
+			elif(cmd == "delete"):
 				self.delete(msg_data[1], phone_num)
-			elif(cmd == "#reply"):
+			elif(cmd == "reply"):
 				self.reply(msg_data[1], phone_num)
-			elif(cmd == "#follow"):
+			elif(cmd == "follow"):
 				self.follow(msg_data[1], phone_num)
-			elif(cmd == "#unfollow"):
+			elif(cmd == "unfollow"):
 				self.unfollow(msg_data[1], phone_num)
-			elif(cmd == "#help"):
+			elif(cmd == "help"):
 				self.show_help(msg_data[1], phone_num)
 			else:
-				self.show_help(msg, phone_num)
+				self.show_help(None, phone_num)
 		except Exception, e:
 			print "parse: ", e
-			self.show_help(msg, phone_num)
+			self.show_help(None, phone_num)
 
 
 
@@ -233,7 +239,7 @@ class VoiceX:
 		msg = msg_data['text'].strip()
 		phone_num = msg_data['from'].strip()
 		if(not msg):
-			self.getHelp(msg, phone_num)
+			self.show_help(None, phone_num)
 		else:
 			self.parse(msg, phone_num)
 	
@@ -243,7 +249,7 @@ class VoiceX:
 
 
 def main():
-	v = VoiceX()
+	v = VoiceX(auth = config.GV_VOICEX_AUTH)
 	v.init_callback()
 
 

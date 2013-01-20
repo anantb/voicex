@@ -23,7 +23,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os, sys, re, logging
 from stemming.porter2 import stem
-from utils import *
 from models import *
 
 '''
@@ -195,15 +194,15 @@ class ModelController:
 			select_params=[q],
 			order_by=('-rank',)
 			)
-			
+			res['status'] = True
 			if(not data):
-				return None
+				res['val'] = 'No matching post.'
 			out = ""
 			for d in data:
 				out = out + str(d.post) + ' (Post ID: ' + str(d.id) + "). "
 				out = out + '\n'
-			res['val'] = out
-			res['status'] = True
+			if(data):
+				res['val'] = out
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)

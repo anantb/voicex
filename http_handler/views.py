@@ -50,16 +50,14 @@ def voicex_us(request):
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']
 		try:
-			print "...here ..."
 			v = VoiceX(auth= config.GV_VOICEX_AUTH)
 			v.msg_new(msg_data)
-			print "... end ..."
-			return HttpResponse(json.dumps({'status':'ok'}))
+			return HttpResponse("ok"))
 		except Exception, e:
 			print e
-			return HttpResponse(json.dumps({'status':'error'}))
+			return HttpResponse("error")
 	else:
-		return HttpResponse(json.dumps({'status':'ok'}))
+		return HttpResponse("invalid request type")
 		
 		
 
@@ -72,17 +70,15 @@ def voicex_ke(request):
 		if('text' in request.POST):
 			msg_data['text'] = request.POST['text']
 		if('from' in request.POST):
-			msg_data['from'] = request.POST['from']
-		
+			msg_data['from'] = request.POST['from']		
 		try:
 			v = VoiceX(auth= config.AT_VOICEX_AUTH)
 			v.msg_new(msg_data)
-			return HttpResponse(json.dumps({'status':'ok'}))
+			return HttpResponse("ok"))
 		except Exception, e:
 			print e
-			return HttpResponse(json.dumps({'status':'error'}))
-		
+			return HttpResponse("error")
 	else:
-		return HttpResponse(json.dumps({'status':'ok'}))
+		return HttpResponse("invalid request type")
 
 
