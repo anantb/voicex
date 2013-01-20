@@ -217,7 +217,7 @@ class ModelController:
 		try:
 			following = Following.objects.filter(tag__in = tags).values()
 			for f in following:
-				following_list.append(s['phone'])
+				following_list.append(f['phone'])
 			res['status']= True
 			res['val'] = following_list
 		except Exception, e:

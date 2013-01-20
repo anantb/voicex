@@ -113,7 +113,7 @@ class VoiceX:
 		tags = [tag.strip().lower() for tag in msg.split() if tag.startswith("#")]
 		res_find = self.mc.find_account(phone_num)
 		account = 'anonymous'
-		if(res_find['status']):
+		if(res_find['status'] and ('#anon' not in tags)):
 			account = res_find['val'].name
 			tags.append('@'+account)
 		
@@ -174,17 +174,22 @@ class VoiceX:
 			post_id = str(int(tokens[0]))
 			reply_text = tokens[1]
 		except:
-			self.getHelp(msg_data, phone_num)
+			self.show_help('reply', phone_num)
 			return
 		account = 'anonymous'
+		tags = [tag.strip().lower() for tag in reply_text.split() if tag.startswith("#")]
 		res_find_acc = self.mc.find_account(phone_num)
-		if(res_find_acc['status']):
+		if(res_find_acc['status'] and ('#anon' not in tags)):
 			account = res_find_acc['val'].name
 		reply_text = tokens[1]
 		res_find = self.mc.find_post(post_id)
 		if(res_find['status']):
 			post = res_find['val']
-			res_insert = self.mc.insert_reply(phone_num, reply_text, post)
+			res_insert = {'status': False}
+			if('#public' in tags):
+				res_insert = self.mc.insert_reply(phone_num, reply_text, post, public=True)
+			else:
+				res_insert = self.mc.insert_reply(phone_num, reply_text, post)
 			if(res_insert['status']):
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
