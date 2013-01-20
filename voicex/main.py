@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import os, sys, re
+import os, sys, re, logging
 
 if __name__ == "__main__":
 	p = os.path.abspath(os.path.dirname(__file__))
@@ -36,6 +36,8 @@ from transport.voicex import VoiceXTransport
 from transport import config
 #import voicex.tasks
 
+logger = logging.getLogger(__name__)
+
 '''
 Main Handler Interface
 
@@ -45,16 +47,19 @@ Main Handler Interface
 
 class VoiceX:
 	def __init__(self, auth):
+		logger.debug('__voicex__init__')
 		self.mc = ModelController()
 		self.v = VoiceXTransport(auth = auth)
 
 	
 	# only for testing (polling mode)
 	def init_callback(self):
+		logger.debug('init_callback')
 		self.v.set_callback(callback = self.msg_new)
 
 
 	def show_help(self, msg, phone_num):
+		logger.debug('show_help')
 		help_text = "Welcome to VoiceX! Commands: register name, unregister name, post msg, view post-id, delete post-id, search query, reply post-id msg, follow @name/#tag, unfollow @name/#tag"
 		if(not msg):
 			pass
@@ -83,6 +88,7 @@ class VoiceX:
 	
 	
 	def register(self, name, phone_num):
+		logger.debug('register')
 		res = self.mc.add_account(name , phone_num)
 		if(res['status']):
 			self.v.sms(phone_num, 'Successfully registered %s with %s.' %(name, phone_num))
@@ -91,6 +97,7 @@ class VoiceX:
 	
 	
 	def unregister(self, name, phone_num):
+		logger.debug('unregister')
 		res = self.mc.delete_account(name , phone_num)	
 		if(res['status']):
 			self.v.sms(phone_num, 'Unregistered %s' %(name))
@@ -99,7 +106,8 @@ class VoiceX:
 	
 
 	
-	def post(self, text, phone_num):				
+	def post(self, text, phone_num):
+		logger.debug('post')				
 		res = self.mc.insert_post(phone_num, text);
 		if(res['status']):
 			post_id = res['val']	
@@ -110,6 +118,7 @@ class VoiceX:
 
 
 	def notify_followers(self, phone_num, msg, post_id):
+		logger.debug('notify_followers')
 		tags = [tag.strip().lower() for tag in msg.split() if tag.startswith("#")]
 		res_find = self.mc.find_account(phone_num)
 		account = 'anonymous'
@@ -131,6 +140,7 @@ class VoiceX:
 
 
 	def delete(self, post_id, phone_num):
+		logger.debug('delete')
 		res = self.mc.delete_post(post_id)
 		if(res['status']):
 			self.v.sms(phone_num, "Post ID:(" + post_id + ") has been successfully deleted!")
@@ -139,7 +149,8 @@ class VoiceX:
 
 
 
-	def view(self, post_id, phone_num):	
+	def view(self, post_id, phone_num):
+		logger.debug('view')
 		res = self.mc.find_post(post_id)
 		if(res['status']):
 			post = res['val']
@@ -155,6 +166,7 @@ class VoiceX:
 
 
 	def search(self, query, phone_num):
+		logger.debug('search')
 		res = self.mc.search_posts(query)
 		if(res['status']):
 			self.v.sms(phone_num, res['val'])
@@ -166,6 +178,7 @@ class VoiceX:
 
 
 	def reply(self, msg_data, phone_num):
+		logger.debug('reply')
 		tokens = msg_data.strip().split(" ", 1)
 		tokens = filter(lambda x: x!='', map(lambda x: x.strip(), tokens))
 		post_id = None
@@ -203,6 +216,7 @@ class VoiceX:
 
 
 	def follow(self, name, phone_num):
+		logger.debug('follow')
 		res = self.mc.add_following(name.strip().lower(), phone_num)
 		if(res['status']):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
@@ -211,6 +225,7 @@ class VoiceX:
 	
 	
 	def unfollow(self, name, phone_num):
+		logger.debug('unfollow')
 		res = self.mc.delete_following(name.strip().lower(), phone_num)
 		if(res['status']):
 			self.v.sms(phone_num, 'You are now not following %s.' %(name))
@@ -219,28 +234,39 @@ class VoiceX:
 
 
 	def parse(self, msg, phone_num):
+		logger.debug('parse')
 		try:
 			msg_data = (msg.strip()).split(" ", 1)
 			msg_data = map(lambda x: x.strip(), msg_data)
 			cmd = msg_data[0].lower()
+			text = None
+			try:
+				text = msg_data[1]
+			except:
+				pass
+			
+			if(not text):
+				self.show_help(msg_data[0], phone_num)
+				return
+			
 			if (cmd == "register"):
-				self.register(msg_data[1], phone_num)
+				self.register(text, phone_num)
 			elif(cmd == "unregister"):
-				self.unregister(msg_data[1], phone_num)
+				self.unregister(text, phone_num)
 			elif(cmd == "post"):
-				self.post(msg_data[1], phone_num)
+				self.post(text, phone_num)
 			elif(cmd == "view"):
-				self.view(msg_data[1], phone_num)
+				self.view(text, phone_num)
 			elif(cmd ==  "search"):
-				self.search(msg_data[1], phone_num)
+				self.search(text, phone_num)
 			elif(cmd == "delete"):
-				self.delete(msg_data[1], phone_num)
+				self.delete(text, phone_num)
 			elif(cmd == "reply"):
-				self.reply(msg_data[1], phone_num)
+				self.reply(text, phone_num)
 			elif(cmd == "follow"):
-				self.follow(msg_data[1], phone_num)
+				self.follow(text, phone_num)
 			elif(cmd == "unfollow"):
-				self.unfollow(msg_data[1], phone_num)
+				self.unfollow(text, phone_num)
 			elif(cmd == "help"):
 				try:
 					self.show_help(msg_data[1], phone_num)
@@ -249,11 +275,12 @@ class VoiceX:
 			else:
 				self.show_help(None, phone_num)
 		except Exception, e:
-			print "parse: ", e
+			logger.exception('parse')
 
 
 
 	def handle(self, msg_data):
+		logger.debug('handle')
 		msg = msg_data['text'].strip()
 		phone_num = msg_data['from'].strip()
 		if(not msg):
@@ -263,6 +290,7 @@ class VoiceX:
 	
 	
 	def msg_new(self, msg):
+		logger.debug('msg_new')
 		self.handle(msg)
 
 
