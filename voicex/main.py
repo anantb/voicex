@@ -110,15 +110,20 @@ class VoiceX:
 
 
 	def notify_followers(self, phone_num, msg, post_id):
-		res = self.mc.find_account(phone_num)
-		if(not res['status']):
-			return
-		account = res['val']
-		follow_list = self.mc.find_subscribers(account)
+		res_find = self.mc.find_account(phone_num)
+		if(not res_find['status']):
+			self.v.sms(phone_num, res['code'])
+		account = res_find['val']
+		res_subscribers = self.mc.find_subscribers(account)
 		text = "From: %s (Post ID: %s): %s" %(account.name, post_id, msg)
-		if(len(follow_list)>0):
+		if(res_subscribers['status']):
+			follow_list = res_subscribers['val']
+			if(len(follow_list) == 0 ):
+				return
 			recipients = ','.join(follow_list)
 			self.v.sms(recipients, text)
+		else:
+			self.v.sms(phone_num, res['code'])
 
 
 

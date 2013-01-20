@@ -13,7 +13,6 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('post', self.gf('django.db.models.fields.TextField')()),
-            ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('reply_to', self.gf('django.db.models.fields.related.ForeignKey')(related_name='replies', null=True, to=orm['voicex.Post'])),
             ('public', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
@@ -125,8 +124,7 @@ class Migration(SchemaMigration):
             'post': ('django.db.models.fields.TextField', [], {}),
             'public': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'reply_to': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'replies'", 'null': 'True', 'to': "orm['voicex.Post']"}),
-            'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         'voicex.subscriber': {
             'Meta': {'unique_together': "(('phone', 'account'),)", 'object_name': 'Subscriber', 'db_table': "'subscribers'"},
