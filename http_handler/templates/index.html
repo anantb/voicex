@@ -24,7 +24,7 @@
 <p><b>Syntax: </b>post &lt;msg&gt;</p>
 <p><b>Sample Text 1 (simple post): </b>post hello world</p>
 <p><b>Sample Text 2 (tagged post): </b>post hello world. #voicex</p>
-<p><b>Sample Text 3 (anonymous post): </b>post hello world. #annon</p>
+<p><b>Sample Text 3 (anonymous and tagged post): </b>post hello world. #anon #voicex</p>
 <p><b>Sample Response 1: </b>Msg successfully posted. To view the post, text -- view 3 </p>
 <p><b>Sample Response 2: </b>Msg successfully posted. To view the post, text -- view 4 </p>
 <p><b>Sample Response 3: </b>Msg successfully posted. To view the post, text -- view 5 </p>
@@ -46,7 +46,7 @@
 <p><b>Syntax: </b>reply &lt;post-id&gt; &lt;msg&gt;</p>
 <p><b>Sample Text 1 (private reply): </b>reply 3 this is my reply.</p>
 <p><b>Sample Text 2 (public reply): </b>post this is my public reply. #public</p>
-<p><b>Sample Text 3 (anonymous &amp; public reply): </b>post this is my public and anonymous reply. #public #annon</p>
+<p><b>Sample Text 3 (anonymous &amp; public reply): </b>post this is my public and anonymous reply. #public #anon</p>
 <p><b>Sample Response 1: </b>Your reply to post (ID:3) has been successfully submitted!</p>
 <p><b>Sample Response 2: </b>Your reply to post (ID:3) has been successfully submitted!</p>
 <p><b>Sample Response 3: </b>Your reply to post (ID:3) has been successfully submitted!</p>
@@ -79,16 +79,17 @@
 <h3>When somebody replies to your post</h3>
 <p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @voicex: this is my reply.</p>
 <p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @voicex: this is my public reply. #public</p>
-<p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @anon: this is my public and anonymous reply. #public #annon</p>
+<p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @anonymous: this is my public and anonymous reply. #public #anon</p>
 
 <hr />
 <h3>If you were following @voicex</h3>
 <p><b>Sample Response 1: </b>From: @voicex (Post ID: 3): hello world.</p>
+<p><i>Note<i>: Even if you were following voicex, you wouldn't get notified if voicex posts with #anon tag.</p> 
 
 <hr />
-<h3>If you were following #employment</h3>
+<h3>If you were following #employment or #kibera</h3>
 <p><b>Sample Response 1: </b>From: @voicex (Post ID: 5): New job in Kibera. #employment #kibera</p>
-
+<p><b>Sample Response 1: </b>From: @anonymous (Post ID: 7): a violence on Kibera drive. #anon #kibera.</p>
 
 
 
