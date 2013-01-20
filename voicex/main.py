@@ -276,7 +276,7 @@ class VoiceX:
 				except:
 					self.show_help(None, phone_num)
 			else:
-				self.v.sms(phone_num, "Unknown command: '%s'. Text 'help' to get the list of commands." %s(cmd))
+				self.v.sms(phone_num, "Unknown command: '%s'. Text 'help' to get the list of commands." %(cmd))
 		except Exception, e:
 			logger.exception('parse')
 
