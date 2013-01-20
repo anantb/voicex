@@ -24,6 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os, sys, re, logging
 from stemming.porter2 import stem
 from models import *
+from msg_codes import *
 
 '''
 Application Model Controller

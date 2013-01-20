@@ -231,7 +231,6 @@ class VoiceX:
 				self.show_help(None, phone_num)
 		except Exception, e:
 			print "parse: ", e
-			self.show_help(None, phone_num)
 
 
 

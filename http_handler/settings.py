@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'http_handler',
     'voicex',
-    'mungano',
     'south',
     'djcelery',
 )
