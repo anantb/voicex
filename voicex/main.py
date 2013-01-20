@@ -112,7 +112,7 @@ class VoiceX:
 	def notify_followers(self, phone_num, msg, post_id):
 		res_find = self.mc.find_account(phone_num)
 		if(not res_find['status']):
-			self.v.sms(phone_num, res['code'])
+			return
 		account = res_find['val']
 		res_subscribers = self.mc.find_subscribers(account)
 		text = "From: %s (Post ID: %s): %s" %(account.name, post_id, msg)
@@ -172,8 +172,11 @@ class VoiceX:
 			reply_text = tokens[1]
 		except:
 			self.getHelp(msg_data, phone_num)
-			return		
-		
+			return
+		account = 'anonymous'
+		res_find = self.mc.find_account(phone_num)
+		if(res['status']):
+			account = res_find['val']
 		reply_text = tokens[1]
 		res_find = self.mc.find_post(post_id)
 		if(res_find['status']):
@@ -183,7 +186,7 @@ class VoiceX:
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 				reply_to  = post.phone
-				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +") : " + reply_text +".")
+				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +"), From: " + account +" : " + reply_text +".")
 			else:
 				self.v.sms(phone_num, res_insert['code'])
 		else:
