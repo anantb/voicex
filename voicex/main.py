@@ -286,6 +286,7 @@ class VoiceX:
 		logger.debug('handle')
 		msg = msg_data['text'].strip()
 		phone_num = msg_data['from'].strip()
+		logger.debug('From: %s, Text: %s' %(phone_num, msg))
 		if(not msg):
 			self.show_help(None, phone_num)
 		else:
