@@ -103,7 +103,7 @@ class VoiceX:
 		res = self.mc.insert_post(phone_num, text);
 		if(res['status']):
 			post_id = res['val']	
-			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text #view ' + str(post_id))
+			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text -- view ' + str(post_id))
 			self.notify_followers(phone_num, text, post_id)
 		else:
 			self.v.sms(phone_num, res['code'])
