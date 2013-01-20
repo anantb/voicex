@@ -277,9 +277,14 @@ class ModelController:
 			res['code']= msg_code['ALREADY_FOLLOWING_ERROR']
 		except Following.DoesNotExist:
 			try:
+				if(tag[0] == '@'):
+					account_name = tag[1:]
+					acc = Account.objects.get(name = account_name)					
 				f = Following(tag = tag, phone = phone)
 				f.save()
 				res['status']= True
+			except Account.DoesNotExist:
+				res['code']= msg_code['INVALID_ACCOUNT_NAME_ERROR']
 			except Exception, e:
 				logger.exception('insert_following')
 				res['code']= msg_code['DB_ERROR']
