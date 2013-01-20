@@ -176,7 +176,7 @@ class VoiceX:
 		account = 'anonymous'
 		res_find_acc = self.mc.find_account(phone_num)
 		if(res_find_acc['status']):
-			account = res_find_acc['val']
+			account = res_find_acc['val'].name
 		reply_text = tokens[1]
 		res_find = self.mc.find_post(post_id)
 		if(res_find['status']):
@@ -186,7 +186,7 @@ class VoiceX:
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 				reply_to  = post.phone
-				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +"), From: " + account.name +" : " + reply_text +".")
+				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +", From: " + account +") : " + reply_text +".")
 			else:
 				self.v.sms(phone_num, res_insert['code'])
 		else:
