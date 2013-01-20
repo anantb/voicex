@@ -194,7 +194,7 @@ class VoiceX:
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 				reply_to  = post.phone
-				self.v.sms(reply_to, "Reply(ID:" + str(reply_id) +", From: @" + account +") to Post(ID:"+ str(post_id) + ") : " + reply_text +".")
+				self.v.sms(reply_to, "Reply(ID:" + str(reply_id) +", From: @" + account +") to Post(ID:"+ str(post_id) + ") - " + reply_text +".")
 			else:
 				self.v.sms(phone_num, res_insert['code'])
 		else:
