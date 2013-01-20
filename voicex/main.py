@@ -218,7 +218,7 @@ class VoiceX:
 	def follow(self, tag, phone_num):
 		logger.debug('follow')
 		if(tag[0] not in ['#', '@']):
-			self.v.sms(phone_num, "Invalid tag: '%s'. Valid tags are either hash-tags (start with '#'), or an account name (start with'@').")
+			self.v.sms(phone_num, "Invalid tag: '%s'. Valid tags are either hash-tags (start with '#'), or an account name (start with'@')." %(tag))
 			return
 		res = self.mc.add_following(tag.strip().lower(), phone_num)
 		if(res['status']):
