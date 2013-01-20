@@ -85,7 +85,7 @@ class VoiceX:
 	def register(self, name, phone_num):
 		res = self.mc.add_account(name , phone_num)
 		if(res['status']):
-			self.v.sms(phone_num, 'Account created successfully.')
+			self.v.sms(phone_num, 'Successfully registered %s with %s.' %(name, phone_num))
 		else:
 			self.v.sms(phone_num, res['code'])
 	
@@ -93,7 +93,7 @@ class VoiceX:
 	def unregister(self, name, phone_num):
 		res = self.mc.delete_account(name , phone_num)	
 		if(res['status']):
-			self.v.sms(phone_num, 'Account deleted successfully.')
+			self.v.sms(phone_num, 'Unregistered %s' %(name))
 		else:
 			self.v.sms(phone_num, res['code'])
 	
