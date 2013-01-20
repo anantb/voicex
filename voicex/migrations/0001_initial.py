@@ -19,18 +19,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('voicex', ['Post'])
 
-        # Adding model 'Subscriber'
-        db.create_table('subscribers', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['voicex.Account'])),
-            ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('voicex', ['Subscriber'])
-
-        # Adding unique constraint on 'Subscriber', fields ['phone', 'account']
-        db.create_unique('subscribers', ['phone', 'account_id'])
-
         # Adding model 'Account'
         db.create_table('accounts', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -53,34 +41,21 @@ class Migration(SchemaMigration):
         db.create_table('following', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('tag', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['voicex.Tag'])),
+            ('tag', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal('voicex', ['Following'])
 
         # Adding unique constraint on 'Following', fields ['phone', 'tag']
-        db.create_unique('following', ['phone', 'tag_id'])
-
-        # Adding model 'Tag'
-        db.create_table('tags', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
-        ))
-        db.send_create_signal('voicex', ['Tag'])
+        db.create_unique('following', ['phone', 'tag'])
 
 
     def backwards(self, orm):
         # Removing unique constraint on 'Following', fields ['phone', 'tag']
-        db.delete_unique('following', ['phone', 'tag_id'])
-
-        # Removing unique constraint on 'Subscriber', fields ['phone', 'account']
-        db.delete_unique('subscribers', ['phone', 'account_id'])
+        db.delete_unique('following', ['phone', 'tag'])
 
         # Deleting model 'Post'
         db.delete_table('posts')
-
-        # Deleting model 'Subscriber'
-        db.delete_table('subscribers')
 
         # Deleting model 'Account'
         db.delete_table('accounts')
@@ -90,9 +65,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Following'
         db.delete_table('following')
-
-        # Deleting model 'Tag'
-        db.delete_table('tags')
 
 
     models = {
@@ -114,7 +86,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('phone', 'tag'),)", 'object_name': 'Following', 'db_table': "'following'"},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'tag': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['voicex.Tag']"}),
+            'tag': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         'voicex.post': {
@@ -125,18 +97,6 @@ class Migration(SchemaMigration):
             'public': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'reply_to': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'replies'", 'null': 'True', 'to': "orm['voicex.Post']"}),
             'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        'voicex.subscriber': {
-            'Meta': {'unique_together': "(('phone', 'account'),)", 'object_name': 'Subscriber', 'db_table': "'subscribers'"},
-            'account': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['voicex.Account']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        'voicex.tag': {
-            'Meta': {'object_name': 'Tag', 'db_table': "'tags'"},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'})
         }
     }
 

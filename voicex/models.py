@@ -86,5 +86,5 @@ class Following(models.Model):
 	class Meta:
 		db_table = "following"
 		app_label = 'voicex'
-		unique_together = ('phone', 'account',)
+		unique_together = ('phone', 'tag',)
 		
