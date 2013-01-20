@@ -219,7 +219,7 @@ class ModelController:
 			for f in following:
 				following_list.append(f['phone'])
 			res['status']= True
-			res['val'] = following_list
+			res['val'] = list(set(following_list))
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)

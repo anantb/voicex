@@ -119,7 +119,7 @@ class VoiceX:
 		
 		res_following = self.mc.find_following(tags)
 		text = "From: @%s (Post ID: %s): %s" %(account, post_id, msg)
-		if(res_subscribers['status']):
+		if(res_following['status']):
 			follow_list = res_following['val']
 			if(len(follow_list) == 0 ):
 				return
