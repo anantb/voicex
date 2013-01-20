@@ -6,48 +6,47 @@
 <li>US Number: 6503089145</li>
 <li>Kenya Number: 2122</li>
 </ul>
-
-<h2>Basic User Commands</h2>
+<hr />
+<h2>Basic User Commands and Syntax</h2>
 <h3>register</h3>
 <p><b>Syntax: </b>register &lt;name&gt;</p>
-<p><b>Example 1: </b>register voicex</p>
+<p><b>Sample Text 1: </b>register voicex</p>
 <p><b>Sample Response 1: </b>Successfully registered voicex with your phone number.</p>
 
 <hr />
 <h3>unregister</h3>
 <p><b>Syntax: </b>unregister</p>
-<p><b>Example 1: </b>unregister</p>
+<p><b>Sample Text 1: </b>unregister</p>
 <p><b>Sample Response 1: </b>Unregistered voicex.</p>
 
 <hr />
 <h3>post</h3>
 <p><b>Syntax: </b>post &lt;msg&gt;</p>
-<p><b>Example 1 (simple post): </b>post hello world</p>
-<p><b>Example 2 (tagged post): </b>post hello world. #voicex</p>
-<p><b>Example 3 (anonymous post): </b>post hello world. #annon</p>
-<p><b>Sample Response: </b>Msg successfully posted. To view the post, text -- view 3 </p>
-<p><b>Sample Response: </b>Msg successfully posted. To view the post, text -- view 4 </p>
-<p><b>Sample Response: </b>Msg successfully posted. To view the post, text -- view 5 </p>
+<p><b>Sample Text 1 (simple post): </b>post hello world</p>
+<p><b>Sample Text 2 (tagged post): </b>post hello world. #voicex</p>
+<p><b>Sample Text 3 (anonymous post): </b>post hello world. #annon</p>
+<p><b>Sample Response 1: </b>Msg successfully posted. To view the post, text -- view 3 </p>
+<p><b>Sample Response 2: </b>Msg successfully posted. To view the post, text -- view 4 </p>
+<p><b>Sample Response 3: </b>Msg successfully posted. To view the post, text -- view 5 </p>
 
 <hr />
 <h3>view</h3>
 <p><b>Syntax: </b>view &lt;post-id&gt;</p>
-<p><b>Example 1: </b>view 3</p>
+<p><b>Sample Text 1: </b>view 3</p>
 <p><b>Sample Response 1: </b>hello world</p>
 
 <hr />
 <h3>delete</h3>
 <p><b>Syntax: </b>delete &lt;post-id&gt;</p>
-<p><b>Example 1: </b>delete 3</p>
+<p><b>Sample Text 1: </b>delete 3</p>
 <p><b>Sample Response 1: </b>Post (ID:3) deleted successfully.</p>
 
 <hr />
 <h3>reply</h3>
 <p><b>Syntax: </b>reply &lt;post-id&gt; &lt;msg&gt;</p>
-<p><b>Example: </b>reply 3 this is my reply.</p>
-<p><b>Example 1 (public reply): </b>post this is my public reply. #public</p>
-<p><b>Example 2 (anonymous reply): </b>post this is my public and anonymous reply. #public #annon</p>
-<p><b>Example 3 (anonymous reply): </b>post this is my public and anonymous and tagged reply about voicex. #public #annon #voicex</p>
+<p><b>Sample Text 1 (private reply): </b>reply 3 this is my reply.</p>
+<p><b>Sample Text 2 (public reply): </b>post this is my public reply. #public</p>
+<p><b>Sample Text 3 (anonymous &amp; public reply): </b>post this is my public and anonymous reply. #public #annon</p>
 <p><b>Sample Response 1: </b>Your reply to post (ID:3) has been successfully submitted!</p>
 <p><b>Sample Response 2: </b>Your reply to post (ID:3) has been successfully submitted!</p>
 <p><b>Sample Response 3: </b>Your reply to post (ID:3) has been successfully submitted!</p>
@@ -55,23 +54,42 @@
 <hr />
 <h3>search</h3>
 <p><b>Syntax: </b>search &lt;keywords&gt;</p>
-<p><b>Example 1: </b>search world</p>
+<p><b>Sample Text 1: </b>search world</p>
 <p><b>Sample Response 1: </b>hello world (Post ID: 3)</p>
 
 
 <hr />
 <h3>follow</h3>
 <p><b>Syntax: </b>follow &lt;@name/#tag&gt;</p>
-<p><b>Example 1 (following an organization): </b>follow @stanford</p>
-<p><b>Example 2 (following a tag): </b>follow #employment</p>
+<p><b>Sample Text 1 (following an organization): </b>follow @stanford</p>
+<p><b>Sample Text 2 (following a tag): </b>follow #employment</p>
 <p><b>Sample Response 1: </b>You are now following @stanford</p>
 <p><b>Sample Response 1: </b>You are now following #employment</p>
 
 <hr />
 <h3>unfollow</h3>
 <p><b>Syntax: </b>unfollow &lt;@name/#tag&gt;</p>
-<p><b>Example 1 (unfollowing an organization): </b>unfollow @stanford</p>
-<p><b>Example 2 (unfollowing a tag): </b>unfollow #health</p>
+<p><b>Sample Text 1 (unfollowing an organization): </b>unfollow @stanford</p>
+<p><b>Sample Text 2 (unfollowing a tag): </b>unfollow #health</p>
 <p><b>Sample Response 1: </b>You are now not following @stanford</p>
 <p><b>Sample Response 1: </b>You are now not following #employment</p>
+
+<hr />
+<h2>Notification Texts</h2>
+<h3>When somebody replies to your post</h3>
+<p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @voicex: this is my reply.</p>
+<p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @voicex: this is my public reply. #public</p>
+<p><b>Sample Response 1: </b>New Reply(Post ID: 3), From: @anon: this is my public and anonymous reply. #public #annon</p>
+
+<hr />
+<h3>If you were following @voicex</h3>
+<p><b>Sample Response 1: </b>From: @voicex (Post ID: 3): hello world.</p>
+
+<hr />
+<h3>If you were following #employment</h3>
+<p><b>Sample Response 1: </b>From: @voicex (Post ID: 5): New job in Kibera. #employment #kibera</p>
+
+
+
+
 {%endblock%}
