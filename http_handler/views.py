@@ -34,6 +34,8 @@ Main Query Handler (Views)
 @author: Anant Bhardwaj
 @date: Oct 8, 2012
 '''
+gv = VoiceX(auth= config.GV_VOICEX_AUTH)
+at = VoiceX(auth= config.AT_VOICEX_AUTH)
 
 def index(request):
 	return render_to_response("index.html")
@@ -49,9 +51,8 @@ def voicex_us(request):
 			msg_data['text'] = request.POST['text']
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']
-		try:
-			v = VoiceX(auth= config.GV_VOICEX_AUTH)
-			v.msg_new(msg_data)
+		try:			
+			gv.msg_new(msg_data)
 			return HttpResponse("ok")
 		except Exception, e:
 			return HttpResponse("error")
@@ -70,9 +71,8 @@ def voicex_ke(request):
 			msg_data['text'] = request.POST['text']
 		if('from' in request.POST):
 			msg_data['from'] = request.POST['from']		
-		try:
-			v = VoiceX(auth= config.AT_VOICEX_AUTH)
-			v.msg_new(msg_data)
+		try:			
+			at.msg_new(msg_data)
 			return HttpResponse("ok")
 		except Exception, e:
 			return HttpResponse("error")
