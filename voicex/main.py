@@ -174,9 +174,9 @@ class VoiceX:
 			self.getHelp(msg_data, phone_num)
 			return
 		account = 'anonymous'
-		res_find = self.mc.find_account(phone_num)
-		if(res['status']):
-			account = res_find['val']
+		res_find_acc = self.mc.find_account(phone_num)
+		if(res_find_acc['status']):
+			account = res_find_acc['val']
 		reply_text = tokens[1]
 		res_find = self.mc.find_post(post_id)
 		if(res_find['status']):
