@@ -50,8 +50,7 @@ logger = logging.getLogger(__name__)
 
 class ModelController:
 	def __init__(self):
-		pass
-	
+		logger.debug('__init__')	
 	
 	
 	def add_account(self, name, phone):

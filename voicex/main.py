@@ -47,7 +47,7 @@ Main Handler Interface
 
 class VoiceX:
 	def __init__(self, auth):
-		logger.debug('__voicex__init__')
+		logger.debug('__init__')
 		self.mc = ModelController()
 		self.v = VoiceXTransport(auth = auth)
 
@@ -111,7 +111,7 @@ class VoiceX:
 		res = self.mc.insert_post(phone_num, text);
 		if(res['status']):
 			post_id = res['val']	
-			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text -- view ' + str(post_id))
+			self.v.sms(phone_num, 'Msg successfully posted. To view the post, text -- view %s' %(str(post_id)))
 			self.notify_followers(phone_num, text, post_id)
 		else:
 			self.v.sms(phone_num, res['code'])
@@ -143,7 +143,7 @@ class VoiceX:
 		logger.debug('delete')
 		res = self.mc.delete_post(post_id)
 		if(res['status']):
-			self.v.sms(phone_num, "Post ID:(" + post_id + ") has been successfully deleted!")
+			self.v.sms(phone_num, "Post ID:(%s) has been successfully deleted!" %(post_id))
 		else:
 			self.v.sms(phone_num, res['code'])
 
@@ -157,7 +157,7 @@ class VoiceX:
 			out = post.post
 			posts = Post.objects.filter(reply_to = post, public = True)
 			for p in posts:
-				out =  out + "[Comment (ID:" + str(p.id) + "): " + p.post + "] "
+				out =  out + "[Comment (ID:%s): %s]" %(str(p.id), p.post)
 			self.v.sms(phone_num, out)
 		else:		
 			self.v.sms(phone_num, res['code'])
@@ -205,9 +205,9 @@ class VoiceX:
 				res_insert = self.mc.insert_reply(phone_num, reply_text, post)
 			if(res_insert['status']):
 				reply_id = str(res_insert['val'])
-				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
+				self.v.sms(phone_num, "Your reply to post (ID:%s) has been successfully submitted!" %(post_id))
 				reply_to  = post.phone
-				self.v.sms(reply_to, "Reply(ID:" + str(reply_id) +", From: @" + account +") to Post(ID:"+ str(post_id) + ") - " + reply_text +".")
+				self.v.sms(reply_to, "[Reply(ID:%s, From: @%s) to Post(ID:%s)] - %s" %(str(reply_id), account, str(post_id), reply_text))
 			else:
 				self.v.sms(phone_num, res_insert['code'])
 		else:
@@ -273,7 +273,7 @@ class VoiceX:
 				except:
 					self.show_help(None, phone_num)
 			else:
-				self.show_help(None, phone_num)
+				self.v.sms(phone_num, "Unknown command: '%s'. Text 'help' to get the list of commands." %s(cmd))
 		except Exception, e:
 			logger.exception('parse')
 
