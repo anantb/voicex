@@ -46,19 +46,6 @@ class Post(models.Model):
 		app_label = 'voicex'
 
 
-class Subscriber(models.Model):
-	id = models.AutoField(primary_key=True)
-	phone = models.CharField(max_length=20)
-	account = models.ForeignKey('Account')
-	timestamp = models.DateTimeField(auto_now=True)
-	def __unicode__(self):
-		return self.name
-
-	class Meta:
-		db_table = "subscribers"
-		app_label = 'voicex'
-		unique_together = ('phone', 'account',)
-
 
 
 class Account(models.Model):
@@ -86,12 +73,12 @@ class Delegate(models.Model):
 	class Meta:
 		db_table = "delegates"
 		app_label = 'voicex'
-		
+
 
 class Following(models.Model):
 	id = models.AutoField(primary_key=True)
 	phone = models.CharField(max_length=20)
-	tag = models.ForeignKey('Tag')
+	tag = models.CharField(max_length=20)
 	timestamp = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return self.name
@@ -99,16 +86,5 @@ class Following(models.Model):
 	class Meta:
 		db_table = "following"
 		app_label = 'voicex'
-		unique_together = ('phone', 'tag',)
-
-
-
-class Tag(models.Model):
-	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=20, unique=True)
-	def __unicode__(self):
-		return self.name
-
-	class Meta:
-		db_table = "tags"
-		app_label = 'voicex'
+		unique_together = ('phone', 'account',)
+		

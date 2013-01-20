@@ -211,15 +211,15 @@ class ModelController:
 
 	
 			
-	def find_subscribers(self, account):
+	def find_following(self, tags):
 		res = {'status':False}
-		subscribers_list = []
+		following_list = []
 		try:
-			subscribers = Subscriber.objects.filter(account = account).values()
-			for s in subscribers:
-				subscribers_list.append(s['phone'])
+			following = Following.objects.filter(tag__in = tags).values()
+			for f in following:
+				following_list.append(s['phone'])
 			res['status']= True
-			res['val'] = subscribers_list
+			res['val'] = following_list
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
 		logger.debug(res)
@@ -227,14 +227,12 @@ class ModelController:
 	
 	
 	
-	def delete_subscriber(self, name, phone_number):
+	def delete_following(self, tag, phone_number):
 		res = {'status':False}
-		account = None
 		phone = phone_number.strip()
 		try:
-			account = Account.objects.get(name = name.lower())
-			s = Subscriber.objects.get(account = account, phone = phone)
-			s.delete()
+			f = Following.objects.get(tag = tag, phone = phone)
+			f.delete()
 			res['status']= True
 		except Exception, e:
 			res['code']= msg_code['DB_ERROR']
@@ -243,18 +241,16 @@ class ModelController:
 			
 	
 
-	def add_subscriber(self, name, phone_number):
+	def add_following(self, tag, phone_number):
 		res = {'status':False}
-		account = None
 		phone = phone_number.strip()	
 		try:
-			account = Account.objects.get(name = name.lower())
-			s = Subscriber.objects.get(account = account, phone = phone)
+			f = Following.objects.get(tag = tag, phone = phone)
 			res['status']= True
-		except Subscriber.DoesNotExist:
+		except Following.DoesNotExist:
 			try:
-				s = Subscriber(account = account, phone = phone)
-				s.save()
+				f = Following(tag = tag, phone = phone)
+				f.save()
 				res['status']= True
 			except:
 				res['code']= msg_code['DB_ERROR']

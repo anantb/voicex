@@ -110,14 +110,17 @@ class VoiceX:
 
 
 	def notify_followers(self, phone_num, msg, post_id):
+		tags = [tag.strip().lower() for tag in msg.split() if tag.startswith("#")]
 		res_find = self.mc.find_account(phone_num)
-		if(not res_find['status']):
-			return
-		account = res_find['val']
-		res_subscribers = self.mc.find_subscribers(account)
-		text = "From: %s (Post ID: %s): %s" %(account.name, post_id, msg)
+		account = 'anonymous'
+		if(res_find['status']):
+			account = res_find['val'].name
+			tags.append('@'+account)
+		
+		res_following = self.mc.find_following(tags)
+		text = "From: @%s (Post ID: %s): %s" %(account, post_id, msg)
 		if(res_subscribers['status']):
-			follow_list = res_subscribers['val']
+			follow_list = res_following['val']
 			if(len(follow_list) == 0 ):
 				return
 			recipients = ','.join(follow_list)
@@ -186,7 +189,7 @@ class VoiceX:
 				reply_id = str(res_insert['val'])
 				self.v.sms(phone_num, 'Your reply to post (ID:' + post_id + ") has been successfully submitted!")
 				reply_to  = post.phone
-				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +", From: " + account +") : " + reply_text +".")
+				self.v.sms(reply_to, "New Reply (ID:" + str(reply_id) +", From: @" + account +") : " + reply_text +".")
 			else:
 				self.v.sms(phone_num, res_insert['code'])
 		else:
@@ -195,7 +198,7 @@ class VoiceX:
 
 
 	def follow(self, name, phone_num):
-		res = self.mc.add_subscriber(name, phone_num)
+		res = self.mc.add_following(name.strip().lower(), phone_num)
 		if(res['status']):
 			self.v.sms(phone_num, 'You are now following %s.' %(name))
 		else:
@@ -203,7 +206,7 @@ class VoiceX:
 	
 	
 	def unfollow(self, name, phone_num):
-		res = self.mc.delete_subscriber(name, phone_num)
+		res = self.mc.delete_following(name.strip().lower(), phone_num)
 		if(res['status']):
 			self.v.sms(phone_num, 'You are now not following %s.' %(name))
 		else:
