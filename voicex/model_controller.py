@@ -126,7 +126,7 @@ class ModelController:
 			res['status']= True
 			res['val'] = p.id
 		except Exception, e:
-			res['code']= msg_code['DB_ERROER']
+			res['code']= msg_code['DB_ERROR']
 		logging.debug(res)
 		return res
 
