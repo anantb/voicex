@@ -226,7 +226,10 @@ class VoiceX:
 			elif(cmd == "unfollow"):
 				self.unfollow(msg_data[1], phone_num)
 			elif(cmd == "help"):
-				self.show_help(msg_data[1], phone_num)
+				try:
+					self.show_help(msg_data[1], phone_num)
+				except:
+					self.show_help(None, phone_num)
 			else:
 				self.show_help(None, phone_num)
 		except Exception, e:
