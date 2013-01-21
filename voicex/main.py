@@ -291,14 +291,14 @@ class VoiceX:
 			msg = str(msg_data['text'].encode('ascii', 'ignore')).strip()
 			phone_num = str(msg_data['from'].encode('ascii', 'ignore')).strip()
 			if(not phone_num):
-				logger.error('can't extract the phone number')
+				logger.error("can't extract the phone number")
 				return
 			logger.debug('From: %s, Text: %s' %(phone_num, msg))
 			if(not msg):
 				self.show_help(None, phone_num)
 			else:
 				self.parse(msg, phone_num)
-		except:
+		except Exception, e:
 			logger.exception('handle')
 	
 	

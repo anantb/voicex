@@ -34,7 +34,7 @@ Main Query Handler (Views)
 @author: Anant Bhardwaj
 @date: Oct 8, 2012
 '''
-gv = VoiceX(auth= config.GV_VOICEX_AUTH)
+gv = VoiceX(auth= config.GV_VOICEX_AUTH_2)
 at = VoiceX(auth= config.AT_VOICEX_AUTH)
 
 def index(request):
