@@ -54,6 +54,7 @@ def load_tokens(email):
 		tokens = open('/tmp/resources/' + email, 'rU').read()
 		return tokens
 	except IOError:
+		logger.exception('load_tokens')
 		return None
 	
 

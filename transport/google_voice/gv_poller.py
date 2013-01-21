@@ -65,7 +65,7 @@ class GoogleVoicePoller(threading.Thread):
 							self.v.mark_read(m)
 							self.callback(m)						
 			except:
-				logger.exception(poll_new)
+				logger.exception('poll_new')
 			time.sleep(1)
 		
 	def run(self):
