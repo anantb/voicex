@@ -33,6 +33,7 @@ if __name__ == "__main__":
 from model_controller import *
 from models import *
 from transport.voicex import VoiceXTransport
+from django.utils.encoding import *
 from transport import config
 #import voicex.tasks
 
@@ -284,13 +285,21 @@ class VoiceX:
 
 	def handle(self, msg_data):
 		logger.debug('handle')
-		msg = msg_data['text'].strip()
-		phone_num = msg_data['from'].strip()
-		logger.debug('From: %s, Text: %s' %(phone_num, msg))
-		if(not msg):
-			self.show_help(None, phone_num)
-		else:
-			self.parse(msg, phone_num)
+		msg = None
+		phone_num = None
+		try:
+			msg = str(msg_data['text'].encode('ascii', 'ignore')).strip()
+			phone_num = str(msg_data['from'].encode('ascii', 'ignore')).strip()
+			if(not phone_num):
+				logger.error('can't extract the phone number')
+				return
+			logger.debug('From: %s, Text: %s' %(phone_num, msg))
+			if(not msg):
+				self.show_help(None, phone_num)
+			else:
+				self.parse(msg, phone_num)
+		except:
+			logger.exception('handle')
 	
 	
 	def msg_new(self, msg):
