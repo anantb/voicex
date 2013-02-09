@@ -64,10 +64,10 @@ class VoiceX:
 		help_text = "Welcome to VoiceX! Commands: register name, unregister name, post msg, view post-id, delete post-id, search query, reply post-id msg, follow @name/#tag, unfollow @name/#tag"
 		if(not msg):
 			pass
-		elif('register' in msg):
-			help_text = "Help for register : register name. Example: register voicex"
 		elif('unregister' in msg):
 			help_text = "Help for unregister : unregister name. Example: unregister voicex"
+		elif('register' in msg):
+			help_text = "Help for register : register name. Example: register voicex"
 		elif('post' in msg):
 			help_text = "Help for post : post message. Example (simple post): post hello world. Example (tagged post): post voicex is free #voicex. Example (anonymous post): post voicex is free #anon"
 		elif('search' in msg):
