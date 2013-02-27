@@ -30,7 +30,7 @@ from msg_codes import *
 '''
 Application Model Controller
 
-@author: Anant Bhardwaj, Trisha Kothari
+@author: Anant Bhardwaj
 @date: Aug 3, 2012
 '''
 
