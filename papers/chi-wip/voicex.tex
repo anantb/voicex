@@ -1,0 +1,194 @@
+\documentclass{chi-ext}
+% Please be sure that you have the dependencies (i.e., additional LaTeX packages) to compile this example.
+% See http://personales.upv.es/luileito/chiext/
+
+\copyrightinfo{
+  Copyright is held by the author/owner(s).\\
+  This is a generic SIGCHI \LaTeX\ template sample.\\
+  The corresponding ACM copyright statement must be included.
+}
+
+\title{Beyond Internet: A Technology Ecosystem for Slums and Rural Areas in Developing Countries}
+
+\numberofauthors{5}
+% Notice how author names are alternately typesetted to appear ordered in 2-column format;
+% i.e., the first 4 autors on the first column and the other 4 auhors on the second column.
+% Actually, it's up to you to strictly adhere to this author notation.
+\author{
+  \vspace{-1.5em} % lisatolles: The abstract heading should start at the time height on the page as the authors names
+  \alignauthor{
+  	\textbf{Anant Bhardwaj}\\
+  	\affaddr{MIT CSAIL}\\
+         \affaddr{Cambridge MA, 02139, USA}\\
+          \email{anantb@csail.mit.edu}
+  }\alignauthor{
+  	\textbf{David Karger}\\
+  	\affaddr{MIT CSAIL}\\
+    	\affaddr{Cambridge MA, 02139 USA}\\
+    	\email{karger@csail.mit.edu}
+  }
+  \vfil
+  \alignauthor{
+  	\textbf{Trisha Kothari}\\
+  	\affaddr{University of Pennsylvania}\\
+          \affaddr{Philadelphia, PA 19104, USA}\\
+    	\email{kotharit@seas.upenn.edu}
+  }\alignauthor{
+  	\textbf{Terry Winograd}\\
+  	\affaddr{Stanford University}\\
+    	\affaddr{Stanford, CA  94305, USA}\\
+    	\email{winograd@cs.stanford.edu}
+  }
+  \vfil
+  \alignauthor{
+  	\textbf{Joshua Cohen}\\
+  	\affaddr{Stanford University}\\
+    	\affaddr{Stanford, CA  94305, USA}\\
+    	\email{jcohen57@stanford.edu}
+  }
+ }
+
+% Paper metadata (use plain text, for PDF inclusion and later re-using, if desired)
+\def\plaintitle{CHI LaTeX Extended Abstracts Template}
+\def\plainauthor{Luis A. Leiva}
+\def\plainkeywords{Guides, instructions, author's kit, conference publications}
+\def\plaingeneralterms{Documentation, Standardization}
+
+\hypersetup{
+  % Your metadata go here
+  pdftitle={\plaintitle},
+  pdfauthor={\plainauthor},  
+  pdfkeywords={\plainkeywords},
+  pdfsubject={\plaingeneralterms},
+  % Quick access to color overriding:
+  %citecolor=black,
+  %linkcolor=black,
+  %menucolor=black,
+  %urlcolor=black,
+}
+
+\usepackage{graphicx}   % for EPS use the graphics package instead
+\usepackage{balance}    % useful for balancing the last columns
+\usepackage{bibspacing} % save vertical space in references
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+An effective information ecosystem is one which fosters communication and content for users. Consider the Internet, an example of an excellent ecosystem that enables us to generate, manage, retrieve and search information, communicate with others, do business and much more. This produces a network of people who are more informed and empowered. On the other hand, since a large majority of the developing world has relatively little or no access to the Internet, they are unable to be part of such an ecosystem.  We present a platform for creating a very similar ecosystem which would enable people with low-end feature phones that can't connect to the Internet to generate, manage, retrieve and search information, be social, do business, and share/exchange knowledge. We also discuss the appropriateness of the proposed platform in context of our pilot deployment in Kibera, the largest slum in Nairobi, Kenya.
+\end{abstract}
+
+\keywords{SMS; text messaging; search; information access; developing world; rural development; ICTD}
+
+\category{H.5.2}{Information Interfaces and Presentation}{User Interfaces}{Interaction Styles, User-centered Design}
+
+\terms{Human Factors; Design.}
+
+
+
+% =============================================================================
+\section{Introduction}
+% =============================================================================
+It's a fact that over the last 25-30 years, the Internet has fundamentally changed the way we live. It has become a platform where we can literally find every kind of information. We use it in almost every aspect of our life -- it has created an ecosystem which we have become an integral part of.
+
+The unfortunate part though is that not everybody is part of this ecosystem. Of the world's almost seven billion people, less than two billion have access to the Internet. For the remaining five billion people, access is constrained by affordability, lack of power and infrastructure, language, and literacy. Although television, radio and newspapers are the sources available to them for information, without a platform to discuss, ask followup questions, and share personal experience, information is not actionable.
+
+One promising aspect is that mobile phones have reached these areas ~\cite{RePEc:cgd:wpaper:211}. Especially in emerging regions where most users have mobile devices, SMS based mobile information services have gained huge popularity and have shown great promise in providing useful services ~\cite{RePEc:cgd:wpaper:211}.
+
+We made a trip to Kibera, a poorly resourced neighborhood in Kenya's capital city, Nairobi. With the support of our partner organization Umande Trust, a community-based non-profit organization in Kibera that supports community initiatives to improve the livelihood of the local community, we got a chance to observe their day-to-day life.
+
+We saw poverty, unhealthy condition, people not being able to find work, people (especially small traders) uninformed of what is legal  vs. illegal -- often being victim of police harassment and asked for bribe; at the core -- a clear lack of infrastructure to share knowledge and exchange information at large scale.
+
+On the other hand, people are rather willing to adopt new available technologies. Jack and Suri present a comprehensive analysis of M‐PESA ~\cite{NBERw16721} - the most rapid and widespread growth of a mobile money product in Kenya.
+
+Based on these observations, we made a hypothesis that if we provide them with a platform to share knowledge and exchange information, they would be able to use it for their personal welfare. This forms the basis of our system -- we present a platform that uses SMS as a transport, where people can generate, manage, store and search information, share their experience and knowledge. We believe that this platform has the potential to change the way they do business, the way they find information, the way they socially connect, and the way they live.
+
+In this paper, we cover the system and interaction details of the proposed platform, how it would work at scale and some important design decisions.
+
+\section{Related Work}
+There is a long history of SMS based applications for information access. Google made their search services available through SMS ~\cite{Schusteritsch:2005:MST:1056808.1057020}. To enable more relevant information access for low end mobile users, Chen et al. built SMSFind ~\cite{Chen:2009:SCW:1592606.1592611} - a SMS based contextual web search. 
+
+While Google SMS and SMSFind made a great attempt to make the information available on World Wide Web  accessible through SMS, they didn't provide any mechanism for the users to generate new data and participate in information sharing. The information retrieved from the World Wide Web isn't much useful to the people living in rural areas because their information needs are different. People seek information such as work opportunities (particularly blue-collared labor such as construction worker, carpenter, maid, etc.) in nearby areas, health and health problems related advice, agriculture and discussions on improving yield.
+
+Neil Patel in his paper ~\cite{Patel:2011:ACP:2046396.2046436}, ``Sharing Information in Rural Communities Through Voice Interaction" presents a voice based infrastructure for low-end phones to help the disconnected communities in rural India to actively participate in knowledge exchange. 
+
+M-PESA ~\cite{NBERw16721} and Avaaj Otalo ~\cite{Patel:2010:AOF:1753326.1753434} proved to be useful in the rural communities because the information that they deal with are generated by people living in the same society. On the other hand, the applications that attempted to just deliver content from the World Wide Web didn't succeed in serving the community because people didn’t find the delivered content relevant to them. 
+
+With this motivation, rather than connecting the Internet through SMS for information retrieval we focussed on developing a platform exclusively tuned for the community, in such a way that they can build their own ecosystem.
+
+\section{System Details}
+\subsection{Interaction Interface}
+Our platform provides users with a set of commands (prefixed with a `\#') that they can use to interact through SMS. Some commonly used commands are -  \#register/unregister \textless unique-name\textgreater, \#post \textless text\textgreater, \#view [\textless msg-id\textgreater],  \#search \textless query\textgreater, \#reply/comment \textless msg-id\textgreater \textless reply-text\textgreater, and  \#follow/unfollow \textless keyword\textgreater. We also provide commands for spam reporting, deleting, navigating and other usability tasks which are out of scope of this paper.
+
+Since SMS has a 160 characters limit, we support abbreviation for frequently used commands - \#p (post), \#s (search), \#r (reply), \#c (comment), \#f (follow), \#u(unfollow) and \#v (view). 
+
+Users can use \#help [\textless command-name\textgreater] for getting general or specific command help. If the system fails to parse user inputs, it sends back a help message to help users correct the syntax.
+
+
+\subsection{Use Case Scenario}
+While this can be viewed as a general purpose, open platform for exchange of information, we will take a specific use case scenario to demonstrate the information flow:
+
+\subsection{Use Case 1}
+A person X  with carpentry skills wants to know about opportunities in the local area related to carpentry jobs, sends a text message to the system -- ``\#follow carpenter"
+
+Now a person Y who needs a carpenter for some repair at his house simply posts to the system ``\#post I need a carpenter for some repair at my house. \#carpenter, \#jobs".
+
+All those people (X in this scenario) who were following ``carpenter" keyword get a notification saying ``New post -- I need a carpenter for some repair at my house. Post ID: 57."
+
+The person X and others who are interested can now reply to this post by sending ``\#reply 57 I am person X skilled in carpentry. I am interested in the job". Once a reply is sent, the system notifies person Y through a text message -- ``New response -- I am person X skilled in carpentry. I am interested in the job. Res ID: 78"
+
+In addition to following relevant topics, the person X can also do a search by sending ``\#search carpentry jobs". The system sends back a text with most relevant posts as search results (minimum one and maximum as many as can fit in 160 characters). For browsing through the search results, \#next and \#back is provided.
+
+On the other hand, the person Y can see all the replies on his post by sending ``\#view 57" which gets back his original post and all the replies to that post. He can edit or delete the post by sending ``\#edit 57 \textless updated-text\textgreater"  or ``\#delete 57" respectively. The update/delete notification goes to all the people who previously replied to post 57.
+
+With this platform, one can imagine different social channels (based on tags) such as AIDS information channel (\#aids), Human Rights Violation reporting channel (\#humanrights), etc.
+
+\subsection{Use Case 2}
+This platform can be used for mass communication and awareness too. Let's consider a health organizations called KenyaHealth which needs to raise awareness about `sexually transmitted diseases'. KenyaHealth can register the organization name with us by sending a text to the system -- ``\#register KenyaHealth". People can now follow KenyaHealth by sending -- ``\#follow KenyaHealth". After this, anything posted by KenyaHealth goes to all the people who are following KenyaHealth, with a signature of KenyaHealth in each post (a sample post might look like ``From KenyaHealth -- New health workshop on STDs. Post ID: 83").
+
+\subsection{Why post has an ID and not the sender's phone number?}
+In our platform, each message/reply has an unique identifier which allows us to hide the actual phone numbers. Many people want to follow sensitive topics like ``sexually transmitted diseases" and if there is a new post about the topic, they want to ask follow up questions without revealing their identity. We believe that this anonymity in communication will encourage people to discuss sensitive topics. If they want, they can put their identity in the post itself.
+
+ 
+\subsection{Comparison with Twitter SMS}
+It is natural for people to compare our platform with twitter-sms~\cite{TwitterSMS} and thus we take a brief digression to point out the distinctions that make our platform unique and suitable for the context. 
+
+Although a social network can be built over our platform, our design is not centered around creating a social network. Our goal is to create an ecosystem where people can find information relevant to their daily needs. Our system design is centered around `information', not people.
+
+Unlike Twitter where a user can follow only other users, we allow users to follow any keyword, and notifications are sent whenever there is a new post/comment that is tagged with  follow keyword/keywords. Our goal is information dissemination.
+
+Our search engine takes locality into account and uses zone-similarity to find the most relevant results. Since twitter uses a global number, they would not be able to achieve the same.
+
+Twitter always reveals the real identity of the person posting a tweet or replying to a tweet and thus people would be hesitant to follow sensitive topics or ask sensitive questions. 
+
+\subsection{Handling User Error}
+We provide text as the only interface for accessing our platform. It's natural for people to make mistakes in typing - our interface engine provides a huge tolerance to spelling errors in commands, follow keywords and search queries. Since we have very few commands, the edit-distance works great for finding the nearest match. For follow keywords and search queries, we use standard n-gram based spell-correction techniques.
+
+
+\subsection{Backend}
+The backend system connects with the SMS transport gateway of AfricasTalking.com.  Upon receiving a new text, the SMS transport gateway posts the text to our system's HTTP handler. The HTTP handler invokes the main query handler which parses the command from the received text, and passes the control to one of the service modules. The four service modules are -- 1) CRUD module, which facilitates CRUD operations (\#post, \#view, \#reply, \#comment, \#edit and \#delete), 2) Indexer module, which is responsible for indexing all the posts/comments for efficient search, 3) Search module (\#search), which takes care of finding relevant results and ranking them for a given query,  and 4) Notification module which facilitates sending notifications to followers. For these service modules to interact with each other (for an instance - \#post, or \#comment  in the CRUD module may need to invoke the notification module to notify users following the tagged keywords in the post/comment), they use service protocols (written over HTTP and use JSON as data format).
+
+\subsection{Scaling over larger population}
+While the prototype system  works well for Kibera, and would allow us to evaluate the usefulness of the proposed platform, it won't be effective at large scale. To work at scale, our system architecture incorporates a distributed interconnected network of nodes where each node covers a small district/zone and has its own phone-number.  People within a zone would use their zone phone-number to connect to our platform. Internally we build a graph that connects these zones such that edge of the graph encodes similarity (based on geographic distance, language, food, weather etc..) between the nodes. When people search for something or follow something, we use node similarity metric to make our results relevant and useful.
+
+
+\section{Pilot Experiment}
+For the pilot, we provide a toll-free short-code number (2122  for Kenya), so that users don't have to pay any money for using the service. Our servers are hosted at MIT CSAIL which runs the software infrastructure. We log every request and response to measure the different kinds of usage, and to evaluate the effectiveness of the proposed platform.
+
+At the time of submitting this paper, we are in the middle of the pilot. We have gathered some usage data, and it looks very promising; however, we haven't done much analysis yet and thus defer any conclusion.
+
+\section{Conclusion}
+A large majority of the developing world has relatively little or no access to the Internet. In the past, SMS based applications have shown great promise in providing useful services to these communities. With our partner organization Umande Trust, we did a needfinding in Kibera, the largest slum in Nairobi, Kenya. Based on the needfinding, we present a platform tuned for the low-end feature phones over which people can generate, manage, retrieve and search information, engage in discussion, and exchange knowledge. With our pilot deployment in Kibera, we are evaluating the effectiveness of our platform at large scale. We believe that for the communities that don't have access to the Internet, our platform has the potential to change the way they do business, the way they find information, the way they socially connect, and the way they live.
+
+
+\section{Acknowledgments}
+We thank John Butler, Chad McClymonds, Sakshi Agarwal, Umande Trust - our partner organization in Kenya, and University of Nairobi for their help in setting up and running the pilot, Stanford Institute for Innovation in Developing Economies for providing us with funding, and MIT CSAIL for helping us with the server hosting and computing resources.
+
+\balance
+\bibliographystyle{acm-sigchi}
+\bibliography{voicex-ref}
+
+
+\end{document}

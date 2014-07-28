@@ -1,0 +1,49 @@
+\begin{thebibliography}{1}
+
+\bibitem{RePEc:cgd:wpaper:211}
+Aker, J., and Mbiti, I.~M.
+\newblock Mobile phones and economic development in africa.
+\newblock Tech. Rep. 211, Center for Global Development, June 2010.
+
+\bibitem{Chen:2009:SCW:1592606.1592611}
+Chen, J., Linn, B., and Subramanian, L.
+\newblock Sms-based contextual web search.
+\newblock In {\em Proceedings of the 1st ACM workshop on Networking, systems,
+  and applications for mobile handhelds}, MobiHeld '09, ACM (New York, NY, USA,
+  2009), 19--24.
+
+\bibitem{NBERw16721}
+Jack, W., and Suri, T.
+\newblock Mobile money: The economics of m-pesa.
+\newblock Working Paper 16721, National Bureau of Economic Research, January
+  2011.
+
+\bibitem{Patel:2010:AOF:1753326.1753434}
+Patel, N., Chittamuru, D., Jain, A., Dave, P., and Parikh, T.~S.
+\newblock Avaaj otalo: a field study of an interactive voice forum for small
+  farmers in rural india.
+\newblock In {\em Proceedings of the 28th international conference on Human
+  factors in computing systems}, CHI '10, ACM (New York, NY, USA, 2010),
+  733--742.
+
+\bibitem{Patel:2011:ACP:2046396.2046436}
+Patel, N., Klemmer, S.~R., and Parikh, T.~S.
+\newblock An asymmetric communications platform for knowledge sharing with
+  low-end mobile phones.
+\newblock In {\em Proceedings of the 24th annual ACM symposium adjunct on User
+  interface software and technology}, UIST '11 Adjunct, ACM (New York, NY, USA,
+  2011), 87--88.
+
+\bibitem{Schusteritsch:2005:MST:1056808.1057020}
+Schusteritsch, R., Rao, S., and Rodden, K.
+\newblock Mobile search with text messages: designing the user experience for
+  google sms.
+\newblock In {\em CHI '05 extended abstracts on Human factors in computing
+  systems}, CHI EA '05, ACM (New York, NY, USA, 2005), 1777--1780.
+
+\bibitem{TwitterSMS}
+{Twitter SMS}.
+\newblock
+  \url{https://support.twitter.com/groups/34-apps-sms-and-mobile/topics/153-twitter-via-sms/articles/14020-twitter-sms-commands}.
+
+\end{thebibliography}

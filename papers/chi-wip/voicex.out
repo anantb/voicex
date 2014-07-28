@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section*.5}{Introduction}{}% 1
+\BOOKMARK [1][-]{section*.7}{Related Work}{}% 2
+\BOOKMARK [1][-]{section*.9}{System Details}{}% 3
+\BOOKMARK [2][-]{subsection*.11}{Interaction Interface}{section*.9}% 4
+\BOOKMARK [2][-]{subsection*.13}{Use Case Scenario}{section*.9}% 5
+\BOOKMARK [2][-]{subsection*.15}{Use Case 1}{section*.9}% 6
+\BOOKMARK [2][-]{subsection*.17}{Use Case 2}{section*.9}% 7
+\BOOKMARK [2][-]{subsection*.19}{Why post has an ID and not the sender's phone number?}{section*.9}% 8
+\BOOKMARK [2][-]{subsection*.21}{Comparison with Twitter SMS}{section*.9}% 9
+\BOOKMARK [2][-]{subsection*.23}{Handling User Error}{section*.9}% 10
+\BOOKMARK [2][-]{subsection*.25}{Backend}{section*.9}% 11
+\BOOKMARK [2][-]{subsection*.27}{Scaling over larger population}{section*.9}% 12
+\BOOKMARK [1][-]{section*.29}{Pilot Experiment}{}% 13
+\BOOKMARK [1][-]{section*.31}{Conclusion}{}% 14
+\BOOKMARK [1][-]{section*.33}{Acknowledgments}{}% 15
+\BOOKMARK [1][-]{section*.35}{References}{}% 16
